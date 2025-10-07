@@ -1,0 +1,43 @@
+/* root will act as main container */
+#root { 
+  max-width: 1280px;
+  width: 90%;
+  margin: 0 auto;
+  /* padding: 2rem; */
+  text-align: center;
+  margin-top: calc(var(--navbar-height) + 1.5rem);
+  margin-bottom: 3rem;
+  /* overflow-x: hidden; */
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  padding-left: 0;
+  padding-right: 0;
+  height: auto;
+  min-height: calc(100vh - var(--navbar-height) - 5rem);
+  width: 100%;
+  /* border: 2px solid white; */
+}
+
+.iwant, .aporsche, ._918, .spyder {
+  width: 100%;
+}
+
+@media (max-width: 1180px) {
+  #root {
+    overflow-x: hidden;
+  }
+}

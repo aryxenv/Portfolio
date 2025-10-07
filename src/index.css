@@ -1,0 +1,166 @@
+@font-face {
+  font-family: 'SF';
+  src: url('./assets/fonts/SF-Pro-Display-Regular.otf') format('opentype');
+}
+
+:root {
+  --primary-color: #ffffff;
+  --border-color: rgba(255, 255, 255, 0.5);
+  --bg-color: #000000;
+  --font-family: 'SF', 'Segoe UI', sans-serif;
+  --navbar-height: 4rem;
+  --border-px:1px;
+  --navbar-bg-scroll: rgba(255, 255, 255, 0);
+  --invertHover: 1;
+  --normal-opacity: 0.5;
+  --hover-opacity: 1;
+  --selection-bg: 0.5;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+html[data-theme='light'] {
+  --primary-color: rgb(0,0,0);
+  --primary-r: 0;
+  --primary-g: 0;
+  --primary-b: 0;
+  --border-color: rgba(0, 0, 0, 0.5);
+  --bg-color: rgb(255,255,255);
+  --invertHover: 0;
+  --navbar-bg-scroll: rgba(0, 0, 0, 0);
+  --scrollbar-color-normal: rgba(0,0,0,0.5);
+  --scrollbar-color-hovered: rgba(0,0,0,1);
+  --selection-bg: 0.2; 
+}
+
+html[data-theme='dark'] {
+  --primary-color: rgb(255,255,255);
+  --primary-r: 255;
+  --primary-g: 255;
+  --primary-b: 255;
+  --border-color: rgba(255, 255, 255, 0.5);
+  --bg-color: rgb(0,0,0);
+  --invertHover: 1;
+  --navbar-bg-scroll: rgba(255, 255, 255, 0);
+  --scrollbar-color-normal: rgba(255,255,255,0.5);
+  --scrollbar-color-hovered: rgba(255,255,255,1);
+  --selection-bg: 0.5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+  line-height: 1.6;
+}
+
+.themeAnimation {
+  transition: background-color 0.3s ease-out, color 0.3s ease-out;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+h4 {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+a {
+  color: var(--primary-color);
+  opacity: 0.5;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+}
+
+a:hover {
+  opacity: 1;
+}
+
+/* .hidden {
+  display: block;
+} */
+
+.hiddentxt {
+  display: none;
+}
+
+i {
+  color: var(--primary-color);
+}
+
+/* name animation */
+.gradient-animation {
+  background: linear-gradient(90deg, gray, var(--primary-color), gray);
+  background-size: 300% 100%;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: gradient-flow 10s linear infinite;
+}
+
+@keyframes gradient-flow {
+  0% {
+      background-position: 300% 0;
+  }
+  100% {
+      background-position: -300% 0;
+  }
+}
+
+::selection {
+  background-color: rgba(29, 4, 219, var(--selection-bg));
+  color: var(--primary-color);
+}
+
+::-webkit-scrollbar {
+  width:5px;
+  height: 5px;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color-normal);
+  border-radius: 10px;
+  cursor: grab;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-color-hovered);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+@media (max-width: 1180px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+}

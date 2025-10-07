@@ -1,0 +1,31 @@
+.stack-component {
+    width: auto;
+    height: 100%;
+    opacity: 0.5;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: default;
+    transition: opacity 0.3s ease-out;
+}
+
+.stack-component:hover {
+    opacity: 1;
+}
+
+.stack-component-bg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    aspect-ratio: 1/1;
+    border-radius: 5px;
+}
+
+.stack-component-txt {
+    flex: 1;
+    white-space: nowrap;
+}
