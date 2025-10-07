@@ -122,39 +122,43 @@ function About() {
                   </thead>
 
                   <tr>
-                    <td>Web Development</td>
+                    <td>AI/ML + Web</td>
 
-                    <td>Master React.ts & Vue.js</td>
+                    <td>Deployed RAG Portfolio</td>
 
-                    <td>August 2025</td>
-                  </tr>
-
-                  <tr>
-                    <td>Web Design</td>
-
-                    <td>Master Figma & UI/UX</td>
-
-                    <td>August 2025</td>
-                  </tr>
-                  <td>Data Analytics</td>
-
-                  <td>Dashboard stock trends</td>
-
-                  <td>January 2026</td>
-                  <tr>
-                    <td>Finance</td>
-
-                    <td>Reusable investments sheet</td>
-
-                    <td>January 2026</td>
+                    <td>October 2025</td>
                   </tr>
 
                   <tr>
                     <td>Software</td>
 
-                    <td>Java & C++</td>
+                    <td>Proficiency in Java (Springboot)</td>
 
-                    <td>October 2025</td>
+                    <td>November 2025</td>
+                  </tr>
+
+                  <tr>
+                    <td>AI/ML</td>
+
+                    <td>Built Chess AI Engine</td>
+
+                    <td>December 2025</td>
+                  </tr>
+
+                  <tr>
+                    <td>Software</td>
+
+                    <td>Completed NeetCode 150</td>
+
+                    <td>December 2025</td>
+                  </tr>
+
+                  <tr>
+                    <td>Life</td>
+
+                    <td>Buy Porsche 918 Spyder</td>
+
+                    <td>September 2035</td>
                   </tr>
 
                   <tr></tr>
