@@ -11,21 +11,21 @@ export const ProjectCardData = [
 
   {
     id: 2,
-    title: "Anime Waiting Room",
+    title: "Tiering Machine",
     description:
-      "A clean, responsive website to track countdowns for airing anime episodes. Built to make it easy for anime fans to keep track of their favorite shows in real-time!",
-    websiteLink: "/anime-waiting-room/",
-    githubLink: "https://github.com/l145dev/Anime-Waiting-Room",
+      "A dystopian Social Credit System simulation where citizens are constantly monitored, scored, and ranked. An AI judge processes reports, applies penalties or rewards, and updates each person's social tier.",
+    websiteLink: "/tiering-machine/",
+    githubLink: "https://github.com/l145dev/TieringMachine",
     status: "green",
   },
 
   {
     id: 3,
-    title: "F1 Data Analysis",
+    title: "Anime Waiting Room",
     description:
-      "An interactive analysis of Formula 1 (F1) data. The dashboard includes visualizations and interactive tabs, designed to give an overview of key metrics in F1 racing. Created in collaboration with Victor Maciel.",
-    websiteLink: "",
-    githubLink: "https://github.com/l145dev/F1-Data-Analysis",
+      "A clean, responsive website to track countdowns for airing anime episodes. Built to make it easy for anime fans to keep track of their favorite shows in real-time!",
+    websiteLink: "/anime-waiting-room/",
+    githubLink: "https://github.com/l145dev/Anime-Waiting-Room",
     status: "green",
   },
 
