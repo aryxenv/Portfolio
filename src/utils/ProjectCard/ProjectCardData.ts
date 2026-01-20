@@ -1,26 +1,6 @@
 export const ProjectCardData = [
   {
     id: 1,
-    title: "Airbnb Camping",
-    description:
-      "A full-stack web application demonstrating robust development, connecting users with unique outdoor lodging experiences. This project explores dynamic data management and intuitive UI/UX for specialized accommodation discovery.",
-    websiteLink: "/airbnb-camping/",
-    githubLink: "https://github.com/l145dev/Airbnb-for-campers",
-    status: "green",
-  },
-
-  {
-    id: 2,
-    title: "Tiering Machine",
-    description:
-      "A dystopian Social Credit System simulation where citizens are constantly monitored, scored, and ranked. An AI judge processes reports, applies penalties or rewards, and updates each person's social tier.",
-    websiteLink: "/tiering-machine/",
-    githubLink: "https://github.com/l145dev/TieringMachine",
-    status: "green",
-  },
-
-  {
-    id: 3,
     title: "Anime Waiting Room",
     description:
       "A clean, responsive website to track countdowns for airing anime episodes. Built to make it easy for anime fans to keep track of their favorite shows in real-time!",
@@ -30,22 +10,42 @@ export const ProjectCardData = [
   },
 
   {
-    id: 4,
-    title: "Project Actifuse",
+    id: 2,
+    title: "NNUE Chessbot",
     description:
-      "A random activity generator that offers random or filtered suggestions, allowing users to favorite, complete, or remove activities from their history. Built with a clean UI and powered by BoredAPI.",
-    websiteLink: "/project-actifuse/",
-    githubLink: "https://github.com/l145dev/ProjectActifuse",
+      "Agentic Chess AI featuring a custom NNUE engine and C# PGN pipeline. Web UI Built with Astro/React/FastAPI, it offers two modes: a standalone Lichess engine and an interactive AI web chatbot for gameplay and chatting.",
+    websiteLink: "/nnue-chessbot/",
+    githubLink: "https://github.com/l145dev/chess-ai",
+    status: "green",
+  },
+
+  {
+    id: 3,
+    title: "Airbnb Camping",
+    description:
+      "A full-stack web application demonstrating robust development, connecting users with unique outdoor lodging experiences. This project explores dynamic data management and intuitive UI/UX for specialized accommodation discovery.",
+    websiteLink: "/airbnb-camping/",
+    githubLink: "https://github.com/l145dev/Airbnb-for-campers",
+    status: "green",
+  },
+
+  {
+    id: 4,
+    title: "Tiering Machine",
+    description:
+      "A dystopian Social Credit System simulation where citizens are constantly monitored, scored, and ranked. An AI judge processes reports, applies penalties or rewards, and updates each person's social tier.",
+    websiteLink: "/tiering-machine/",
+    githubLink: "https://github.com/l145dev/TieringMachine",
     status: "green",
   },
 
   {
     id: 5,
-    title: "Trump AI",
+    title: "Project Actifuse",
     description:
-      "Full-stack AI chatbot simulating conversations in the style of Donald Trump built with Groq API (llama-3.3-70b-versatile) with an interactive UI and built-in error handling.",
-    websiteLink: "/trump-ai",
-    githubLink: "https://github.com/l145dev/trump-ai/",
+      "A random activity generator that offers random or filtered suggestions, allowing users to favorite, complete, or remove activities from their history. Built with a clean UI and powered by BoredAPI.",
+    websiteLink: "/project-actifuse/",
+    githubLink: "https://github.com/l145dev/ProjectActifuse",
     status: "green",
   },
 

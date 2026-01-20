@@ -39,7 +39,7 @@ function About() {
   // if we are at the beginning, go to the last field
   const prev = () => {
     setCurrentIndex(
-      (currentIndex - 1 + techStackData.length) % techStackData.length
+      (currentIndex - 1 + techStackData.length) % techStackData.length,
     );
   };
 
@@ -126,23 +126,7 @@ function About() {
 
                     <td>Deployed RAG Portfolio</td>
 
-                    <td>October 2025</td>
-                  </tr>
-
-                  <tr>
-                    <td>Software</td>
-
-                    <td>Proficiency in Java (Springboot)</td>
-
-                    <td>November 2025</td>
-                  </tr>
-
-                  <tr>
-                    <td>AI/ML</td>
-
-                    <td>Built Chess AI Engine</td>
-
-                    <td>December 2025</td>
+                    <td>December 2026</td>
                   </tr>
 
                   <tr>
@@ -150,7 +134,7 @@ function About() {
 
                     <td>Completed NeetCode 150</td>
 
-                    <td>December 2025</td>
+                    <td>December 2026</td>
                   </tr>
 
                   <tr>
@@ -160,8 +144,6 @@ function About() {
 
                     <td>September 2035</td>
                   </tr>
-
-                  <tr></tr>
                 </table>
               </div>
             </div>
