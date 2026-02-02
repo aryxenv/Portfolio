@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- Main Page -->
+    <url>
+        <loc>https://l145.be/</loc>
+        <lastmod>2025-05-14</lastmod>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Anime Waiting Room -->
+    <url>
+        <loc>https://l145.be/anime-waiting-room/</loc>
+        <lastmod>2025-02-04</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Weather Web -->
+    <url>
+        <loc>https://l145.be/weather-web/</loc>
+        <lastmod>2025-02-04</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Project Actifuse -->
+    <url>
+        <loc>https://l145.be/project-actifuse/</loc>
+        <lastmod>2025-02-04</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+     <!-- RNG tic-tac-toe -->
+    <url>
+        <loc>https://l145.be/rng-tic-tac-toe/</loc>
+        <lastmod>2025-05-14</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+     <!-- Trump AI -->
+    <url>
+        <loc>https://l145.be/trump-ai/</loc>
+        <lastmod>2025-05-14</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+     <!-- open to work -->
+    <url>
+        <loc>https://l145.be/opentowork-anywhere/</loc>
+        <lastmod>2025-05-14</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- airbnb camping -->
+    <url>
+        <loc>https://l145.be/airbnb-camping/</loc>
+        <lastmod>2025-06-11</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- tiering machine -->
+    <url>
+        <loc>https://l145.be/tiering-machine/</loc>
+        <lastmod>2025-11-28</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- nnue chessbot -->
+    <url>
+        <loc>https://l145.be/nnue-chessbot/</loc>
+        <lastmod>2026-01-20</lastmod>
+        <priority>0.8</priority>
+    </url>
+</urlset>
