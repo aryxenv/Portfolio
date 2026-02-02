@@ -16,7 +16,7 @@ export const ProjectCardData = [
       "Agentic Chess AI featuring a custom NNUE engine and C# PGN pipeline. Web UI Built with Astro/React/FastAPI, it offers two modes: a standalone Lichess engine and an interactive AI web chatbot for gameplay and chatting.",
     websiteLink: "/nnue-chessbot/",
     githubLink: "https://github.com/aryxenv/chess-ai",
-    status: "green",
+    status: "red",
   },
 
   {
