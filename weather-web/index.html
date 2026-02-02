@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=1200px, initial-scale=1.0">
+        <title>WeatherWeb</title>
+        <link rel="stylesheet" href="./style.css">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="icon" type="image/x-icon" href="../publicAssets/largeIcon.ico" />
+    </head>
+    <body>
+        <div class="blurFilter">
+            <div class="container">
+                <div class="containerLeft hidden">
+                    <div class="islandControls">
+                        <div class="islandControlsItem islandHome">
+                            <i class='bx bx-home-alt-2' style='color:#ffffff' ></i>
+                            Home
+                        </div>
+
+                        <div class="islandControlsItem islandFullscreen">
+                            <i class='bx bx-fullscreen' style='color:#ffffff'  ></i>
+                            Fullscreen
+                        </div>
+                    </div>
+                    <div class="island islandTopLeft">
+                        <h2></h2>
+
+                        <div class="generalContainer">
+                            <div class="generalItem clockContainer">
+                                <div class="analog">
+                                    <div class="Clock">
+                                        <div class="hour">
+                                            <div class="hr" id="hr"></div>
+                                        </div>
+                                        <div class="minute">
+                                            <div class="min" id="min"></div>
+                                        </div>
+                                        <div class="second">
+                                            <div class="sec" id="sec"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="digitalContainer">
+                                    <div class="digitalItem">
+                                        <p>Time</p>
+                                        <h2 class="digital" id="digitalClock">
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="generalItem dateDayCreditsContainer">
+                                <div class="dayContainer">
+                                    <div class="dayItem">
+                                        <p>Day</p>
+                                        <h2 class="day" id="dayID">
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div class="dateContainer">
+                                    <div class="dateItem">
+                                        <p>Date</p>
+                                        <h2 class="date" id="dateID">
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div class="timezoneContainer">
+                                    <div class="timezoneItem">
+                                        <p>Timezone</p>
+                                        <h2 class="timezone" id="timezoneID">
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="island islandBottomLeft">
+                        <div class="images">
+                        </div>
+
+                        <p>
+                            Photos provided by <a rel="noopener" href="https://www.pexels.com" target="_blank">Pexels</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="containerMiddle">
+                    <div class="island islandTopCenter initialPhase">
+                        <div class="searchContainer">
+                            <div class="creditsContainer">
+                                <div class="creditsItem">
+                                    <div class="github linkItem">
+                                        <i class='bx bxl-github'></i>
+                                    </div>
+
+                                    <div class="linkedin linkItem">
+                                        <i class='bx bxl-linkedin-square' ></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <input type="text" name="country" id="country" placeholder="Country or city">
+                            <button type="submit" class="searchButton" title="searchButton">
+                                <i class='bx bx-search-alt'></i>
+                            </button>
+
+                            <div class="autoLocation" title="Takes IP to lookup weather, IP IS NOT STORED!">
+                                <p>Auto Location</p>
+                            </div>
+                        </div>
+
+                        <div class="countryOptions">
+                        </div>
+
+                        <!-- main info goes here -->
+                        <div class="weather none">
+                            <div class="titlesWeather">
+                                <h2 class="dayWeather">
+                                    
+                                </h2>
+
+                                <h2 class="locationWeather">
+                                    
+                                </h2>
+                            </div>
+
+                            <div class="mainContainer">
+                                <div class="mainRow mainRow1">
+                                    <div class="mainRowItem mainRow1Item temp">
+                                        <div class="mainRowItemInfo mainRow1ItemInfo tempInfo">
+                                            <p>Temperature</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <!-- extra for min/max temp -->
+                                        <div class="mainRowItemExtra mainRow1ItemExtra tempExtra">
+                                            <div class="minContainer">
+                                                <p>Min: <span class="minTemp"></span></p>
+                                            </div>
+                                            <div class="maxContainer">
+                                                <p>Max: <span class="maxTemp"></span></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow1ItemIcon tempIcon">
+                                            <div class="thermometer">
+                                                <div class="thermometer-fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mainRowItem mainRow1Item condition">
+                                        <div class="mainRowItemInfo mainRow1ItemInfo conditionInfo">
+                                            <p>Condition</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow1ItemIcon conditionIcon">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="mainRowItem mainRow1Item rain">
+                                        <div class="mainRowItemInfo mainRow1ItemInfo rainInfo">
+                                            <p>Rain</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow1ItemIcon rainIcon">
+                                            <div class="rainmeter">
+                                                <div class="rainmeter-fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mainRowItem mainRow1Item humidity">
+                                        <div class="mainRowItemInfo mainRow1ItemInfo humidityInfo">
+                                            <p>Humidity</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow1ItemIcon humidityIcon">
+                                            <div class="humiditymeter">
+                                                <div class="humiditymeter-fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mainRow mainRow2">
+                                    <div class="mainRowItem mainRow2Item wind">
+                                        <div class="mainRowItemInfo mainRow2ItemInfo windInfo">
+                                            <p>Wind</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow2ItemIcon windIcon">
+                                            <img src="./assets/img/winddir.png" alt="wind direction" class="windDirection">
+                                        </div>
+                                    </div>
+
+                                    <div class="mainRowItem mainRow2Item airqual">
+                                        <div class="mainRowItemInfo mainRow2ItemInfo airqualInfo">
+                                            <p>Air Quality</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow2ItemIcon airqualIcon">
+                                            <div class="airqualmeter">
+                                                <div class="airqualmeter-fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mainRowItem mainRow2Item uv">
+                                        <div class="mainRowItemInfo mainRow2ItemInfo percipInfo">
+                                            <p>Precipitation</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow2ItemIcon percipIcon">
+                                            <img src="./assets/img/cloud.png" alt="cloud">
+                                        </div>
+                                    </div>
+
+                                    <div class="mainRowItem mainRow2Item percip">
+                                        <div class="mainRowItemInfo mainRow2ItemInfo uvInfo">
+                                            <p>UV Index</p>
+                                            <h2></h2>
+                                        </div>
+
+                                        <div class="mainRowItemIcon mainRow2ItemIcon uvIcon">
+                                            <div class="uvmeter">
+                                                <div class="uvmeter-fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hourlyContainer none">
+                            
+                        </div>
+                    </div>
+        
+                    <div class="island islandBottomCenter hidden initialPhaseBottom">
+                        
+                    </div>
+                </div>
+
+                <div class="containerRight hidden">
+                    <div class="island islandTopRight">
+                        <h2>Historical Weather</h2>
+                        <div class="historicalContainer">
+                        </div>
+                    </div>
+        
+                    <div class="island islandBottomRight">
+                        <h2>Astronomy</h2>
+                        <div class="astronomyContainer">
+                            <div class="sunContainer astronomyItem">
+                                <div class="sunAnimation">
+                                    <div class="sun"></div>
+                                    <div class="clouds"></div>
+                                </div>
+
+                                <div class="sunData">
+                                    <div class="sunrise sunDataItem">
+                                        <p>Sunrise</p>
+                                        <h2></h2>
+                                    </div>
+
+                                    <div class="sunset sunDataItem">
+                                        <p>Sunset</p>
+                                        <h2></h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="moonContainer astronomyItem">
+                                <div class="moonAnimation">
+                                    <div class="moon"></div>
+                                    <div class="clouds"></div>
+                                </div>
+
+                                <div class="moonData">
+                                    <div class="moonrise moonDataItem">
+                                        <p>Moonrise</p>
+                                        <h2></h2>
+                                    </div>
+
+                                    <div class="moonset moonDataItem">
+                                        <p>Moonset</p>
+                                        <h2></h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="phaseContainer astronomyItem">
+                                <div class="moonImage">
+                                    <!-- <img src="./assets/img/waningcrescent.png" alt="waningcrescent" class="moonPhase"> -->
+                                </div>
+
+                                <div class="moonPhaseData">
+                                    <p>Moon Phase</p>
+                                    <h2></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="./script.js"></script>
+    </body>
+</html>
