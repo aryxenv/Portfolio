@@ -1,15 +1,15 @@
 @font-face {
-  font-family: 'SF';
-  src: url('./assets/fonts/SF-Pro-Display-Regular.otf') format('opentype');
+  font-family: "SF";
+  src: url("./assets/fonts/SF-Pro-Display-Regular.otf") format("opentype");
 }
 
 :root {
   --primary-color: #ffffff;
   --border-color: rgba(255, 255, 255, 0.5);
   --bg-color: #000000;
-  --font-family: 'SF', 'Segoe UI', sans-serif;
+  --font-family: "SF", "Segoe UI", sans-serif;
   --navbar-height: 4rem;
-  --border-px:1px;
+  --border-px: 1px;
   --navbar-bg-scroll: rgba(255, 255, 255, 0);
   --invertHover: 1;
   --normal-opacity: 0.5;
@@ -22,31 +22,31 @@ html {
   scroll-padding-top: 6rem;
 }
 
-html[data-theme='light'] {
-  --primary-color: rgb(0,0,0);
+html[data-theme="light"] {
+  --primary-color: rgb(0, 0, 0);
   --primary-r: 0;
   --primary-g: 0;
   --primary-b: 0;
   --border-color: rgba(0, 0, 0, 0.5);
-  --bg-color: rgb(255,255,255);
+  --bg-color: rgb(255, 255, 255);
   --invertHover: 0;
   --navbar-bg-scroll: rgba(0, 0, 0, 0);
-  --scrollbar-color-normal: rgba(0,0,0,0.5);
-  --scrollbar-color-hovered: rgba(0,0,0,1);
-  --selection-bg: 0.2; 
+  --scrollbar-color-normal: rgba(0, 0, 0, 0.5);
+  --scrollbar-color-hovered: rgba(0, 0, 0, 1);
+  --selection-bg: 0.2;
 }
 
-html[data-theme='dark'] {
-  --primary-color: rgb(255,255,255);
+html[data-theme="dark"] {
+  --primary-color: rgb(255, 255, 255);
   --primary-r: 255;
   --primary-g: 255;
   --primary-b: 255;
   --border-color: rgba(255, 255, 255, 0.5);
-  --bg-color: rgb(0,0,0);
+  --bg-color: rgb(0, 0, 0);
   --invertHover: 1;
   --navbar-bg-scroll: rgba(255, 255, 255, 0);
-  --scrollbar-color-normal: rgba(255,255,255,0.5);
-  --scrollbar-color-hovered: rgba(255,255,255,1);
+  --scrollbar-color-normal: rgba(255, 255, 255, 0.5);
+  --scrollbar-color-hovered: rgba(255, 255, 255, 1);
   --selection-bg: 0.5;
 }
 
@@ -64,7 +64,9 @@ body {
 }
 
 .themeAnimation {
-  transition: background-color 0.3s ease-out, color 0.3s ease-out;
+  transition:
+    background-color 0.3s ease-out,
+    color 0.3s ease-out;
 }
 
 h1 {
@@ -123,10 +125,10 @@ i {
 
 @keyframes gradient-flow {
   0% {
-      background-position: 300% 0;
+    background-position: 300% 0;
   }
   100% {
-      background-position: -300% 0;
+    background-position: -300% 0;
   }
 }
 
@@ -136,10 +138,10 @@ i {
 }
 
 ::-webkit-scrollbar {
-  width:5px;
+  width: 5px;
   height: 5px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-color-normal);
   border-radius: 10px;

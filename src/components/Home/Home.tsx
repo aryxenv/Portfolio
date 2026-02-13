@@ -11,7 +11,7 @@ import { techStackDataSliderTop } from "./TechStackDataSliderTop.ts";
 
 function Home() {
   const [isSmallScreen, setIsSmallScreen] = useState(
-    window.matchMedia("(max-width: 768px)").matches
+    window.matchMedia("(max-width: 768px)").matches,
   );
 
   useEffect(() => {

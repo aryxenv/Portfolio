@@ -73,7 +73,7 @@ function Contact() {
   };
 
   const [isSmallScreen, setIsSmallScreen] = useState(
-    window.matchMedia("(max-width: 768px)").matches
+    window.matchMedia("(max-width: 768px)").matches,
   );
 
   useEffect(() => {
@@ -221,7 +221,7 @@ function Contact() {
                   onClick={(e) => {
                     e.stopPropagation();
                     const linkEl = document.createElement(
-                      "a"
+                      "a",
                     ) as HTMLAnchorElement;
                     linkEl.href = photo.pdf;
                     linkEl.download = photo.cv_name;
