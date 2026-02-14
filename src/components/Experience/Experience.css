@@ -1,0 +1,144 @@
+#experience {
+  padding-top: 0;
+}
+
+.experience-container {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-template-rows: max-content 10fr;
+  grid-template-columns: 100%;
+  gap: 1rem;
+}
+
+.experience-title {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.experience-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Experience card */
+.experience-item {
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: border 0.3s ease-out;
+}
+
+.experience-item:hover {
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.experience-item-opacity {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1.2fr;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* Left column */
+.experience-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.experience-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.experience-company {
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.experience-status {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: green;
+  flex-shrink: 0;
+}
+
+.experience-summary {
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.experience-date {
+  font-size: 0.95rem;
+}
+
+/* Middle column */
+.experience-middle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  justify-content: center;
+  text-align: left;
+}
+
+.experience-field {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.experience-label {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.experience-value {
+  font-size: 0.95rem;
+}
+
+/* Right column */
+.experience-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  justify-content: center;
+  text-align: left;
+}
+
+.experience-desc-paragraph {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+}
+
+@media (max-width: 768px) {
+  #experience {
+    padding-bottom: 4rem;
+  }
+
+  .experience-item-opacity {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .experience-field {
+    grid-template-columns: 90px 1fr;
+  }
+}

@@ -1,13 +1,14 @@
-import { useState, useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
-import Navbar from "./components/Navbar/Navbar.tsx";
-import Home from "./components/Home/Home.tsx";
-import About from "./components/About/About.tsx";
-import Projects from "./components/Projects/Projects.tsx";
-import Contact from "./components/Contact/Contact.tsx";
-import MouseMoveEffect from "./utils/MouseMoveEffect/MouseMoveEffect.tsx";
-import "./App.css";
 import Lenis from "lenis";
+import { useEffect, useRef, useState } from "react";
+import "./App.css";
+import About from "./components/About/About.tsx";
+import Contact from "./components/Contact/Contact.tsx";
+import Experience from "./components/Experience/Experience.tsx";
+import Home from "./components/Home/Home.tsx";
+import Navbar from "./components/Navbar/Navbar.tsx";
+import Projects from "./components/Projects/Projects.tsx";
+import MouseMoveEffect from "./utils/MouseMoveEffect/MouseMoveEffect.tsx";
 
 function App() {
   // smooth scrolling
@@ -26,11 +27,15 @@ function App() {
 
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
+  const experienceRef = useRef(null);
   const projectsRef = useRef(null);
   const contactRef = useRef(null);
 
   const isHomeInView = useInView(homeRef, { margin: "-50% 0px -50% 0px" });
   const isAboutInView = useInView(aboutRef, { margin: "-50% 0px -50% 0px" });
+  const isExperienceInView = useInView(experienceRef, {
+    margin: "-50% 0px -50% 0px",
+  });
   const isProjectsInView = useInView(projectsRef, {
     margin: "-50% 0px -50% 0px",
   });
@@ -41,20 +46,30 @@ function App() {
   useEffect(() => {
     if (isHomeInView) setActiveSection("home");
     else if (isAboutInView) setActiveSection("about");
+    else if (isExperienceInView) setActiveSection("experience");
     else if (isProjectsInView) setActiveSection("projects");
     else if (isContactInView) setActiveSection("contact");
-  }, [isHomeInView, isAboutInView, isProjectsInView, isContactInView]);
+  }, [
+    isHomeInView,
+    isAboutInView,
+    isExperienceInView,
+    isProjectsInView,
+    isContactInView,
+  ]);
 
   return (
     <>
       <MouseMoveEffect />
       <Navbar activeSection={activeSection} />
       <div className="app">
-        <div className="iwant" ref={homeRef}>
+        <div className="aryan" ref={homeRef}>
           <Home />
         </div>
-        <div className="aporsche" ref={aboutRef}>
+        <div className="wants" ref={aboutRef}>
           <About />
+        </div>
+        <div className="aporsche" ref={experienceRef}>
+          <Experience />
         </div>
         <div className="_918" ref={projectsRef}>
           <Projects />

@@ -1,9 +1,9 @@
+import "boxicons/css/boxicons.min.css";
+import { useEffect, useState } from "react";
 import "./Navbar.css";
-import logoGray from "./l145logo-nobg-gray.png";
 import colorModeDark from "./icons8-dark-mode-100.png";
 import colorModeLight from "./icons8-light-mode-100.png";
-import { useState, useEffect } from "react";
-import "boxicons/css/boxicons.min.css";
+import logoGray from "./l145logo-nobg-gray.png";
 
 function Navbar({ activeSection }: { activeSection: string | null }) {
   // Initialize theme from localStorage or system preference
@@ -103,6 +103,15 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
               className={activeSection === "about" ? "active" : ""}
             >
               About
+            </a>
+          </li>
+          <li>
+            <a
+              href="#experience"
+              onClick={(e) => e.currentTarget.classList.add("active")}
+              className={activeSection === "experience" ? "active" : ""}
+            >
+              Experience
             </a>
           </li>
           <li>
