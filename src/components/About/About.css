@@ -177,7 +177,6 @@
   width: 100%;
   height: 100%;
   padding: 0.4rem;
-  opacity: 0.5;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -185,11 +184,6 @@
   gap: 0.4rem;
   position: relative;
   cursor: default;
-  transition: opacity 0.3s ease-out;
-}
-
-.technology-opacityLayer:hover {
-  opacity: 1;
 }
 
 /* .technologyCard:hover {
@@ -288,14 +282,8 @@
   width: 100%;
   height: 100%;
   padding: 1rem;
-  opacity: 0.5;
   justify-content: space-between;
   align-items: center;
-  transition: opacity 0.3s ease-out;
-}
-
-.viewProjects-opacityLayer:hover {
-  opacity: 1;
 }
 
 .viewProjects-arrow {
@@ -314,13 +302,6 @@
 } */
 
 @media (max-width: 1180px) {
-  .technology-opacityLayer {
-    opacity: 1;
-  }
-
-  .viewProjects-opacityLayer {
-    opacity: 1;
-  }
 }
 
 @media (max-width: 950px) {
