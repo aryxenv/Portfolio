@@ -27,7 +27,7 @@ function About() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isWhoAmIVisible, setIsWhoAmIVisible] = useState(false);
 
-  const textWhoAmI = `\n\nAlthough my studies focus on data science and security, software and web development are also part of the program. On top of that, I've gained professional experience in the field, proving I can work in it confidently.\n\nI like building clean, functional web apps and experimenting with AI/ML projects that solve real problems. Outside of tech, I've always been into finance since my economics days in secondary school.\n\nI'm always open to opportunities to contribute and expand my skillset. Oh, and my favorite car is the Porsche 918 Spyder!`;
+  const textWhoAmI = `\n\nIn my free time, I build full-stack apps and integrate AI/ML to solve actual problems. Outside of tech, I also keep up with finance on the side.\n\nI'm always looking to expand my skills and build cool things. Oh, and the ultimate life goal? Owning my favorite car, a Porsche 918 Spyder.`;
 
   // move to the next field
   // if we are at the end, go to the first field
@@ -74,15 +74,16 @@ function About() {
 
               <div className="about-me-text-1-content">
                 <p>
-                  I'm a 3rd-year{" "}
+                  I'm Aryan Shah, based in{" "}
+                  <span className="gradient-animation">Antwerp, Belgium</span>.{" "}
+                  I'm currently in my final year at Thomas More Mechelen
+                  studying{" "}
+                  <span className="gradient-animation">Data Science</span> (&
+                  Cybersecurity) and working as a{" "}
                   <span className="gradient-animation">
-                    Data Science, Protection & Security
+                    Solutions Engineer Intern (AI Apps + Data)
                   </span>{" "}
-                  student based in{" "}
-                  <span className="gradient-animation">Antwerp, Belgium</span>{" "}
-                  studying at Thomas More University of Applied Sciences. I’m
-                  into software and web development, AI/ML, data analytics, and
-                  trading. Where tech, creativity, and business meet.{" "}
+                  at <span className="gradient-animation">Microsoft</span>.
                   <a
                     className="see-more"
                     onClick={() => setIsWhoAmIVisible(!isWhoAmIVisible)}

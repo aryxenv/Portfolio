@@ -55,7 +55,7 @@ function Home() {
             </div>
 
             <div className="introduction-role">
-              <h2>Software Developer (Full-stack + AI/ML)</h2>
+              <h2>Solutions Engineer Intern (AI Apps + Data)</h2>
             </div>
           </div>
 
@@ -63,15 +63,15 @@ function Home() {
 
           <div className="introduction-text">
             <p>
+              Hey, I'm Aryan Shah, based in{" "}
+              <span className="gradient-animation">Antwerp, Belgium</span>. I'm
+              currently in my final year at Thomas More Mechelen studying{" "}
+              <span className="gradient-animation">Data Science</span> (&
+              Cybersecurity) and working as a{" "}
               <span className="gradient-animation">
-                Data Science, Protection, and Security student
+                Solutions Engineer Intern (AI Apps + Data)
               </span>{" "}
-              at Thomas More University of Applied Sciences. Based in
-              <span className="gradient-animation"> Antwerp, Belgium</span> with
-              hands-on experience in software/web development, AI/ML, data
-              analytics, and database management. Skilled in JavaScript,
-              TypeScript, React, Python, SQL, and C#, PowerBI and more.
-              <a href="#about"> Click here to learn more about me!</a>
+              at <span className="gradient-animation">Microsoft</span>.
             </p>
           </div>
 
