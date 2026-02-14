@@ -1,3 +1,7 @@
+import azure from "./logos/azure.svg";
+import azureai from "./logos/azureai.svg";
+import mlstudio from "./logos/mlstudio.svg";
+
 export const techStackData = [
   {
     id: 0,
@@ -39,6 +43,73 @@ export const techStackData = [
 
   {
     id: 1,
+    title: "Cloud",
+    items: {
+      azure: {
+        name: "Azure",
+        hex: "#0078D4",
+        src: azure,
+        alt: "azure",
+      },
+      aifoundry: {
+        name: "AI Foundry",
+        hex: "#5100ff",
+        src: azureai,
+        alt: "ai-foundry",
+      },
+      mlstudio: {
+        name: "ML Studio",
+        hex: "#0078D4",
+        src: mlstudio,
+        alt: "ml-studio",
+      },
+      aws: {
+        name: "AWS",
+        hex: "#FF9900",
+        src: "https://img.icons8.com/material-outlined/48/amazon-web-services.png",
+        alt: "aws",
+      },
+      gcp: {
+        name: "GCP",
+        hex: "#4285F4",
+        src: "https://img.icons8.com/ios-filled/50/google-cloud-platform.png",
+        alt: "gcp",
+      },
+      cloudflare: {
+        name: "Cloudflare",
+        hex: "#F38020",
+        src: "https://img.icons8.com/ios-filled/50/cloudflare.png",
+        alt: "cloudflare",
+      },
+      vercel: {
+        name: "Vercel",
+        hex: "#000000",
+        src: "https://img.icons8.com/ios-filled/50/vercel.png",
+        alt: "vercel",
+      },
+      render: {
+        name: "Render",
+        hex: "#46E3B7",
+        src: "https://img.icons8.com/ios-filled/50/cloud-refresh--v1.png",
+        alt: "render",
+      },
+      supabase: {
+        name: "Supabase",
+        hex: "#3ECF8E",
+        src: "https://img.icons8.com/fluency-systems-filled/48/supabase.png",
+        alt: "supabase",
+      },
+      combell: {
+        name: "Combell",
+        hex: "#0080ff",
+        src: "https://img.icons8.com/ios-filled/50/virtual-machine2.png",
+        alt: "combell",
+      },
+    },
+  },
+
+  {
+    id: 2,
     title: "Frontend",
     items: {
       react: {
@@ -75,7 +146,7 @@ export const techStackData = [
   },
 
   {
-    id: 2,
+    id: 3,
     title: "Backend & APIs",
     items: {
       nodejs: {
@@ -112,7 +183,7 @@ export const techStackData = [
   },
 
   {
-    id: 3,
+    id: 4,
     title: "Data & AI/ML",
     items: {
       numpy: {
@@ -173,7 +244,7 @@ export const techStackData = [
   },
 
   {
-    id: 4,
+    id: 5,
     title: "DevOps & Tools",
     items: {
       docker: {
