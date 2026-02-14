@@ -120,7 +120,7 @@ export const techStackDataSliderBottom: {
   {
     id: 15,
     name: "Render",
-    hex: "#46E3B7",
+    hex: "#323232",
     src: "https://img.icons8.com/ios-filled/50/cloud-refresh--v1.png",
     alt: "render",
   },

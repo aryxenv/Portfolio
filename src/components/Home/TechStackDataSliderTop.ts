@@ -1,3 +1,7 @@
+import azure from "./logos/azure.svg";
+import azureai from "./logos/azureai.svg";
+import mlstudio from "./logos/mlstudio.svg";
+
 export const techStackDataSliderTop: {
   id: number;
   name: string;
@@ -97,7 +101,7 @@ export const techStackDataSliderTop: {
     id: 12,
     name: "Azure",
     hex: "#0078D4",
-    src: "https://img.icons8.com/material-outlined/48/amazon-web-services.png",
+    src: azure,
     alt: "azure",
   },
 
@@ -105,7 +109,7 @@ export const techStackDataSliderTop: {
     id: 13,
     name: "AI Foundry",
     hex: "#5100ff",
-    src: "https://img.icons8.com/ios/50/artificial-intelligence.png",
+    src: azureai,
     alt: "ai-foundry",
   },
 
@@ -113,7 +117,7 @@ export const techStackDataSliderTop: {
     id: 14,
     name: "ML Studio",
     hex: "#0078D4",
-    src: "https://img.icons8.com/ios/50/machine-learning.png",
+    src: mlstudio,
     alt: "ml-studio",
   },
 
