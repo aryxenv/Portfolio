@@ -1,5 +1,6 @@
 import "boxicons/css/boxicons.min.css";
 import { useEffect, useState } from "react";
+import { User, SuitcaseSimple, Package, AddressBook } from "@phosphor-icons/react";
 import "./Navbar.css";
 import colorModeDark from "./icons8-dark-mode-100.png";
 import colorModeLight from "./icons8-light-mode-100.png";
@@ -68,6 +69,17 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(
+    window.matchMedia("(max-width: 768px)").matches,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
   // remove all "active" from a tags
   const removeActive = () => {
     const navbar = document.querySelector(".navbar");
@@ -102,7 +114,7 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
               onClick={(e) => e.currentTarget.classList.add("active")}
               className={activeSection === "about" ? "active" : ""}
             >
-              About
+              {isMobile ? <User size={20} /> : "About"}
             </a>
           </li>
           <li>
@@ -111,7 +123,7 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
               onClick={(e) => e.currentTarget.classList.add("active")}
               className={activeSection === "experience" ? "active" : ""}
             >
-              Experience
+              {isMobile ? <SuitcaseSimple size={20} /> : "Experience"}
             </a>
           </li>
           <li>
@@ -120,7 +132,7 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
               onClick={(e) => e.currentTarget.classList.add("active")}
               className={activeSection === "projects" ? "active" : ""}
             >
-              Projects
+              {isMobile ? <Package size={20} /> : "Projects"}
             </a>
           </li>
           <li>
@@ -129,7 +141,7 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
               onClick={(e) => e.currentTarget.classList.add("active")}
               className={activeSection === "contact" ? "active" : ""}
             >
-              Contact
+              {isMobile ? <AddressBook size={20} /> : "Contact"}
             </a>
           </li>
         </ul>

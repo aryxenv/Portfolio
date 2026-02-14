@@ -149,6 +149,13 @@ li {
 
   .navbar a {
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .navbar a svg {
+    color: var(--primary-color);
   }
 
   .colorModeWrapper {
