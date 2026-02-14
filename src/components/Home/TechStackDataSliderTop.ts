@@ -92,4 +92,44 @@ export const techStackDataSliderTop: {
     src: "https://img.icons8.com/ios/50/cs.png",
     alt: "wpfnet",
   },
+
+  {
+    id: 12,
+    name: "Azure",
+    hex: "#0078D4",
+    src: "https://img.icons8.com/material-outlined/48/amazon-web-services.png",
+    alt: "azure",
+  },
+
+  {
+    id: 13,
+    name: "AI Foundry",
+    hex: "#5100ff",
+    src: "https://img.icons8.com/ios/50/artificial-intelligence.png",
+    alt: "ai-foundry",
+  },
+
+  {
+    id: 14,
+    name: "ML Studio",
+    hex: "#0078D4",
+    src: "https://img.icons8.com/ios/50/machine-learning.png",
+    alt: "ml-studio",
+  },
+
+  {
+    id: 15,
+    name: "AWS",
+    hex: "#FF9900",
+    src: "https://img.icons8.com/material-outlined/48/amazon-web-services.png",
+    alt: "aws",
+  },
+
+  {
+    id: 16,
+    name: "GCP",
+    hex: "#4285F4",
+    src: "https://img.icons8.com/ios-filled/50/google-cloud-platform.png",
+    alt: "gcp",
+  },
 ];

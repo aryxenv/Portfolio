@@ -100,4 +100,44 @@ export const techStackDataSliderBottom: {
     src: "https://img.icons8.com/ios/50/active-directory.png",
     alt: "lldap",
   },
+
+  {
+    id: 13,
+    name: "Cloudflare",
+    hex: "#F38020",
+    src: "https://img.icons8.com/ios-filled/50/cloudflare.png",
+    alt: "cloudflare",
+  },
+
+  {
+    id: 14,
+    name: "Vercel",
+    hex: "#000000",
+    src: "https://img.icons8.com/ios-filled/50/vercel.png",
+    alt: "vercel",
+  },
+
+  {
+    id: 15,
+    name: "Render",
+    hex: "#46E3B7",
+    src: "https://img.icons8.com/ios-filled/50/cloud-refresh--v1.png",
+    alt: "render",
+  },
+
+  {
+    id: 16,
+    name: "Supabase",
+    hex: "#3ECF8E",
+    src: "https://img.icons8.com/fluency-systems-filled/48/supabase.png",
+    alt: "supabase",
+  },
+
+  {
+    id: 17,
+    name: "Combell",
+    hex: "#0080ff",
+    src: "https://img.icons8.com/ios-filled/50/virtual-machine2.png",
+    alt: "combell",
+  },
 ];
