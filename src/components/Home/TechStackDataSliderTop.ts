@@ -1,6 +1,6 @@
-import azure from "./logos/azure.svg";
-import azureai from "./logos/azureai.svg";
-import mlstudio from "./logos/mlstudio.svg";
+import azure from "../About/logos/azure.svg";
+import azureai from "../About/logos/azureai.svg";
+import mlstudio from "../About/logos/mlstudio.svg";
 
 export const techStackDataSliderTop: {
   id: number;
