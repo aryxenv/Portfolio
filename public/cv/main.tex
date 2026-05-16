@@ -1,0 +1,195 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer CV
+% LaTeX Class
+% Version 2.0 (12/10/23)
+%
+% This class originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Omar Roldan
+% Based on a template by  Jan Vorisek (jan@vorisek.me)
+% Based on a template by Jan Küster (info@jankuester.com)
+% Modified for LaTeX Templates by Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% The MIT License (see included LICENSE file)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[9pt]{developercv} % Default font size, values from 8-12pt are recommended
+\usepackage{multicol}
+\setlength{\columnsep}{0mm}
+%----------------------------------------------------------------------------------------
+\usepackage{lipsum}  
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE AND CONTACT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}[t]{0.5\textwidth} 
+	\vspace{-\baselineskip} % Required for vertically aligning minipages
+	
+	{ \fontsize{16}{20} \textcolor{black}{\textbf{\MakeUppercase{Aryan Shah}}}} % First name
+	
+	\vspace{6pt}
+	
+	{\Large Solutions Engineer \textcolor[rgb]{0.5,0.5,0.5}{(Full-stack + AI/ML)}} % Career or current job title
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.2\textwidth} % 20% of the page width for the first row of icons
+	\vspace{-\baselineskip} % Required for vertically aligning minipages
+	
+	% The first parameter is the FontAwesome icon name, the second is the box size and the third is the text
+	\icon{Globe}{11}{\href{www.aryxenv.dev}{aryxenv.dev}}\\ 
+    \icon{Phone}{11}{+32 491 75 09 43}\\
+    \icon{MapMarker}{11}{Antwerp, Belgium}\\
+	
+\end{minipage}
+\begin{minipage}[t]{0.27\textwidth} % 27% of the page width for the second row of icons
+	\vspace{-\baselineskip} % Required for vertically aligning minipages
+	
+	\icon{Envelope}{11}{\href{mailto:aryan.shah@aryxenv.dev}{aryan.shah@aryxenv.dev}}\\	
+    \icon{Github}{11}{\href{github.com/l145dev}{github.com/l145dev}}\\
+    \icon{LinkedinSquare}{11}{\href{https://www.linkedin.com/in/aryan-shah-l145/}{linkedin.com/in/aryan-shah-l145}}\\
+    
+\end{minipage}
+
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION, SKILLS AND TECHNOLOGIES
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}[t]{0.46\textwidth}
+    \cvsect{Summary}
+	\vspace{-6pt}
+ 
+	Data Science student at Thomas More University of Applied Sciences with hands-on experience in software/web development, AI/ML, data analytics, and database management. Skilled in JavaScript, TypeScript, React, Python, SQL, and C\#, PowerBI. Versatile, fast-learning, and eager to tackle complex, real-world challenges.
+\end{minipage}
+\hfill % Whitespace between
+\begin{minipage}[t]{0.465\textwidth}
+    \cvsect{Skills}
+    \vspace{-6pt}
+    
+    \begin{minipage}[t]{0.2\textwidth}
+        \textbf{Languages:}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.73\textwidth}
+      C\#, Python, TypeScript, JavaScript, SQL
+    \end{minipage}
+    \vspace{4mm}
+    
+    \begin{minipage}[t]{0.2\textwidth}
+        \textbf{Technologies:}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.73\textwidth}
+      React, Docker, Express (NodeJS), FastAPI, Azure, GCP, AWS, Render, Vercel, Git/GitHub, Supabase, Figma, PostgreSQL, MySQL WPF .NET, Power BI, LLDAP
+    \end{minipage}
+    
+\end{minipage}
+\vspace{0.2cm}
+
+%----------------------------------------------------------------------------------------
+%	Experience
+%----------------------------------------------------------------------------------------
+\cvsect{Experience}
+\begin{entrylist}
+    \entry
+            {React, TypeScript, \\Figma, Python, \\LLDAP, Docker}
+		{Frontend \& Cybersecurity Intern}
+		{Pickit 3D, Leuven}
+		{%
+            \begin{itemize}[left=0pt, itemsep=0em, parsep=0em, topsep=-2em]
+                \vspace{-1em}
+                \setlength\itemindent{0pt}
+                \item \textbf{(Frontend)} Improved and took full ownership of a Camera Selector tool utilizing ThreeJS with \textbf{architectural} codebase enhancements, complete \textbf{redesign}, and performance \textbf{optimizations} to support Application Engineers \& Sales acquire and support customers visually with selecting \& utilizing 3D vision cameras in production.
+                \item Noticeable \textbf{increase} in pre-sales engagement based on faster, more interactive camera selection workflows.
+                \item \textbf{Reduced} 3D camera selection support requests via improved UX and dynamic accuracy calculations using tailored quadratic functions, linear interpolation, and base/delta methods from official documentation..
+                \item \textbf{(Cybersecurity)} Led the migration from a shared company server to a dedicated LDAP instance. Collaborated with DevOps to ensure smooth deployment using a custom \textbf{Docker} container.
+                \item Increased control \& ownership
+                \item Ensured secure communication with \textbf{TLS/SSL}
+            \end{itemize}
+        }
+\end{entrylist}
+
+%----------------------------------------------------------------------------------------
+%	Projects
+%----------------------------------------------------------------------------------------
+\cvsect{Projects}
+\begin{entrylist}
+    \entry
+            {React TS, \\Express.js, Figma, \\PostgreSQL, \\Supabase}
+		{Airbnb Camping}
+		{https://aryxenv.dev/airbnb-camping}
+		{\textbf{Full-stack} web app designed \& developed with inspiration from Airbnb. Includes intuitive search filters, detailed UI/UX structure, various CRUD functionality, double-sided (host/user) features, payment system with Stripe and advanced robustness \& cybersecurity best practices.}
+    \entry
+            {WPF .NET (C\#), \\MySQL}
+            {Project Actifuse}
+            {https://aryxenv.dev/project-actifuse/}
+            {.NET WPF \textbf{desktop application} for generating random activities from an API and storing them in a database. User profile page features data analytics for generated activities, and history page displays past activities. Built with a clean UI and powered by BoredAPI.}
+    \entry
+            {JS, HTML, CSS}
+		{Anime Waiting Room}
+		{https://aryxenv.dev/anime-waiting-room/}
+		{\textbf{Simple \& Goal-oriented} website to track countdowns for upcoming anime episodes. Features real-time countdowns, multi-anime support, JikanAPI integration, dynamic caching, and quick watch links.}
+    \entry
+		{PowerBI}
+		{F1 Data Analysis}
+		{github.com/l145dev/F1-Data-Analysis}
+		{Interactive \textbf{dashboard} with visualizations for in-depth analysis of Formula 1 data, key metrics, and trends. }
+    \entry
+            {React TS, NodeJS}
+		{Trump AI}
+		{https://aryxenv.dev/trump-ai/}
+		{React and NodeJS (ExpressJS) chatbot simulating conversations in the style of Donald Trump built with \textbf{Groq API} (llama-3.3-70b-versatile) with an interactive UI and built-in error handling.}
+\end{entrylist}
+
+\vspace{-0.3cm}  % Adjust vertical space to fit text nicely
+{\scriptsize
+\textbf{JS} = JavaScript,
+\textbf{ TS} = TypeScript
+}
+\vspace{0.3cm}
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+\vspace{-10 pt}
+\cvsect{Education}
+\begin{entrylist}
+    \entry
+		{9/2023 - 6/2026}
+		{Bachelor's degree, Data Science, Protection \& Security}
+		{Thomas More University of Applied Sciences}
+		{Maintaining \textbf{80\%+} total grades and \textbf{100\%} study efficiency.  Coursework includes software/web development, AI/ML, data analysis, data science, database management, cybersecurity and finance.}
+    \entry
+		{9/2021 - 6/2023}
+		{Secondary school diploma, Marketing \& Entrepreneurship}
+		{Sint-Ludgardis Antwerpen}
+		{Entrepreneurship-focused education with hands-on learning, developing problem-solving and business management skills.}
+\end{entrylist}
+
+%----------------------------------------------------------------------------------------
+%	LANGUAGES
+%----------------------------------------------------------------------------------------
+\vspace{-10 pt}
+    \cvsect{Languages}
+    \vspace{-6pt}
+    
+    \textbf{English} - Fluent \hspace{24mm} \textbf{ Dutch} - Fluent \hspace{24mm} \textbf{ French} - Basic \hspace{24mm} \textbf{ German} - Intermediate
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
