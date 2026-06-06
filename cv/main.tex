@@ -21,7 +21,7 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[9pt]{developercv} % Default font size, values from 8-12pt are recommended
+\documentclass[8pt]{developercv} % Default font size, values from 8-12pt are recommended
 \usepackage{multicol}
 \setlength{\columnsep}{0mm}
 %----------------------------------------------------------------------------------------
@@ -41,9 +41,9 @@
 	
 	{ \fontsize{16}{20} \textcolor{black}{\textbf{\MakeUppercase{Aryan Shah}}}} % First name
 	
-	\vspace{6pt}
+  \vspace{3pt}
 	
-	{\Large Solutions Engineer \textcolor[rgb]{0.5,0.5,0.5}{(Full-stack + AI/ML)}} % Career or current job title
+	{\Large Solutions Engineer \textcolor[rgb]{0.5,0.5,0.5}{(Applications + AI/ML)}} % Career or current job title
 
 \end{minipage}
 \hfill
@@ -88,7 +88,7 @@
     \begin{minipage}[t]{0.73\textwidth}
       Discovery, solution demos, requirements mapping, stakeholder enablement
     \end{minipage}
-    \vspace{4mm}
+    \vspace{1.5mm}
     
     \begin{minipage}[t]{0.2\textwidth}
         \textbf{Tech Stack:}
@@ -99,7 +99,7 @@
     \end{minipage}
     
 \end{minipage}
-\vspace{0.2cm}
+\vspace{0.4cm}
 
 %----------------------------------------------------------------------------------------
 %	Experience
@@ -107,18 +107,30 @@
 \cvsect{Experience}
 \begin{entrylist}
     \entry
-            {Azure, AzureML, \\GHCP, Python, \\Foundry}
-		{Solutions Engineer Intern}
+            {Azure, AzureML, \\GHCP, Python, \\Foundry, Bicep, MCP}
+		{Solutions Engineer Intern (AI Apps / Data)}
 		{Microsoft, Zaventem}
 		{%
-            Contributed to enterprise \textbf{Azure AI App} customer and event workstreams by building supporting demos, technical assets, and validated solutions. Helped deliver a \textbf{RAG + MCP} Azure AI Search/Foundry demo for a \textbf{50+ attendee} researcher event, fixed and tested \textbf{agentic AI} hackathon repo flows for \textbf{30+ participants}, \textbf{reduced} live speech demo load time from \textbf{\textasciitilde45s to \textasciitilde10s}, and supported \textbf{realtime speech/translation}, Fabric-AzureML, and cloud-native demo work. Created reusable \textbf{IaC-backed demo setups}, GitHub templates, and technical validations that \textbf{accelerated FTE delivery} on customer opportunities.
+      \begin{itemize}[leftmargin=*, itemsep=1pt, topsep=1pt, parsep=0pt, partopsep=0pt]
+        \item Built reusable \textbf{Azure AI solution accelerators} across \textbf{Azure AI Search}, \textbf{Foundry}, \textbf{GitHub Copilot}, \textbf{MCP}, \textbf{realtime speech}, and \textbf{agentic AI}, translating enterprise requirements into \textbf{validated demos} and \textbf{deployable prototypes}.
+        \item Supported \textbf{enterprise customer solutioning} across rail, manufacturing, public sector, communication and consulting scenarios by shaping \textbf{architectures}, validating \textbf{technical approaches}, and preparing \textbf{customer-ready assets}.
+        \item Delivered \textbf{customer-facing} and \textbf{event-ready} \textbf{RAG}, \textbf{MCP}, \textbf{Azure App \& AI platform}, and \textbf{agentic AI demos}, including a \textbf{50+ attendee} researcher event, \textbf{30+ participant} hackathon, and a \textbf{40+ attendee} frontier event on scaling \textbf{Azure Apps \& AI}.
+        \item Created internal \textbf{MCP/Copilot tooling} and reusable \textbf{field assets}, including \textbf{PG-contact discovery}, \textbf{IaC demo environments}, \textbf{GitHub templates}, and \textbf{architecture guidance} to accelerate \textbf{solution delivery}.
+        \item Produced \textbf{Azure AI architecture guidance} for \textbf{enterprise stakeholders}, assessing \textbf{GA vs preview capabilities}, \textbf{governance patterns}, \textbf{MCP/A2A usage}, and \textbf{agent implementation tradeoffs} to support \textbf{customer decision-making}.
+        \item Coordinated with \textbf{Engineering teams} to resolve \textbf{customer issues and requests}, including \textbf{realtime API investigation}, \textbf{internal fix validation}, and \textbf{open-source solution architecture guidance}.
+        \item Enhanced an \textbf{enterprise AI agent} with \textbf{FoundryIQ}, \textbf{Content Understanding}, \textbf{Azure AI Search}, and \textbf{realtime voice capabilities}, partnering with an \textbf{innovation hub} to translate \textbf{stakeholder feedback} into \textbf{production-oriented improvements}.
+      \end{itemize}
         }
     \entry
             {React, TypeScript, \\Figma, Python, \\LLDAP, Docker}
 		{Frontend \& Cybersecurity Intern}
 		{Pickit 3D, Leuven}
 		{%
-            \textbf{Owned and modernized} Pickit 3D's \textbf{ThreeJS Camera Selector} by redesigning the \textbf{React/TypeScript UX}, improving architecture and performance, and adding dynamic accuracy calculations from official 3D-camera documentation, enabling Application Engineers \& Sales to deliver faster visual customer guidance, \textbf{increasing pre-sales engagement}, and \textbf{reducing camera-selection support requests}. Led migration from a shared company server to a \textbf{dedicated LDAP instance} with DevOps, deploying a custom \textbf{Docker} container to improve \textbf{ownership and access control} while enforcing \textbf{TLS/SSL} communication.
+      \begin{itemize}[leftmargin=*, itemsep=1pt, topsep=1pt, parsep=0pt, partopsep=0pt]
+        \item \textbf{Owned and modernized} Pickit 3D's \textbf{ThreeJS Camera Selector} by redesigning the \textbf{React/TypeScript UX}, improving architecture and performance, and adding dynamic accuracy calculations from official 3D-camera documentation.
+        \item Enabled Application Engineers \& Sales to deliver faster visual customer guidance, \textbf{increasing pre-sales engagement} and \textbf{reducing camera-selection support requests}.
+        \item Led migration from a shared company server to a \textbf{dedicated LDAP instance} with DevOps, deploying a custom \textbf{Docker} container to improve \textbf{ownership and access control} while enforcing \textbf{TLS/SSL}.
+      \end{itemize}
         }
 \end{entrylist}
 
@@ -128,43 +140,31 @@
 \cvsect{Projects}
 \begin{entrylist}
     \entry
-            {React TS, \\Express.js, Figma, \\PostgreSQL, \\Supabase}
-		{Airbnb Camping}
-		{https://aryxenv.dev/airbnb-camping}
-		{\textbf{Full-stack} web app designed \& developed with inspiration from Airbnb. Includes intuitive search filters, detailed UI/UX structure, various CRUD functionality, double-sided (host/user) features, payment system with Stripe and advanced robustness \& cybersecurity best practices.}
+            {GHCP, React TS, \\FastAPI, Azure AI, \\GraphRAG, Bicep}
+    {GraphRAG Demo}
+    {github.com/aryxenv/graphrag-demo}
+    {\textbf{Built customer-facing Microsoft AI Tour demo} comparing vanilla RAG vs GraphRAG through a React/Fluent UI interface, FastAPI SSE backend, 3D knowledge-graph explorer, and guided build pipeline powered by \textbf{Microsoft Foundry}, \textbf{Azure AI Search}, GPT-4.1, and Bicep/azd deployment.}
     \entry
-            {WPF .NET (C\#), \\MySQL}
-            {Project Actifuse}
-            {https://aryxenv.dev/project-actifuse/}
-            {.NET WPF \textbf{desktop application} for generating random activities from an API and storing them in a database. User profile page features data analytics for generated activities, and history page displays past activities. Built with a clean UI and powered by BoredAPI.}
+            {React TS, Vite, \\Tailwind, FastAPI, \\Playwright, GHCP}
+            {Webslides}
+            {github.com/aryxenv/webslides}
+            {\textbf{Created web-app slide deck framework} from a hackathon concept for customer presentation delivery, supporting in-slide demos, interactive navigation, reusable React/Tailwind components, Copilot-assisted theming/authoring skills, GitHub Pages publishing, and local PDF/PowerPoint export via FastAPI and Playwright.}
     \entry
-            {JS, HTML, CSS}
-		{Anime Waiting Room}
-		{https://aryxenv.dev/anime-waiting-room/}
-		{\textbf{Simple \& Goal-oriented} website to track countdowns for upcoming anime episodes. Features real-time countdowns, multi-anime support, JikanAPI integration, dynamic caching, and quick watch links.}
+            {Python, \\Bicep, GHCP, \\Foundry Agents, \\PostgreSQL, Docker}
+    {Hosted Agent RCE Security Demo}
+    {github.com/aryxenv/techorama-rce-code-attack}
+    {\textbf{Engineered secure-vs-unsecure hosted-agent demo} showing how prompt injection can abuse custom in-container code execution to bypass sanitized PostgreSQL access and leak fake PII through chart artifacts, then contrasted it with \textbf{Foundry Code Interpreter} sandboxing, managed identity, Bicep/azd infrastructure, and private Blob artifact delivery.}
     \entry
-		{PowerBI}
-		{F1 Data Analysis}
-		{github.com/aryxenv/F1-Data-Analysis}
-		{Interactive \textbf{dashboard} with visualizations for in-depth analysis of Formula 1 data, key metrics, and trends. }
-    \entry
-            {React TS, NodeJS}
-		{Trump AI}
-		{https://aryxenv.dev/trump-ai/}
-		{React and NodeJS (ExpressJS) chatbot simulating conversations in the style of Donald Trump built with \textbf{Groq API} (llama-3.3-70b-versatile) with an interactive UI and built-in error handling.}
+            {Python, FastAPI, \\AKS, MAF, AGT, \\Docker, Kubernetes}
+    {AKS Agent Governance Toolkit}
+    {github.com/aryxenv/aks-agent-with-governance-toolkit}
+    {\textbf{Deployed Microsoft Agent Framework weather agent on AKS} with a FastAPI SSE wrapper, lightweight Fluent UI client, Kubernetes manifests, and an \textbf{Agent Governance Toolkit} policy sidecar enforcing deterministic tool controls for Nominatim/Open-Meteo weather lookups.}
 \end{entrylist}
-
-\vspace{-0.3cm}  % Adjust vertical space to fit text nicely
-{\scriptsize
-\textbf{JS} = JavaScript,
-\textbf{ TS} = TypeScript
-}
-\vspace{0.3cm}
 
 %----------------------------------------------------------------------------------------
 %	EDUCATION
 %----------------------------------------------------------------------------------------
-\vspace{-10 pt}
+\vspace{-4 pt}
 \cvsect{Education}
 \begin{entrylist}
     \entry
@@ -182,9 +182,9 @@
 %----------------------------------------------------------------------------------------
 %	LANGUAGES
 %----------------------------------------------------------------------------------------
-\vspace{-10 pt}
+\vspace{-4 pt}
     \cvsect{Languages}
-    \vspace{-6pt}
+    \vspace{-3pt}
     
     \textbf{English} - Fluent \hspace{24mm} \textbf{ Dutch} - Fluent \hspace{24mm} \textbf{ French} - Basic \hspace{24mm} \textbf{ German} - Intermediate
 
