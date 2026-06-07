@@ -19,7 +19,7 @@ export const socialsData = [
   },
   {
     name: "E-mail",
-    url: "mailto:aryan@aryxenv.dev",
+    url: "mailto:aryanshah0514@gmail.com",
     icon: "bx bx-envelope",
     bgClass: "email-background",
   },

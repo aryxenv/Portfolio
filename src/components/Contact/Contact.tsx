@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import "./Contact.css";
 import { socialsData } from "./Socials.ts";
-import aryan_cv_pdf from "./aryan_shah_cv.pdf";
-import aryan_cv_img from "./aryan_shah_cv.png";
+import aryan_cv_img from "../../../cv/main.png";
+import aryan_cv_pdf from "../../../cv/main.pdf";
 
 const fadeInAnimationVariants = {
   initial: {
@@ -28,8 +28,8 @@ const fadeInAnimationVariants = {
 const photos = [
   {
     id: "cv1",
-    title: "General",
-    cv_name: "aryan_cv_img",
+    title: "Aryan Shah CV",
+    cv_name: "aryan_shah_cv.pdf",
     url: aryan_cv_img,
     pdf: aryan_cv_pdf,
   },

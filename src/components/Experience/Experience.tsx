@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { experienceData } from "./Experience";
 import "./Experience.css";
@@ -13,10 +14,20 @@ const experienceVariants = {
 };
 
 const Experience = () => {
+  const [expandedRoles, setExpandedRoles] = useState<Record<string, boolean>>(
+    {},
+  );
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
+
+  const toggleRole = (roleId: string) => {
+    setExpandedRoles((currentExpandedRoles) => ({
+      ...currentExpandedRoles,
+      [roleId]: !currentExpandedRoles[roleId],
+    }));
+  };
 
   return (
     <section className="component experience" id="experience">
@@ -38,33 +49,30 @@ const Experience = () => {
           {experienceData.map((experience, index) => (
             <motion.div
               className="experience-item"
-              key={index}
+              key={experience.id}
               variants={experienceVariants}
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={index}
             >
+              <div className="experience-timeline-marker">
+                <div
+                  className={`experience-timeline-dot ${
+                    experience.status === "green"
+                      ? "experience-timeline-dot-active"
+                      : ""
+                  }`}
+                />
+              </div>
+
               <div className="experience-item-opacity">
                 <div className="experience-left">
                   <div className="experience-header">
                     <h3 className="experience-company">{experience.company}</h3>
-                    {experience.status == "green" && (
-                      <div className={`experience-status`} />
-                    )}
                   </div>
-                  <p className="experience-summary">{experience.summary}</p>
-                  <p className="experience-date">{experience.date}</p>
-                </div>
-
-                <div className="experience-middle">
+                  <p className="experience-date">{experience.dateRange}</p>
                   <div className="experience-field">
-                    <span className="experience-label">Position</span>
-                    <span className="experience-value">
-                      {experience.position}
-                    </span>
-                  </div>
-                  <div className="experience-field">
-                    <span className="experience-label">Location</span>
+                    <span className="experience-label">Base</span>
                     <span className="experience-value">
                       {experience.location}
                     </span>
@@ -89,12 +97,47 @@ const Experience = () => {
                   </div>
                 </div>
 
-                <div className="experience-right">
-                  {experience.description.map((desc, i) => (
-                    <p key={i} className="experience-desc-paragraph">
-                      {desc}
-                    </p>
-                  ))}
+                <div className="experience-roles">
+                  {experience.roles.map((role) => {
+                    const isExpanded = expandedRoles[role.id];
+                    const visibleDescriptions = isExpanded
+                      ? role.description
+                      : role.description.slice(0, 1);
+
+                    return (
+                      <div className="experience-role" key={role.id}>
+                        <div className="experience-role-header">
+                          <div>
+                            <h4 className="experience-role-title">
+                              {role.position}
+                            </h4>
+                            <p className="experience-date">{role.date}</p>
+                          </div>
+                          <p className="experience-role-location">
+                            {role.location}
+                          </p>
+                        </div>
+
+                        <div className="experience-right">
+                          {visibleDescriptions.map((desc, i) => (
+                            <p key={i} className="experience-desc-paragraph">
+                              {desc}
+                            </p>
+                          ))}
+
+                          {role.description.length > 1 && (
+                            <button
+                              className="experience-see-more"
+                              type="button"
+                              onClick={() => toggleRole(role.id)}
+                            >
+                              {isExpanded ? "See less..." : "See more..."}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </motion.div>

@@ -26,6 +26,11 @@
   align-items: center;
 }
 
+.project-card h3 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+
 .project-description {
   max-height: 0;
   overflow: hidden;

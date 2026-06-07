@@ -29,6 +29,13 @@ function Projects() {
     triggerOnce: true,
   });
 
+  const projectCards = ProjectCardData.filter(
+    (project) => project.status !== "none",
+  ).slice(0, 5);
+  const seeMoreProject = ProjectCardData.find(
+    (project) => project.status === "none",
+  );
+
   return (
     <section className="component projects" id="projects">
       <div className="projects-container" ref={ref}>
@@ -46,7 +53,7 @@ function Projects() {
         </motion.div>
 
         <div className="projects-list-container">
-          {ProjectCardData.slice(0, 5).map((project, index) => (
+          {projectCards.map((project, index) => (
             <motion.div
               key={project.id}
               variants={projectVariants}
@@ -66,21 +73,23 @@ function Projects() {
           ))}
 
           <div className="extra-options-container">
-            <motion.div
-              variants={projectVariants}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              custom={ProjectCardData.length - 1}
-            >
-              <ProjectCard
-                id={ProjectCardData[5].id}
-                title={ProjectCardData[5].title}
-                description={ProjectCardData[5].description}
-                websiteLink={ProjectCardData[5].websiteLink}
-                githubLink={ProjectCardData[5].githubLink}
-                status={ProjectCardData[5].status}
-              />
-            </motion.div>
+            {seeMoreProject && (
+              <motion.div
+                variants={projectVariants}
+                initial="hidden"
+                animate={inView ? "visible" : "hidden"}
+                custom={projectCards.length}
+              >
+                <ProjectCard
+                  id={seeMoreProject.id}
+                  title={seeMoreProject.title}
+                  description={seeMoreProject.description}
+                  websiteLink={seeMoreProject.websiteLink}
+                  githubLink={seeMoreProject.githubLink}
+                  status={seeMoreProject.status}
+                />
+              </motion.div>
+            )}
 
             <motion.div
               className="contact-me-container-vertical"

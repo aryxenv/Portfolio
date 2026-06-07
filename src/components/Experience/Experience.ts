@@ -1,42 +1,56 @@
 export const experienceData = [
   {
-    position: "Solutions Engineer Intern (AI Apps / Data)",
+    id: "microsoft",
     company: "Microsoft",
-    summary: "Leading software and AI giant",
     industry: "Technology & Software",
-    date: "Feb 2026 - Present",
+    dateRange: "Feb 2026 - Present",
     location: "Zaventem, Belgium · On-site",
-    description: [
-      "Engage with customers with coaching from the Data / AI Apps team.",
-      "Build product expertise by helping preparing small technical demos or solution overviews for real customer scenarios.",
-    ],
     website: "https://www.microsoft.com/",
     status: "green",
+    roles: [
+      {
+        id: "microsoft-solutions-engineer",
+        position: "Solutions Engineer Intern (AI Apps / Data)",
+        date: "Feb 2026 - Present",
+        location: "Zaventem, Belgium · On-site",
+        description: [
+          "Built reusable Azure AI solution accelerators across Azure AI Search, Foundry, GitHub Copilot, MCP, realtime speech, and agentic AI.",
+          "Supported enterprise customer solutioning by shaping architectures, validating technical approaches, and preparing customer-ready assets.",
+          "Delivered customer-facing and event-ready RAG, MCP, Azure App & AI platform, and agentic AI demos for enterprise and community audiences.",
+          "Created internal MCP/Copilot tooling, IaC demo environments, GitHub templates, and architecture guidance to accelerate field solution delivery.",
+        ],
+      },
+    ],
   },
   {
-    position: "Part-time Frontend Developer",
+    id: "pickit-3d",
     company: "Pickit 3D",
-    summary: "Easy 3D Vision in robotics",
     industry: "Robotics & Automation",
-    date: "Nov 2025 - Feb 2026",
+    dateRange: "Jul 2025 - Feb 2026",
     location: "Leuven, Belgium · Hybrid",
-    description: [
-      "Frontend Development on Pickit3D Web UI and Camera Selector Tool.",
-      "Designed and documented a RAG solution to streamline troubleshooting.",
-    ],
     website: "https://www.pickit3d.com/",
-  },
-  {
-    position: "Frontend & Cybersecurity Intern",
-    company: "Pickit 3D",
-    summary: "Easy 3D Vision in robotics",
-    industry: "Robotics & Automation",
-    date: "Jul 2025 - Sep 2025",
-    location: "Leuven, Belgium · Hybrid",
-    description: [
-      "Took ownership of a 3D Camera Selector tool, rewriting its codebase to be more scalable and redesigning the tool from scratch to enhance UI/UX.",
-      "Created a dedicated, secure LDAP instance.",
+    roles: [
+      {
+        id: "pickit-frontend-developer",
+        position: "Part-time Frontend Developer",
+        date: "Nov 2025 - Feb 2026",
+        location: "Leuven, Belgium · Hybrid",
+        description: [
+          "Continued improving Pickit 3D web tooling and customer-facing UX after the internship.",
+          "Designed and documented an AI-assisted troubleshooting concept to help streamline support workflows.",
+        ],
+      },
+      {
+        id: "pickit-frontend-cybersecurity-intern",
+        position: "Frontend & Cybersecurity Intern",
+        date: "Jul 2025 - Sep 2025",
+        location: "Leuven, Belgium · Hybrid",
+        description: [
+          "Owned and modernized Pickit 3D's ThreeJS Camera Selector by redesigning the React/TypeScript UX and improving architecture and performance.",
+          "Added dynamic accuracy calculations from official 3D-camera documentation to improve pre-sales customer guidance.",
+          "Led migration from a shared company server to a dedicated LDAP instance with a custom Docker container and TLS/SSL enforcement.",
+        ],
+      },
     ],
-    website: "https://www.pickit3d.com/",
   },
 ];
