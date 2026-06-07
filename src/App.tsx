@@ -8,7 +8,7 @@ import Experience from "./components/Experience/Experience.tsx";
 import Home from "./components/Home/Home.tsx";
 import Navbar from "./components/Navbar/Navbar.tsx";
 import Projects from "./components/Projects/Projects.tsx";
-import MouseMoveEffect from "./utils/MouseMoveEffect/MouseMoveEffect.tsx";
+import ShaderBackground from "./utils/ShaderBackground/ShaderBackground.tsx";
 
 function App() {
   // smooth scrolling
@@ -59,7 +59,7 @@ function App() {
 
   return (
     <>
-      <MouseMoveEffect />
+      <ShaderBackground />
       <Navbar activeSection={activeSection} />
       <div className="app">
         <div className="aryan" ref={homeRef}>
