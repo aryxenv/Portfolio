@@ -99,6 +99,29 @@ i {
   }
 }
 
+/* low performance mode: stop heavy always-on animations and GPU blur */
+html[data-perf="low"] .gradient-animation {
+  animation: none;
+  background: none;
+  color: var(--primary-color);
+}
+
+html[data-perf="low"] .experience-timeline-dot-active::before,
+html[data-perf="low"] .experience-timeline-dot-active::after {
+  animation: none;
+}
+
+html[data-perf="low"] .navbar.scrolled,
+html[data-perf="low"] .technologies-category-menu,
+html[data-perf="low"] .cv-container .caption {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html[data-perf="low"] .navbar.scrolled {
+  background: var(--bg-color);
+}
+
 ::selection {
   background-color: rgba(29, 4, 219, var(--selection-bg));
   color: var(--primary-color);

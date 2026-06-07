@@ -98,7 +98,7 @@
   display: flex;
   gap: 1rem;
   width: max-content;
-  animation: marquee 35s linear infinite;
+  animation: marquee 70s linear infinite;
 }
 
 .marquee-wrapper > * {
@@ -109,7 +109,7 @@
   display: flex;
   width: max-content;
   gap: 1rem;
-  animation: marquee-reverse 20s linear infinite;
+  animation: marquee-reverse 43s linear infinite;
 }
 
 .marquee-wrapper-reverse > * {

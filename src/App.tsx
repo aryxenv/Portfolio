@@ -1,4 +1,4 @@
-import { useInView } from "framer-motion";
+import { MotionConfig, useInView } from "framer-motion";
 import Lenis from "lenis";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import "./App.css";
@@ -16,8 +16,32 @@ const Contact = lazy(() => import("./components/Contact/Contact.tsx"));
 const sectionFallback = <section className="component" aria-hidden="true" />;
 
 function App() {
-  // smooth scrolling
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  // performance mode: "high" renders the animated shader background and all
+  // animations; "low" shows a plain black background and disables the heavy
+  // always-on animations (smooth scroll, marquees, gradient shimmer, blur).
+  const [lowPerfMode, setLowPerfMode] = useState<boolean>(
+    () => localStorage.getItem("perfMode") === "low",
+  );
+
+  const togglePerfMode = () => {
+    setLowPerfMode((prev) => {
+      const next = !prev;
+      localStorage.setItem("perfMode", next ? "low" : "high");
+      return next;
+    });
+  };
+
+  // expose perf mode to CSS via a root attribute
   useEffect(() => {
+    document.documentElement.dataset.perf = lowPerfMode ? "low" : "high";
+  }, [lowPerfMode]);
+
+  // smooth scrolling (disabled in low-perf mode to drop the constant RAF loop)
+  useEffect(() => {
+    if (lowPerfMode) return;
+
     const lenis = new Lenis();
     let animationFrameId = 0;
 
@@ -32,23 +56,7 @@ function App() {
       cancelAnimationFrame(animationFrameId);
       lenis.destroy();
     };
-  }, []);
-
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-
-  // performance mode: "high" renders the animated shader background,
-  // "low" shows a plain black background instead.
-  const [lowPerfMode, setLowPerfMode] = useState<boolean>(
-    () => localStorage.getItem("perfMode") === "low",
-  );
-
-  const togglePerfMode = () => {
-    setLowPerfMode((prev) => {
-      const next = !prev;
-      localStorage.setItem("perfMode", next ? "low" : "high");
-      return next;
-    });
-  };
+  }, [lowPerfMode]);
 
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
@@ -83,7 +91,7 @@ function App() {
   ]);
 
   return (
-    <>
+    <MotionConfig reducedMotion={lowPerfMode ? "always" : "never"}>
       {!lowPerfMode && (
         <Suspense fallback={null}>
           <ShaderBackground />
@@ -119,7 +127,7 @@ function App() {
           </Suspense>
         </div>
       </div>
-    </>
+    </MotionConfig>
   );
 }
 
