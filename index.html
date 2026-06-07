@@ -2,6 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // apply saved performance preference before first paint (defaults to high)
+      (function () {
+        try {
+          var pref = localStorage.getItem("perfMode");
+          document.documentElement.dataset.perf =
+            pref === "low" ? "low" : "high";
+        } catch (e) {
+          document.documentElement.dataset.perf = "high";
+        }
+      })();
+    </script>
     <link
       rel="icon"
       type="image/x-icon"
