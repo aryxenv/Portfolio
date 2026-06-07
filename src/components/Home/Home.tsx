@@ -63,14 +63,14 @@ function Home() {
           <div className="introduction-text">
             <p>
               Hey, I'm Aryan Shah, based in{" "}
-              <span className="gradient-animation">Antwerp, Belgium</span>. I'm a{" "}
-              <span className="gradient-animation">Data Science</span> graduate
+              <strong className="highlight">Antwerp, Belgium</strong>. I'm a{" "}
+              <strong className="highlight">Data Science</strong> graduate
               from Thomas More University of Applied Sciences, currently working
               as a{" "}
-              <span className="gradient-animation">
+              <strong className="highlight">
                 Solutions Engineer Intern (Applications + AI/ML)
-              </span>{" "}
-              at <span className="gradient-animation">Microsoft</span>.
+              </strong>{" "}
+              at <strong className="highlight">Microsoft</strong>.
             </p>
           </div>
 

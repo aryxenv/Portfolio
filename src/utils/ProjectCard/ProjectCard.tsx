@@ -1,5 +1,6 @@
 import "./ProjectCard.css";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { highlightText } from "../highlight.tsx";
 
 const debounce = (func: Function, delay: number) => {
   let timer: ReturnType<typeof setTimeout>;
@@ -97,13 +98,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
         {description.trim() !== "" &&
           (isSmallScreen ? (
-            <p ref={descriptionRef}>{description}</p>
+            <p ref={descriptionRef}>{highlightText(description)}</p>
           ) : (
             <p
               ref={descriptionRef}
               className={`project-description ${isHover ? "" : "hidden"}`}
             >
-              {description}
+              {highlightText(description)}
             </p>
           ))}
 

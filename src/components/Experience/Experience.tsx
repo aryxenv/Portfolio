@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { highlightText } from "../../utils/highlight.tsx";
 import { experienceData } from "./Experience";
 import "./Experience.css";
 
@@ -119,21 +120,34 @@ const Experience = () => {
                         </div>
 
                         <div className="experience-right">
-                          {visibleDescriptions.map((desc, i) => (
-                            <p key={i} className="experience-desc-paragraph">
-                              {desc}
-                            </p>
-                          ))}
+                          {visibleDescriptions.map((desc, i) => {
+                            const isLast =
+                              i === visibleDescriptions.length - 1;
+                            const showToggle =
+                              role.description.length > 1 && isLast;
 
-                          {role.description.length > 1 && (
-                            <button
-                              className="experience-see-more"
-                              type="button"
-                              onClick={() => toggleRole(role.id)}
-                            >
-                              {isExpanded ? "See less..." : "See more..."}
-                            </button>
-                          )}
+                            return (
+                              <p
+                                key={i}
+                                className={
+                                  i === 0
+                                    ? "experience-desc-paragraph"
+                                    : "experience-desc-paragraph experience-desc-bullet"
+                                }
+                              >
+                                {highlightText(desc)}
+                                {showToggle && (
+                                  <a
+                                    className="see-more"
+                                    onClick={() => toggleRole(role.id)}
+                                  >
+                                    {" "}
+                                    {isExpanded ? "See less..." : "See more..."}
+                                  </a>
+                                )}
+                              </p>
+                            );
+                          })}
                         </div>
                       </div>
                     );

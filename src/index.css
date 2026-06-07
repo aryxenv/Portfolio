@@ -80,6 +80,11 @@ i {
   color: var(--primary-color);
 }
 
+/* keyword emphasis (works in both perf modes) */
+.highlight {
+  font-weight: 700;
+}
+
 /* name animation */
 .gradient-animation {
   background: linear-gradient(90deg, gray, var(--primary-color), gray);
@@ -120,6 +125,10 @@ html[data-perf="low"] .cv-container .caption {
 
 html[data-perf="low"] .navbar.scrolled {
   background: var(--bg-color);
+}
+
+html[data-perf="low"] .technologies-category-menu {
+  background-color: rgb(20, 20, 20);
 }
 
 ::selection {

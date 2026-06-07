@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { highlightText } from "../../utils/highlight.tsx";
 import "./About.css";
 import { techStackData } from "./TechStackData.ts";
 
@@ -48,7 +49,7 @@ function About() {
   const [isTechMenuOpen, setIsTechMenuOpen] = useState(false);
   const techMenuRef = useRef<HTMLDivElement>(null);
 
-  const textWhoAmI = `\n\nI like turning customer problems into Azure AI app demos, technical validations, and practical solution paths. In my free time, I build full-stack apps, experiment with agentic AI, and keep up with finance on the side.\n\nI'm always looking to expand my skills and build cool things. Oh, and the ultimate life goal? Owning my favorite car, a Porsche 918 Spyder.`;
+  const textWhoAmI = `\n\nI like turning customer problems into **Azure AI app demos**, **technical validations**, and practical solution paths. In my free time, I build **full-stack apps**, experiment with **agentic AI**, and keep up with **finance** on the side.\n\nI'm always looking to expand my skills and build cool things. Oh, and the ultimate life goal? Owning my favorite car, a **Porsche 918 Spyder**.`;
 
   useEffect(() => {
     if (!isTechMenuOpen) return;
@@ -116,15 +117,15 @@ function About() {
               <div className="about-me-text-1-content">
                 <p>
                   I'm Aryan Shah, based in{" "}
-                  <span className="gradient-animation">Antwerp, Belgium</span>.{" "}
+                  <strong className="highlight">Antwerp, Belgium</strong>.{" "}
                   I'm a{" "}
-                  <span className="gradient-animation">Data Science</span>{" "}
+                  <strong className="highlight">Data Science</strong>{" "}
                   graduate from Thomas More University of Applied Sciences and
                   currently working as a{" "}
-                  <span className="gradient-animation">
+                  <strong className="highlight">
                     Solutions Engineer Intern (Applications + AI/ML)
-                  </span>{" "}
-                  at <span className="gradient-animation">Microsoft</span>.
+                  </strong>{" "}
+                  at <strong className="highlight">Microsoft</strong>.
                   <a
                     className="see-more"
                     onClick={() => setIsWhoAmIVisible(!isWhoAmIVisible)}
@@ -133,7 +134,7 @@ function About() {
                     {isWhoAmIVisible ? "" : "See more..."}
                   </a>
                   {isWhoAmIVisible ? (
-                    <span className="">{textWhoAmI}</span>
+                    <span className="">{highlightText(textWhoAmI)}</span>
                   ) : (
                     <></>
                   )}
@@ -166,24 +167,6 @@ function About() {
                   </thead>
 
                   <tbody>
-                    <tr>
-                      <td>AI Apps + Cloud</td>
-
-                      <td>
-                        Ship production-ready Azure AI solution accelerators
-                      </td>
-
-                      <td>December 2026</td>
-                    </tr>
-
-                    <tr>
-                      <td>Software</td>
-
-                      <td>Build polished open-source demos and templates</td>
-
-                      <td>December 2026</td>
-                    </tr>
-
                     <tr>
                       <td>Life</td>
 
