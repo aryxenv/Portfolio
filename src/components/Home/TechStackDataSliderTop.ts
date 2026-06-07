@@ -115,6 +115,14 @@ export const techStackDataSliderTop: {
 
   {
     id: 14,
+    name: "Azure AI Search",
+    hex: "#0078D4",
+    src: azureai,
+    alt: "azure-ai-search",
+  },
+
+  {
+    id: 15,
     name: "ML Studio",
     hex: "#0078D4",
     src: mlstudio,
@@ -122,7 +130,7 @@ export const techStackDataSliderTop: {
   },
 
   {
-    id: 15,
+    id: 16,
     name: "AWS",
     hex: "#FF9900",
     src: "https://img.icons8.com/material-outlined/48/amazon-web-services.png",
@@ -130,10 +138,18 @@ export const techStackDataSliderTop: {
   },
 
   {
-    id: 16,
+    id: 17,
     name: "GCP",
     hex: "#4285F4",
     src: "https://img.icons8.com/ios-filled/50/google-cloud-platform.png",
     alt: "gcp",
+  },
+
+  {
+    id: 18,
+    name: "GitHub Copilot / CLI",
+    hex: "#595959",
+    src: "https://img.icons8.com/ios/50/github.png",
+    alt: "github-copilot-cli",
   },
 ];

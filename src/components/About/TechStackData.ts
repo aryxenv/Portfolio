@@ -57,6 +57,12 @@ export const techStackData = [
         src: azureai,
         alt: "ai-foundry",
       },
+      azureaisearch: {
+        name: "Azure AI Search",
+        hex: "#0078D4",
+        src: azureai,
+        alt: "azure-ai-search",
+      },
       mlstudio: {
         name: "ML Studio",
         hex: "#0078D4",
@@ -233,6 +239,18 @@ export const techStackData = [
         src: "https://img.icons8.com/ios/50/circled-g.png",
         alt: "groq",
       },
+      agentframework: {
+        name: "Agent Framework",
+        hex: "#5100ff",
+        src: azureai,
+        alt: "agent-framework",
+      },
+      mcp: {
+        name: "MCP",
+        hex: "#6f42c1",
+        src: "https://img.icons8.com/ios/50/api-settings.png",
+        alt: "mcp",
+      },
 
       powerbi: {
         name: "PowerBI",
@@ -258,6 +276,24 @@ export const techStackData = [
         hex: "#F05133",
         src: "https://img.icons8.com/ios/50/git.png",
         alt: "git-github",
+      },
+      githubcopilot: {
+        name: "GitHub Copilot / CLI",
+        hex: "#595959",
+        src: "https://img.icons8.com/ios/50/github.png",
+        alt: "github-copilot-cli",
+      },
+      bicep: {
+        name: "Bicep / IaC",
+        hex: "#0078D4",
+        src: azure,
+        alt: "bicep-iac",
+      },
+      kubernetes: {
+        name: "Kubernetes / AKS",
+        hex: "#326CE5",
+        src: "https://img.icons8.com/ios/50/kubernetes.png",
+        alt: "kubernetes-aks",
       },
       visualstudio: {
         name: "Visual Studio",

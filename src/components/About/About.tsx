@@ -1,22 +1,42 @@
 import "boxicons/css/boxicons.min.css";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import "./About.css";
 import { techStackData } from "./TechStackData.ts";
 
-const fadeInAnimationVariants = {
+const panelViewport = {
+  once: true,
+  amount: 0.3,
+} as const;
+
+const cardViewport = {
+  once: true,
+  amount: 0.25,
+} as const;
+
+const panelTransition = {
+  type: "spring",
+  stiffness: 120,
+  damping: 22,
+} as const;
+
+const technologyCardVariants: Variants = {
   initial: {
     opacity: 0,
-    y: 50,
+    y: 32,
+    scale: 0.96,
   },
 
   animate: (index: number) => {
     return {
       opacity: 1,
-      transform: "translateY(0px)",
+      y: 0,
+      scale: 1,
       transition: {
-        delay: 0.05 * index,
+        type: "spring",
+        stiffness: 260,
+        damping: 24,
+        delay: 0.04 * index,
       },
     };
   },
@@ -26,41 +46,63 @@ function About() {
   // show the field with this index
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isWhoAmIVisible, setIsWhoAmIVisible] = useState(false);
+  const [isTechMenuOpen, setIsTechMenuOpen] = useState(false);
+  const techMenuRef = useRef<HTMLDivElement>(null);
 
-  const textWhoAmI = `\n\nIn my free time, I build full-stack apps and integrate AI/ML to solve actual problems. Outside of tech, I also keep up with finance on the side.\n\nI'm always looking to expand my skills and build cool things. Oh, and the ultimate life goal? Owning my favorite car, a Porsche 918 Spyder.`;
+  const textWhoAmI = `\n\nI like turning customer problems into Azure AI app demos, technical validations, and practical solution paths. In my free time, I build full-stack apps, experiment with agentic AI, and keep up with finance on the side.\n\nI'm always looking to expand my skills and build cool things. Oh, and the ultimate life goal? Owning my favorite car, a Porsche 918 Spyder.`;
+
+  useEffect(() => {
+    if (!isTechMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (target instanceof Node && techMenuRef.current?.contains(target)) {
+        return;
+      }
+
+      setIsTechMenuOpen(false);
+    };
+
+    const closeTechMenu = () => setIsTechMenuOpen(false);
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("scroll", closeTechMenu, true);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("scroll", closeTechMenu, true);
+    };
+  }, [isTechMenuOpen]);
+
+  const selectTechIndex = (nextIndex: number) => {
+    setCurrentIndex(nextIndex);
+    setIsTechMenuOpen(false);
+  };
 
   // move to the next field
   // if we are at the end, go to the first field
   const next = () => {
-    setCurrentIndex((currentIndex + 1) % techStackData.length);
+    selectTechIndex((currentIndex + 1) % techStackData.length);
   };
 
   // move to the previous field
   // if we are at the beginning, go to the last field
   const prev = () => {
-    setCurrentIndex(
+    selectTechIndex(
       (currentIndex - 1 + techStackData.length) % techStackData.length,
     );
   };
-
-  const { ref, inView } = useInView({
-    threshold: 0.3,
-    triggerOnce: true,
-  });
 
   return (
     <section className="component about" id="about">
       <div className="about-container">
         <motion.div
           className="about-me-container"
-          ref={ref}
-          initial={{ opacity: 0, transform: "translateX(-50px)" }}
-          animate={
-            inView
-              ? { opacity: 1, transform: "translateX(0px)" }
-              : { opacity: 0, transform: "translateX(-50px)" }
-          }
-          transition={{ duration: 1 }}
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={panelViewport}
+          transition={panelTransition}
         >
           <div className="about-me-title">
             <h2>About Me</h2>
@@ -76,12 +118,12 @@ function About() {
                 <p>
                   I'm Aryan Shah, based in{" "}
                   <span className="gradient-animation">Antwerp, Belgium</span>.{" "}
-                  I'm currently in my final year at Thomas More Mechelen
-                  studying{" "}
-                  <span className="gradient-animation">Data Science</span> (&
-                  Cybersecurity) and working as a{" "}
+                  I'm a{" "}
+                  <span className="gradient-animation">Data Science</span>{" "}
+                  graduate from Thomas More with a cybersecurity background and
+                  currently working as a{" "}
                   <span className="gradient-animation">
-                    Solutions Engineer Intern (AI Apps + Data)
+                    Solutions Engineer Intern (Applications + AI/ML)
                   </span>{" "}
                   at <span className="gradient-animation">Microsoft</span>.
                   <a
@@ -115,36 +157,42 @@ function About() {
               <div className="about-me-text-2-content">
                 <table>
                   <thead>
-                    <th>Field</th>
+                    <tr>
+                      <th>Field</th>
 
-                    <th>Goal(s)</th>
+                      <th>Goal(s)</th>
 
-                    <th>Deadline</th>
+                      <th>Deadline</th>
+                    </tr>
                   </thead>
 
-                  <tr>
-                    <td>AI/ML + Web</td>
+                  <tbody>
+                    <tr>
+                      <td>AI Apps + Cloud</td>
 
-                    <td>Deployed RAG Portfolio</td>
+                      <td>
+                        Ship production-ready Azure AI solution accelerators
+                      </td>
 
-                    <td>December 2026</td>
-                  </tr>
+                      <td>December 2026</td>
+                    </tr>
 
-                  <tr>
-                    <td>Software</td>
+                    <tr>
+                      <td>Software</td>
 
-                    <td>Completed NeetCode 150</td>
+                      <td>Build polished open-source demos and templates</td>
 
-                    <td>December 2026</td>
-                  </tr>
+                      <td>December 2026</td>
+                    </tr>
 
-                  <tr>
-                    <td>Life</td>
+                    <tr>
+                      <td>Life</td>
 
-                    <td>Buy Porsche 918 Spyder</td>
+                      <td>Buy Porsche 918 Spyder</td>
 
-                    <td>September 2035</td>
-                  </tr>
+                      <td>September 2035</td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </div>
@@ -154,13 +202,10 @@ function About() {
         <div className="skills-container">
           <motion.div
             className="technologies"
-            initial={{ opacity: 0, transform: "translateX(50px)" }}
-            animate={
-              inView
-                ? { opacity: 1, transform: "translateX(0px)" }
-                : { opacity: 0, transform: "translateX(50px)" }
-            }
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={panelViewport}
+            transition={panelTransition}
           >
             <div className="technologies-title">
               <h3>Technologies</h3>
@@ -175,8 +220,57 @@ function About() {
                     techStackData[currentIndex].id === data.id ? "" : "slide"
                   }
                 >
-                  <div className="technologies-list-title">
-                    <h4>{data.title}</h4>
+                  <div
+                    className="technologies-list-title"
+                    ref={
+                      techStackData[currentIndex].id === data.id
+                        ? techMenuRef
+                        : undefined
+                    }
+                  >
+                    <button
+                      type="button"
+                      className="technologies-list-toggle"
+                      aria-expanded={isTechMenuOpen}
+                      aria-label="Choose technology category"
+                      onClick={() => setIsTechMenuOpen(!isTechMenuOpen)}
+                    >
+                      <span className="technologies-list-label">
+                        {data.title}
+                      </span>
+                      <motion.i
+                        className="bx bx-chevron-down"
+                        animate={{ rotate: isTechMenuOpen ? 180 : 0 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                      ></motion.i>
+                    </button>
+
+                    <AnimatePresence>
+                      {isTechMenuOpen ? (
+                        <motion.div
+                          className="technologies-category-menu"
+                          initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                          transition={{ duration: 0.16, ease: "easeOut" }}
+                        >
+                          {techStackData.map((category, index) => (
+                            <button
+                              type="button"
+                              key={category.id}
+                              className={
+                                index === currentIndex
+                                  ? "technologies-category-option active"
+                                  : "technologies-category-option"
+                              }
+                              onClick={() => selectTechIndex(index)}
+                            >
+                              {category.title}
+                            </button>
+                          ))}
+                        </motion.div>
+                      ) : null}
+                    </AnimatePresence>
                   </div>
 
                   <div className="technologies-list">
@@ -185,9 +279,10 @@ function About() {
                         <motion.div
                           className="technologyCard"
                           key={index}
-                          variants={fadeInAnimationVariants}
+                          variants={technologyCardVariants}
                           initial="initial"
                           whileInView="animate"
+                          viewport={cardViewport}
                           custom={index}
                         >
                           <div className="technology-opacityLayer">
@@ -227,13 +322,10 @@ function About() {
           <motion.div
             className="viewProjects"
             onClick={() => (window.location.href = "#projects")}
-            initial={{ opacity: 0, transform: "translateY(50px)" }}
-            animate={
-              inView
-                ? { opacity: 1, transform: "translateY(0px)" }
-                : { opacity: 0, transform: "translateY(50px)" }
-            }
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={panelViewport}
+            transition={panelTransition}
           >
             <div className="viewProjects-opacityLayer">
               <div className="viewProjects-title">

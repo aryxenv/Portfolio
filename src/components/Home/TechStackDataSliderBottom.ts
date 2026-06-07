@@ -71,6 +71,30 @@ export const techStackDataSliderBottom: {
 
   {
     id: 9,
+    name: "Bicep / IaC",
+    hex: "#0078D4",
+    src: "https://img.icons8.com/ios/50/cloud-development.png",
+    alt: "bicep-iac",
+  },
+
+  {
+    id: 10,
+    name: "Kubernetes / AKS",
+    hex: "#326CE5",
+    src: "https://img.icons8.com/ios/50/kubernetes.png",
+    alt: "kubernetes-aks",
+  },
+
+  {
+    id: 11,
+    name: "MCP",
+    hex: "#6f42c1",
+    src: "https://img.icons8.com/ios/50/api-settings.png",
+    alt: "mcp",
+  },
+
+  {
+    id: 12,
     name: "PowerBI",
     hex: "#f2c80f",
     src: "https://img.icons8.com/ios/50/power-bi.png",
@@ -78,7 +102,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 10,
+    id: 13,
     name: "Visual Studio",
     hex: "#A075D4",
     src: "https://img.icons8.com/ios/50/visual-studio.png",
@@ -86,7 +110,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 11,
+    id: 14,
     name: "Visual Studio Code",
     hex: "#0074C8",
     src: "https://img.icons8.com/ios/50/visual-studio.png",
@@ -94,7 +118,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 12,
+    id: 15,
     name: "LLDAP",
     hex: "#e375ff",
     src: "https://img.icons8.com/ios/50/active-directory.png",
@@ -102,7 +126,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 13,
+    id: 16,
     name: "Cloudflare",
     hex: "#F38020",
     src: "https://img.icons8.com/ios-filled/50/cloudflare.png",
@@ -110,7 +134,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 14,
+    id: 17,
     name: "Vercel",
     hex: "#000000",
     src: "https://img.icons8.com/ios-filled/50/vercel.png",
@@ -118,7 +142,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 15,
+    id: 18,
     name: "Render",
     hex: "#323232",
     src: "https://img.icons8.com/ios-filled/50/cloud-refresh--v1.png",
@@ -126,7 +150,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 16,
+    id: 19,
     name: "Supabase",
     hex: "#3ECF8E",
     src: "https://img.icons8.com/fluency-systems-filled/48/supabase.png",
@@ -134,7 +158,7 @@ export const techStackDataSliderBottom: {
   },
 
   {
-    id: 17,
+    id: 20,
     name: "Combell",
     hex: "#0080ff",
     src: "https://img.icons8.com/ios-filled/50/virtual-machine2.png",

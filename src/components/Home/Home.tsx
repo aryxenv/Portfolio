@@ -55,7 +55,7 @@ function Home() {
             </div>
 
             <div className="introduction-role">
-              <h2>Solutions Engineer Intern (AI Apps + Data)</h2>
+              <h2>Solutions Engineer Intern (Applications + AI/ML)</h2>
             </div>
           </div>
 
@@ -64,12 +64,12 @@ function Home() {
           <div className="introduction-text">
             <p>
               Hey, I'm Aryan Shah, based in{" "}
-              <span className="gradient-animation">Antwerp, Belgium</span>. I'm
-              currently in my final year at Thomas More Mechelen studying{" "}
-              <span className="gradient-animation">Data Science</span> (&
-              Cybersecurity) and working as a{" "}
+              <span className="gradient-animation">Antwerp, Belgium</span>. I'm a{" "}
+              <span className="gradient-animation">Data Science</span> graduate
+              from Thomas More with a cybersecurity background, currently
+              working as a{" "}
               <span className="gradient-animation">
-                Solutions Engineer Intern (AI Apps + Data)
+                Solutions Engineer Intern (Applications + AI/ML)
               </span>{" "}
               at <span className="gradient-animation">Microsoft</span>.
             </p>
@@ -85,6 +85,7 @@ function Home() {
                       .flatMap(() => techStackDataSliderTop)
                       .map((key, index) => (
                         <TechStackSliderCard
+                          key={`top-${key.id}-${index}`}
                           keyIndex={index}
                           imageUrl={key.src}
                           text={key.name}
@@ -104,6 +105,7 @@ function Home() {
                       .flatMap(() => techStackDataSliderBottom)
                       .map((key, index) => (
                         <TechStackSliderCard
+                          key={`bottom-${key.id}-${index}`}
                           keyIndex={index}
                           imageUrl={key.src}
                           text={key.name}
