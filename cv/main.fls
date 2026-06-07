@@ -1,6 +1,6 @@
-PWD c:\Users\t-aryanshah\OneDrive\Portfolio\nodeDev\PortfolioDev\cv
+PWD c:\Users\t-aryanshah\OneDrive - Microsoft\SE\Portfolio\cv
 INPUT C:\Users\t-aryanshah\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\t-aryanshah\OneDrive\Portfolio\nodeDev\PortfolioDev\cv\main.tex
+INPUT c:\Users\t-aryanshah\OneDrive - Microsoft\SE\Portfolio\cv\main.tex
 OUTPUT main.log
 INPUT .\developercv.cls
 INPUT developercv.cls
