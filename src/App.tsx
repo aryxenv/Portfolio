@@ -1,29 +1,54 @@
 import { useInView } from "framer-motion";
 import Lenis from "lenis";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import "./App.css";
-import About from "./components/About/About.tsx";
-import Contact from "./components/Contact/Contact.tsx";
-import Experience from "./components/Experience/Experience.tsx";
 import Home from "./components/Home/Home.tsx";
 import Navbar from "./components/Navbar/Navbar.tsx";
-import Projects from "./components/Projects/Projects.tsx";
-import ShaderBackground from "./utils/ShaderBackground/ShaderBackground.tsx";
+
+const ShaderBackground = lazy(
+  () => import("./utils/ShaderBackground/ShaderBackground.tsx"),
+);
+const About = lazy(() => import("./components/About/About.tsx"));
+const Experience = lazy(() => import("./components/Experience/Experience.tsx"));
+const Projects = lazy(() => import("./components/Projects/Projects.tsx"));
+const Contact = lazy(() => import("./components/Contact/Contact.tsx"));
+
+const sectionFallback = <section className="component" aria-hidden="true" />;
 
 function App() {
   // smooth scrolling
   useEffect(() => {
     const lenis = new Lenis();
+    let animationFrameId = 0;
 
-    function raf(time: any) {
+    function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      animationFrameId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    animationFrameId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      lenis.destroy();
+    };
   }, []);
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  // performance mode: "high" renders the animated shader background,
+  // "low" shows a plain black background instead.
+  const [lowPerfMode, setLowPerfMode] = useState<boolean>(
+    () => localStorage.getItem("perfMode") === "low",
+  );
+
+  const togglePerfMode = () => {
+    setLowPerfMode((prev) => {
+      const next = !prev;
+      localStorage.setItem("perfMode", next ? "low" : "high");
+      return next;
+    });
+  };
 
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
@@ -59,23 +84,39 @@ function App() {
 
   return (
     <>
-      <ShaderBackground />
-      <Navbar activeSection={activeSection} />
+      {!lowPerfMode && (
+        <Suspense fallback={null}>
+          <ShaderBackground />
+        </Suspense>
+      )}
+      <Navbar
+        activeSection={activeSection}
+        lowPerfMode={lowPerfMode}
+        onTogglePerfMode={togglePerfMode}
+      />
       <div className="app">
         <div className="aryan" ref={homeRef}>
           <Home />
         </div>
         <div className="wants" ref={aboutRef}>
-          <About />
+          <Suspense fallback={sectionFallback}>
+            <About />
+          </Suspense>
         </div>
         <div className="aporsche" ref={experienceRef}>
-          <Experience />
+          <Suspense fallback={sectionFallback}>
+            <Experience />
+          </Suspense>
         </div>
         <div className="_918" ref={projectsRef}>
-          <Projects />
+          <Suspense fallback={sectionFallback}>
+            <Projects />
+          </Suspense>
         </div>
         <div className="spyder" ref={contactRef}>
-          <Contact />
+          <Suspense fallback={sectionFallback}>
+            <Contact />
+          </Suspense>
         </div>
       </div>
     </>

@@ -1,5 +1,4 @@
 import "./ProjectCard.css";
-import "boxicons/css/boxicons.min.css";
 import { useState, useRef, useEffect, useCallback } from "react";
 
 const debounce = (func: Function, delay: number) => {

@@ -131,12 +131,12 @@
 }
 
 .experience-company {
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   font-weight: 400;
 }
 
 .experience-date {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   opacity: 0.8;
 }
 
@@ -157,12 +157,12 @@
 }
 
 .experience-label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.7;
 }
 
 .experience-value {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   overflow-wrap: anywhere;
 }
 
@@ -190,13 +190,13 @@
 }
 
 .experience-role-title {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 400;
 }
 
 .experience-role-location {
   max-width: 180px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.75;
   text-align: right;
 }
@@ -211,7 +211,7 @@
 }
 
 .experience-desc-paragraph {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 

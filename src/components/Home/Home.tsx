@@ -1,4 +1,3 @@
-import "boxicons/css/boxicons.min.css";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -66,8 +65,8 @@ function Home() {
               Hey, I'm Aryan Shah, based in{" "}
               <span className="gradient-animation">Antwerp, Belgium</span>. I'm a{" "}
               <span className="gradient-animation">Data Science</span> graduate
-              from Thomas More with a cybersecurity background, currently
-              working as a{" "}
+              from Thomas More University of Applied Sciences, currently working
+              as a{" "}
               <span className="gradient-animation">
                 Solutions Engineer Intern (Applications + AI/ML)
               </span>{" "}

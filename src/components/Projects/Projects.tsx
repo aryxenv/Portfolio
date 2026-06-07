@@ -1,5 +1,4 @@
 import "./Projects.css";
-import "boxicons/css/boxicons.min.css";
 import { ProjectCardData } from "../../utils/ProjectCard/ProjectCardData.ts";
 import ProjectCard from "../../utils/ProjectCard/ProjectCard.tsx";
 import { motion } from "framer-motion";

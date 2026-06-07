@@ -15,17 +15,12 @@
     "@shadergradient/react": "^2.4.20",
     "babel-plugin-react-compiler": "^19.0.0-beta-27714ef-20250124",
     "boxicons": "^2.1.4",
-    "camera-controls": "^3.1.2",
     "framer-motion": "^12.0.6",
-    "install": "^0.13.0",
     "lenis": "^1.1.20",
-    "npm": "^11.0.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-fast-marquee": "^1.6.5",
     "react-intersection-observer": "^9.15.1",
-    "three": "^0.184.0",
-    "three-stdlib": "^2.36.1"
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

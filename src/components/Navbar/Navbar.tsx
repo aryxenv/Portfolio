@@ -1,26 +1,20 @@
-import "boxicons/css/boxicons.min.css";
 import { useEffect, useState } from "react";
-import { User, SuitcaseSimple, Package, AddressBook } from "@phosphor-icons/react";
+import { AddressBook } from "@phosphor-icons/react/AddressBook";
+import { Package } from "@phosphor-icons/react/Package";
+import { SuitcaseSimple } from "@phosphor-icons/react/SuitcaseSimple";
+import { User } from "@phosphor-icons/react/User";
 import "./Navbar.css";
-import colorModeDark from "./icons8-dark-mode-100.png";
-import colorModeLight from "./icons8-light-mode-100.png";
 import logoGray from "./l145logo-nobg-gray.png";
 
-function Navbar({ activeSection }: { activeSection: string | null }) {
-  // Initialize theme from localStorage or system preference
-  const getInitialTheme = (): "light" | "dark" => {
-    const storedTheme = localStorage.getItem("theme") as "light" | "dark";
-    if (storedTheme) {
-      return storedTheme;
-    }
-    const prefersDarkMode = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-    return prefersDarkMode ? "dark" : "light";
-  };
-
-  // State of theme
-  const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
+function Navbar({
+  activeSection,
+  lowPerfMode,
+  onTogglePerfMode,
+}: {
+  activeSection: string | null;
+  lowPerfMode: boolean;
+  onTogglePerfMode: () => void;
+}) {
   const [scrolled, setScrolled] = useState(false);
 
   // Track scroll position and toggle scrolled state
@@ -40,34 +34,6 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  // apply theme on change
-  useEffect(() => {
-    const root = document.documentElement;
-
-    if (theme === "dark") {
-      root.setAttribute("data-theme", "dark");
-      document.getElementById("colorMode")?.setAttribute("src", colorModeLight);
-    } else {
-      root.setAttribute("data-theme", "light");
-      document.getElementById("colorMode")?.setAttribute("src", colorModeDark);
-    }
-  }, [theme]);
-
-  // toggle theme
-  const toggleTheme = () => {
-    const body = document.body;
-
-    if (theme === "dark") {
-      setTheme("light");
-      body.classList.add("themeAnimation");
-      localStorage.setItem("theme", "light");
-    } else {
-      setTheme("dark");
-      body.classList.add("themeAnimation");
-      localStorage.setItem("theme", "dark");
-    }
-  };
 
   const [isMobile, setIsMobile] = useState(
     window.matchMedia("(max-width: 768px)").matches,
@@ -146,12 +112,27 @@ function Navbar({ activeSection }: { activeSection: string | null }) {
           </li>
         </ul>
         <div className="colorModeWrapper">
-          <img
-            id="colorMode"
-            src={colorModeDark}
-            alt="colorMode"
-            onClick={toggleTheme}
-          />
+          <button
+            type="button"
+            id="perfMode"
+            className="perfModeToggle"
+            onClick={onTogglePerfMode}
+            aria-pressed={!lowPerfMode}
+            aria-label={
+              lowPerfMode
+                ? "Performance mode: low. Click to turn the animated background on."
+                : "Performance mode: high. Click to turn the animated background off."
+            }
+            title={
+              lowPerfMode
+                ? "Low performance mode (animated background off)"
+                : "High performance mode (animated background on)"
+            }
+          >
+            <i
+              className={`bx ${lowPerfMode ? "bx-bolt-circle" : "bxs-bolt-circle"}`}
+            ></i>
+          </button>
         </div>
       </nav>
 

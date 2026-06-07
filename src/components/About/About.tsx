@@ -1,4 +1,3 @@
-import "boxicons/css/boxicons.min.css";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import "./About.css";
@@ -120,7 +119,7 @@ function About() {
                   <span className="gradient-animation">Antwerp, Belgium</span>.{" "}
                   I'm a{" "}
                   <span className="gradient-animation">Data Science</span>{" "}
-                  graduate from Thomas More with a cybersecurity background and
+                  graduate from Thomas More University of Applied Sciences and
                   currently working as a{" "}
                   <span className="gradient-animation">
                     Solutions Engineer Intern (Applications + AI/ML)

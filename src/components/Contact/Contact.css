@@ -17,8 +17,8 @@
 }
 
 .main-contact-container h2 {
-  font-size: 10rem;
-  line-height: 10rem;
+  font-size: 9.5rem;
+  line-height: 9.5rem;
   margin-bottom: 3rem;
 }
 
@@ -113,7 +113,7 @@
 }
 
 .socials i {
-  font-size: 1.5rem;
+  font-size: 1.425rem;
   -webkit-tap-highlight-color: transparent;
   outline: none;
   color: #fff;
@@ -188,7 +188,7 @@
   font-weight: bold;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-  font-size: 18px;
+  font-size: 17px;
   opacity: 0.5;
   transition: all 0.3s ease-out;
   border-radius: 50%;
@@ -231,7 +231,7 @@
   padding: 0 8px;
   backdrop-filter: blur(1px);
   -webkit-backdrop-filter: blur(1px);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   color: #000;
   border: var(--border-px) solid #000;
@@ -257,11 +257,11 @@
 }
 
 .cv-container .openPDF i {
-  font-size: 1.5rem;
+  font-size: 1.425rem;
 }
 
 .cv-container .downloadPDF i {
-  font-size: 1.5rem;
+  font-size: 1.425rem;
 }
 
 .cv-container .downloadPDF:hover,
@@ -293,8 +293,8 @@
   }
 
   .main-contact-container h2 {
-    font-size: 8rem;
-    line-height: 8rem;
+    font-size: 7.6rem;
+    line-height: 7.6rem;
     margin-bottom: 1rem;
   }
 

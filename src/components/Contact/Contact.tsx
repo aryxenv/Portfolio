@@ -1,4 +1,3 @@
-import "boxicons/css/boxicons.min.css";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -200,7 +199,13 @@ function Contact() {
                     : "imgWrapper slide"
                 }
               >
-                <img src={photo.url} alt={photo.title} className="photo" />
+                <img
+                  src={photo.url}
+                  alt={photo.title}
+                  className="photo"
+                  loading="lazy"
+                  decoding="async"
+                />
 
                 <div className="caption-wrapper">
                   <div className="caption">{photo.title}</div>

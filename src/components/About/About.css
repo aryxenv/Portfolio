@@ -156,12 +156,12 @@
 }
 
 .technologies-list-label {
-  font-size: 1.5rem;
+  font-size: 1.425rem;
   font-weight: 400;
 }
 
 .technologies-list-toggle i {
-  font-size: 1.4rem;
+  font-size: 1.32rem;
   line-height: 1;
 }
 
@@ -196,7 +196,7 @@
   background-color: transparent;
   color: var(--primary-color);
   font-family: var(--font-family);
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.2;
   text-align: left;
   cursor: pointer;
@@ -316,7 +316,7 @@
   background-color: transparent;
   /* color: rgba(255,255,255, 0.5); */
   font-weight: bold;
-  font-size: 18px;
+  font-size: 17px;
   opacity: 0.5;
   -webkit-tap-highlight-color: transparent;
   outline: none;

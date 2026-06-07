@@ -60,17 +60,31 @@ nav {
   outline: none;
 }
 
-#colorMode {
+.perfModeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 22px;
   height: 22px;
-  max-width: 22px;
-  scale: 1;
-  filter: invert(0.3);
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  opacity: 0.5;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: opacity 0.3s ease-out;
 }
 
-#colorMode:hover {
-  cursor: pointer;
-  filter: invert(var(--invertHover));
+.perfModeToggle:hover {
+  opacity: 1;
+}
+
+.perfModeToggle i {
+  font-size: 1.4rem;
+  line-height: 1;
 }
 
 ul {
@@ -89,7 +103,7 @@ li {
   color: var(--primary-color);
   opacity: 0.5;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   -webkit-tap-highlight-color: transparent;
   outline: none;
   transition: all 0.3s ease-out;
@@ -155,7 +169,7 @@ li {
   }
 
   .navbar a {
-    font-size: 1rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     justify-content: center;
