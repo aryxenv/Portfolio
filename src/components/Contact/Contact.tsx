@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import "./Contact.css";
 import { socialsData } from "./Socials.ts";
-import aryan_cv_img from "../../../cv/main.png";
-import aryan_cv_pdf from "../../../cv/main.pdf";
+import aryan_cv_img from "./aryan_shah_cv.png";
+import aryan_cv_pdf from "./aryan_shah_cv.pdf";
 
 const fadeInAnimationVariants = {
   initial: {
