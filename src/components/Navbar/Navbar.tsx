@@ -27,6 +27,7 @@ function Navbar({
       }
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
 
     // Clean up event listener
@@ -61,7 +62,7 @@ function Navbar({
   // main nav structure
   return (
     <>
-      <nav className="navbar scrolled">
+      <nav className={`navbar${scrolled ? " scrolled" : ""}`}>
         <img
           src={logoGray}
           alt="logo"
