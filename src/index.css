@@ -15,6 +15,21 @@
   --selection-bg: 0.5;
   --scrollbar-color-normal: rgba(255, 255, 255, 0.5);
   --scrollbar-color-hovered: rgba(255, 255, 255, 1);
+
+  /* functional accents — the only hues on the content plane besides the
+     project status dots, and deliberately clear of the reactor's indigo band.
+     They encode blog callout severity and code token type, nothing else. */
+  --accent-cyan: #00b7c3;
+  --accent-green: #3fb950;
+  --accent-violet: #c77dff;
+  --accent-amber: #e3b341;
+  --accent-red: #ff7b72;
+
+  --alert-note: var(--accent-cyan);
+  --alert-tip: var(--accent-green);
+  --alert-important: var(--accent-violet);
+  --alert-warning: var(--accent-amber);
+  --alert-caution: var(--accent-red);
 }
 
 html {
@@ -74,6 +89,19 @@ a:hover {
 
 .hiddentxt {
   display: none;
+}
+
+/* removed from the page but still announced by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
 }
 
 i {

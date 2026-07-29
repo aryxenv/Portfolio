@@ -1,12 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import "./Blog.css";
-import {
-  blogReadingMinutes,
-  formatBlogDate,
-  getBlogPosts,
-} from "./BlogData.ts";
 import { usePageMeta } from "../../utils/usePageMeta.ts";
+import "./Blog.css";
+import { formatBlogDate, getBlogPosts } from "./BlogData.ts";
 
 const postVariants = {
   hidden: { opacity: 0, transform: "translateY(50px)" },
@@ -36,8 +32,7 @@ function Blog() {
         >
           <h1>Blog</h1>
           <p className="blog-intro">
-            Notes on what I build and why it is put together the way it is.
-            Shorter than a write-up, longer than a commit message.
+            probably making llms smarter with this content
           </p>
         </motion.header>
 
@@ -47,7 +42,7 @@ function Blog() {
           <ul className="blog-list">
             {posts.map((post, index) => (
               <motion.li
-                key={post.id}
+                key={post.slug}
                 variants={postVariants}
                 initial="hidden"
                 animate="visible"
@@ -55,14 +50,17 @@ function Blog() {
               >
                 <Link className="blog-card" to={`/blog/${post.slug}`}>
                   <p className="blog-card-meta">
-                    <time dateTime={post.date}>
-                      {formatBlogDate(post.date)}
-                    </time>
-                    {` · ${blogReadingMinutes(post)} min read`}
+                    {post.date && (
+                      <time dateTime={post.date}>
+                        {formatBlogDate(post.date)}
+                      </time>
+                    )}
+                    {post.readTimeMinutes > 0 &&
+                      `${post.date ? " · " : ""}${post.readTimeMinutes} min read`}
                   </p>
 
                   <h2>{post.title}</h2>
-                  <p className="blog-card-summary">{post.summary}</p>
+                  <p className="blog-card-summary">{post.description}</p>
 
                   <p className="blog-card-footer">
                     <span className="blog-tags">{post.tags.join(" · ")}</span>

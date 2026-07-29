@@ -2,12 +2,7 @@ import { motion } from "framer-motion";
 import { Link, useParams } from "react-router-dom";
 import "./Blog.css";
 import BlogContent from "./BlogContent.tsx";
-import {
-  blogReadingMinutes,
-  formatBlogDate,
-  getAdjacentPosts,
-  getBlogPost,
-} from "./BlogData.ts";
+import { formatBlogDate, getAdjacentPosts, getBlogPost } from "./BlogData.ts";
 import { usePageMeta } from "../../utils/usePageMeta.ts";
 
 function BlogPost() {
@@ -16,7 +11,7 @@ function BlogPost() {
 
   usePageMeta(
     post ? `${post.title} | Aryan Shah` : "Post not found | Aryan Shah",
-    post?.summary,
+    post?.description,
   );
 
   if (!post) {
@@ -56,13 +51,16 @@ function BlogPost() {
         <header className="blog-post-header">
           <h1>{post.title}</h1>
           <p className="blog-post-meta">
-            <time dateTime={post.date}>{formatBlogDate(post.date)}</time>
-            {` · ${blogReadingMinutes(post)} min read`}
+            {post.date && (
+              <time dateTime={post.date}>{formatBlogDate(post.date)}</time>
+            )}
+            {post.readTimeMinutes > 0 &&
+              `${post.date ? " · " : ""}${post.readTimeMinutes} min read`}
             {post.tags.length > 0 && ` · ${post.tags.join(" · ")}`}
           </p>
         </header>
 
-        <BlogContent blocks={post.content} />
+        <BlogContent post={post} />
 
         {(older || newer) && (
           <nav className="blog-post-nav" aria-label="More posts">

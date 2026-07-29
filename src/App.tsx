@@ -118,12 +118,16 @@ function App() {
       frameId = requestAnimationFrame(tick);
     };
 
-    // the target section is lazily loaded, so warm its chunk first
-    preloadPortfolioSections()
-      .catch(() => undefined)
-      .then(() => {
-        if (!cancelled) scrollWhenSettled();
-      });
+    // one-pager sections are lazily loaded, so warm their chunks before
+    // measuring; on any other route the target is already in the tree
+    const ready =
+      location.pathname === "/"
+        ? preloadPortfolioSections().catch(() => undefined)
+        : Promise.resolve();
+
+    ready.then(() => {
+      if (!cancelled) scrollWhenSettled();
+    });
 
     return () => {
       cancelled = true;

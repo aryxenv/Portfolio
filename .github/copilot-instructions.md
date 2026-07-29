@@ -2,9 +2,37 @@
 
 ## Project
 
-A personal portfolio built with React 19, Vite 6, and TypeScript. Five sections (Home, About, Experience, Projects, Contact) render as a single scrolling page at `/`, with nine self-hosted static demo apps served from `public/`. A blog lives alongside it on real routes — `/blog` for the index and `/blog/<slug>` for a post — via `react-router-dom`, with posts authored as typed content blocks in `src/components/Blog/BlogData.ts`.
+A personal portfolio built with React 19, Vite 6, and TypeScript. Five sections (Home, About, Experience, Projects, Contact) render as a single scrolling page at `/`, with nine self-hosted static demo apps served from `public/`. A blog lives alongside it on real routes — `/blog` for the index and `/blog/<slug>` for a post — via `react-router-dom`.
 
 Commands: `npm run dev` · `npm run build` (runs `tsc -b` then `vite build`) · `npm run lint` · `npm run preview`
+
+## Writing a blog post
+
+Create `src/components/Blog/posts/<folder>/post.md`. Nothing else is registered — `import.meta.glob` in `src/components/Blog/BlogData.ts` picks it up, and the `blog-sitemap` Vite plugin adds it to `dist/sitemap.xml`.
+
+```md
+---
+title: "transcribing and translating in realtime with ai"
+description: "One-line summary, used on the card and as the page meta description."
+read_time_minutes: "10"
+tags: ["foundry", "azure", "openai"]
+date: { "year": "2026", "month": "7", "day": "29" }
+---
+
+# transcribing and translating in realtime with ai
+
+body...
+```
+
+- **Frontmatter values are JSON**, one key per line. `title` is the only required field.
+- **The slug is derived from `title`** — lowercased, non-alphanumeric runs collapsed to dashes. The example above is served at `/blog/transcribing-and-translating-in-realtime-with-ai`. Changing a published title changes its permalink.
+- **A leading `# ` heading matching the title is dropped** on render, since the page prints the title from the frontmatter. Use `##` and `###` for sections.
+- **Images** go in `<folder>/assets/` and are referenced relatively (`./assets/x.png`). An unresolved path is skipped with a dev-console warning rather than rendered broken.
+- **A single newline is a line break.** `remark-breaks` is enabled, so the markdown behaves the way a GitHub comment does rather than the way CommonMark does — what you type on two lines renders on two lines. The practical consequence: **do not hard-wrap prose**, write each paragraph as one long line and separate paragraphs with a blank line.
+- **Supported syntax** is GFM plus raw HTML: tables, task lists, autolinks, footnotes, `<details>`/`<summary>`, and GitHub alerts (`> [!NOTE]`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`). Rendering goes through `react-markdown` + `remark-gfm` + `remark-breaks` + `rehype-raw` in `BlogContent.tsx`; every element it can emit needs a style in `Blog.css`.
+
+- **Code fences are syntax highlighted.** Registered grammars: `python`, `typescript`, `javascript`, `markdown`, `ini`, `csharp`, `powershell`, `bash`, `bicep`, `hcl`, `rust`, plus aliases (`py`, `ts`, `js`, `cs`, `md`, `env`, `sh`, `pwsh`, `tf`/`terraform`, `rs`, …). To add a language, import and register it in `src/components/Blog/highlightCode.ts` — an unregistered fence renders as plain text rather than failing.
+- **Headings are linkable.** Each `##`/`###` gets an id derived from its text, so `/blog/<slug>#pros-and-cons` jumps to that section; duplicate headings get `-1`, `-2`, … suffixes. Renaming a heading changes its anchor, so treat a shared section link the same way as a permalink.
 
 ## Design Context
 

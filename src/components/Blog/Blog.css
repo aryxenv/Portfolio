@@ -136,9 +136,58 @@
   margin-top: 1.25rem;
 }
 
-.blog-post-body h2 {
+.blog-post-body h1,
+.blog-post-body h2,
+.blog-post-body h3,
+.blog-post-body h4 {
   margin-top: 2rem;
+}
+
+.blog-post-body h1 {
+  font-size: 1.7rem;
+}
+
+.blog-post-body h2 {
   font-size: 1.425rem;
+}
+
+.blog-post-body h3 {
+  font-size: 1.14rem;
+}
+
+.blog-post-body h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* heading permalinks: the marker stays out of the way until the heading is
+   touched, so it never becomes decoration on a page made of headings.
+   Scoped to .blog-post-body so it outranks the body link rule above.
+   No scroll-margin-top here — html already sets scroll-padding-top: 6rem and
+   the two stack, which would park headings 192px down instead of 96px. */
+
+.blog-post-body .blog-heading-anchor {
+  margin-left: 0.5rem;
+  opacity: 0;
+  text-decoration: none;
+  transition: opacity 0.3s ease-out;
+}
+
+.blog-post-body .blog-heading:hover .blog-heading-anchor,
+.blog-post-body .blog-heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+.blog-post-body .blog-heading-anchor:focus-visible {
+  outline: var(--border-px) solid var(--primary-color);
+  outline-offset: 4px;
+}
+
+/* no hover to reveal it on touch, so keep it visible at half-light there */
+@media (hover: none) {
+  .blog-post-body .blog-heading-anchor {
+    opacity: 0.5;
+  }
 }
 
 .blog-post-body ul,
@@ -150,10 +199,26 @@
   margin-top: 0.5rem;
 }
 
+/* markdown nests code blocks and images inside list items */
+.blog-post-body li > * {
+  margin-top: 0.75rem;
+}
+
+.blog-post-body li > :first-child {
+  margin-top: 0;
+}
+
+.blog-post-body hr {
+  border: none;
+  border-top: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.25);
+}
+
 .blog-post-body a {
   opacity: 1;
   text-decoration: underline;
   text-underline-offset: 0.25rem;
+  overflow-wrap: anywhere;
   text-decoration-color: rgba(
     var(--primary-r),
     var(--primary-g),
@@ -184,6 +249,139 @@
   opacity: 0.7;
 }
 
+/* GitHub alerts (> [!NOTE]) — hairline panel, tinted by severity. The label
+   text names the severity, so the hue only reinforces it and never carries
+   the meaning alone. Outlined, never filled: a tinted fill would occlude the
+   shader and break the floating-instrument metaphor. */
+
+.blog-alert {
+  --alert-color: var(--primary-color);
+  padding: 1.5rem;
+  border: var(--border-px) solid
+    color-mix(in srgb, var(--alert-color) 80%, transparent);
+  border-radius: 5px;
+}
+
+.blog-alert-note {
+  --alert-color: var(--alert-note);
+}
+
+.blog-alert-tip {
+  --alert-color: var(--alert-tip);
+}
+
+.blog-alert-important {
+  --alert-color: var(--alert-important);
+}
+
+.blog-alert-warning {
+  --alert-color: var(--alert-warning);
+}
+
+.blog-alert-caution {
+  --alert-color: var(--alert-caution);
+}
+
+.blog-alert > * + * {
+  margin-top: 0.5rem;
+}
+
+.blog-alert-label {
+  font-size: 0.855rem;
+  font-weight: 700;
+  color: var(--alert-color);
+}
+
+/* collapsed sections (<details> in the markdown) */
+
+.blog-post-body details {
+  padding: 1.25rem 1.5rem;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+  transition: border 0.3s ease-out;
+}
+
+.blog-post-body details:hover {
+  border-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.blog-post-body summary {
+  /* pulled out to the panel edges and re-padded, so the whole collapsed
+     box is the hit target rather than just the label row */
+  margin: -1.25rem -1.5rem;
+  padding: 1.25rem 1.5rem;
+  opacity: 0.5;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.3s ease-out;
+}
+
+.blog-post-body summary::-webkit-details-marker {
+  display: none;
+}
+
+.blog-post-body summary::before {
+  content: "+";
+  display: inline-block;
+  width: 1rem;
+}
+
+.blog-post-body details[open] > summary::before {
+  content: "−";
+}
+
+.blog-post-body summary:hover,
+.blog-post-body details[open] > summary {
+  opacity: 1;
+}
+
+/* the summary's own bottom padding is the gap to the content below it */
+.blog-post-body details[open] > summary {
+  margin-bottom: 0;
+}
+
+.blog-post-body summary:focus-visible {
+  outline: var(--border-px) solid var(--primary-color);
+  outline-offset: -4px;
+  border-radius: 5px;
+}
+
+/* images ship alongside the markdown in the post's assets/ folder */
+
+.blog-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+}
+
+/* tables */
+
+.blog-table {
+  overflow-x: auto;
+}
+
+.blog-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.blog-table th,
+.blog-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.25);
+}
+
+.blog-table th {
+  font-weight: 700;
+}
+
 /* code keeps the one-typeface rule: Manrope, preserved whitespace,
    tabular figures. There is no monospace in this system (DESIGN.md §3). */
 
@@ -196,9 +394,86 @@
 }
 
 .blog-code-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 0.75rem;
   font-size: 0.855rem;
+}
+
+.blog-code-language {
   opacity: 0.5;
+}
+
+/* copy control: the icon swap is the entire feedback, so it stays on the
+   system's two-state gesture — 0.5 at rest, 1 on contact and while copied */
+
+.blog-copy {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  opacity: 0.5;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: opacity 0.3s ease-out;
+}
+
+.blog-copy:hover,
+.blog-copy.is-copied {
+  opacity: 1;
+}
+
+/* both icons share one grid cell so the button never changes width */
+.blog-copy-icon {
+  display: grid;
+  place-items: center;
+  width: 1.14rem;
+  height: 1.14rem;
+}
+
+.blog-copy-icon i {
+  grid-area: 1 / 1;
+  font-size: 1.14rem;
+  line-height: 1;
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+}
+
+.blog-copy .bx-check,
+.blog-copy.is-copied .bx-copy {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.blog-copy .bx-copy,
+.blog-copy.is-copied .bx-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.blog-copy:focus-visible {
+  outline: var(--border-px) solid var(--primary-color);
+  outline-offset: 4px;
+  opacity: 1;
+}
+
+/* the swap still has to read without motion: cross-fade only, no scale */
+@media (prefers-reduced-motion: reduce) {
+  .blog-copy-icon i {
+    transition: none;
+    transform: none;
+  }
+
+  .blog-copy .bx-check,
+  .blog-copy.is-copied .bx-copy {
+    transform: none;
+  }
 }
 
 .blog-code pre {
@@ -210,7 +485,81 @@
   font-size: 0.855rem;
   font-variant-numeric: tabular-nums;
   white-space: pre;
-  opacity: 0.8;
+  color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.85);
+}
+
+/* syntax tokens — one hue per token family, drawn from the functional accent
+   set so the blog has a single accent vocabulary rather than two. Anything
+   without a rule inherits the base code colour, so an unstyled grammar still
+   reads as plain text instead of disappearing. */
+
+.blog-code .token.comment,
+.blog-code .token.prolog,
+.blog-code .token.cdata,
+.blog-code .token.doctype {
+  color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.6);
+  font-style: italic;
+}
+
+.blog-code .token.punctuation,
+.blog-code .token.operator {
+  color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.7);
+}
+
+.blog-code .token.keyword,
+.blog-code .token.atrule,
+.blog-code .token.rule,
+.blog-code .token.selector,
+.blog-code .token.important {
+  color: var(--accent-violet);
+}
+
+.blog-code .token.string,
+.blog-code .token.char,
+.blog-code .token.attr-value,
+.blog-code .token.regex,
+.blog-code .token.url,
+.blog-code .token.inserted {
+  color: var(--accent-green);
+}
+
+.blog-code .token.number,
+.blog-code .token.boolean,
+.blog-code .token.constant,
+.blog-code .token.symbol {
+  color: var(--accent-amber);
+}
+
+.blog-code .token.function,
+.blog-code .token.generic-function,
+.blog-code .token.class-name,
+.blog-code .token.builtin,
+.blog-code .token.tag,
+.blog-code .token.title {
+  color: var(--accent-cyan);
+}
+
+.blog-code .token.deleted {
+  color: var(--accent-red);
+}
+
+.blog-code .token.attr-name,
+.blog-code .token.property,
+.blog-code .token.variable,
+.blog-code .token.parameter {
+  color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.95);
+}
+
+.blog-code .token.namespace {
+  opacity: 0.7;
+}
+
+.blog-code .token.bold {
+  font-weight: 700;
+}
+
+.blog-code .token.italic {
+  font-style: italic;
 }
 
 /* post-to-post navigation */

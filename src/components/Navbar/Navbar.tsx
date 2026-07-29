@@ -9,12 +9,32 @@ import "./Navbar.css";
 import logoGray from "./l145logo-nobg-gray.png";
 import { scrollToTop } from "../../utils/scroll.ts";
 
-const NAV_SECTIONS = [
-  { id: "about", label: "About", icon: <User size={20} /> },
-  { id: "experience", label: "Experience", icon: <SuitcaseSimple size={20} /> },
-  { id: "projects", label: "Projects", icon: <Package size={20} /> },
-  { id: "contact", label: "Contact", icon: <AddressBook size={20} /> },
-];
+/**
+ * Rendered left to right. A `section` item scrolls the one-pager; a `route`
+ * item is its own page. Reordering the nav means reordering this array.
+ */
+const NAV_ITEMS = [
+  { kind: "section", id: "about", label: "About", icon: <User size={20} /> },
+  {
+    kind: "section",
+    id: "experience",
+    label: "Experience",
+    icon: <SuitcaseSimple size={20} />,
+  },
+  {
+    kind: "section",
+    id: "projects",
+    label: "Projects",
+    icon: <Package size={20} />,
+  },
+  { kind: "route", id: "blog", label: "Blog", icon: <Notebook size={20} /> },
+  {
+    kind: "section",
+    id: "contact",
+    label: "Contact",
+    icon: <AddressBook size={20} />,
+  },
+] as const;
 
 function Navbar({
   activeSection,
@@ -97,36 +117,33 @@ function Navbar({
           <img src={logoGray} alt="" id="logo" aria-hidden="true" />
         </Link>
         <ul>
-          {NAV_SECTIONS.map((section) => (
-            <li key={section.id}>
-              {isHome ? (
-                <a
-                  href={`#${section.id}`}
-                  onClick={(e) => e.currentTarget.classList.add("active")}
-                  className={activeSection === section.id ? "active" : ""}
-                  aria-current={
-                    activeSection === section.id ? "true" : undefined
-                  }
+          {NAV_ITEMS.map((item) => (
+            <li key={item.id}>
+              {item.kind === "route" ? (
+                <Link
+                  to={`/${item.id}`}
+                  className={isBlog ? "active" : ""}
+                  aria-current={isBlog ? "page" : undefined}
                 >
-                  {isMobile ? section.icon : section.label}
+                  {isMobile ? item.icon : item.label}
+                </Link>
+              ) : isHome ? (
+                <a
+                  href={`#${item.id}`}
+                  onClick={(e) => e.currentTarget.classList.add("active")}
+                  className={activeSection === item.id ? "active" : ""}
+                  aria-current={activeSection === item.id ? "true" : undefined}
+                >
+                  {isMobile ? item.icon : item.label}
                 </a>
               ) : (
                 // off the one-pager, the section links have to route home first
-                <Link to={`/#${section.id}`}>
-                  {isMobile ? section.icon : section.label}
+                <Link to={`/#${item.id}`}>
+                  {isMobile ? item.icon : item.label}
                 </Link>
               )}
             </li>
           ))}
-          <li>
-            <Link
-              to="/blog"
-              className={isBlog ? "active" : ""}
-              aria-current={isBlog ? "page" : undefined}
-            >
-              {isMobile ? <Notebook size={20} /> : "Blog"}
-            </Link>
-          </li>
         </ul>
         <div className="colorModeWrapper">
           <button
