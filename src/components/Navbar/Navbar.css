@@ -1,4 +1,6 @@
-nav {
+/* scoped to the navbar: bare `nav`, `ul`, and `li` selectors here are global
+   and were leaking onto every other list and <nav> in the app */
+.navbar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -35,6 +37,15 @@ nav {
   flex: 0 0 auto;
   object-fit: contain;
   transition: all 0.3s ease-out;
+}
+
+.navbar-logo {
+  display: flex;
+  flex: 0 0 60px;
+  align-items: center;
+  justify-content: flex-start;
+  opacity: 1;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .navbar img:hover {
@@ -92,7 +103,7 @@ nav {
   line-height: 1;
 }
 
-ul {
+.navbar ul {
   flex: 8;
   list-style: none;
   display: flex;
@@ -100,7 +111,7 @@ ul {
   justify-content: space-around;
 }
 
-li {
+.navbar li {
   margin: 0;
 }
 
@@ -122,12 +133,24 @@ li {
   opacity: 1;
 }
 
+.navbar a:focus-visible,
+.navbar-logo:focus-visible,
+.perfModeToggle:focus-visible,
+.back-to-top:focus-visible {
+  outline: var(--border-px) solid var(--primary-color);
+  outline-offset: 4px;
+  opacity: 1;
+}
+
 .back-to-top {
   position: fixed;
   right: 1rem;
   bottom: 1rem;
   width: 3rem;
   height: 3rem;
+  padding: 0;
+  background: none;
+  color: var(--primary-color);
   border-radius: 100%;
   border: var(--border-px) solid var(--primary-color);
   opacity: 0.5;
@@ -168,7 +191,7 @@ li {
 }
 
 @media (max-width: 768px) {
-  nav {
+  .navbar {
     padding-left: 0;
     padding-right: 0;
   }
@@ -187,5 +210,4 @@ li {
   .colorModeWrapper {
     justify-content: center;
   }
-
 }

@@ -1,0 +1,480 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-28T12:26:26.742Z",
+  "title": "Design System: Aryan Shah — Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "void-black": {
+        "role": "neutral",
+        "displayName": "Void Black",
+        "canonical": "oklch(0% 0 0)",
+        "tonalRamp": [
+          "oklch(0% 0 0)",
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(78% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "signal-white": {
+        "role": "neutral",
+        "displayName": "Signal White",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(78% 0 0)",
+          "oklch(90% 0 0)",
+          "oklch(100% 0 0)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgba(255, 255, 255, 0.5)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.1)",
+          "rgba(255, 255, 255, 0.2)",
+          "rgba(255, 255, 255, 0.25)",
+          "rgba(255, 255, 255, 0.35)",
+          "rgba(255, 255, 255, 0.5)",
+          "rgba(255, 255, 255, 0.7)",
+          "rgba(255, 255, 255, 0.8)",
+          "rgba(255, 255, 255, 1)"
+        ]
+      },
+      "half-light": {
+        "role": "neutral",
+        "displayName": "Half-Light",
+        "canonical": "rgba(255, 255, 255, 0.5)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.25)",
+          "rgba(255, 255, 255, 0.3)",
+          "rgba(255, 255, 255, 0.5)",
+          "rgba(255, 255, 255, 0.7)",
+          "rgba(255, 255, 255, 0.75)",
+          "rgba(255, 255, 255, 0.8)",
+          "rgba(255, 255, 255, 0.9)",
+          "rgba(255, 255, 255, 1)"
+        ]
+      },
+      "reactor-blue": {
+        "role": "primary",
+        "displayName": "Reactor Blue",
+        "canonical": "oklch(37.4% 0.254 266)",
+        "tonalRamp": [
+          "oklch(15% 0.09 266)",
+          "oklch(22% 0.155 266)",
+          "oklch(30% 0.21 266)",
+          "oklch(37.4% 0.254 266)",
+          "oklch(48% 0.26 266)",
+          "oklch(60% 0.22 266)",
+          "oklch(76% 0.14 266)",
+          "oklch(95% 0.03 266)"
+        ]
+      },
+      "reactor-deep": {
+        "role": "primary",
+        "displayName": "Reactor Deep",
+        "canonical": "oklch(22.4% 0.155 264)",
+        "tonalRamp": [
+          "oklch(15% 0.10 264)",
+          "oklch(22.4% 0.155 264)",
+          "oklch(30% 0.20 264)",
+          "oklch(38% 0.25 264)",
+          "oklch(48% 0.26 264)",
+          "oklch(60% 0.22 264)",
+          "oklch(76% 0.14 264)",
+          "oklch(95% 0.03 264)"
+        ]
+      },
+      "reactor-arc": {
+        "role": "primary",
+        "displayName": "Reactor Arc",
+        "canonical": "oklch(39.1% 0.262 264)",
+        "tonalRamp": [
+          "oklch(15% 0.09 264)",
+          "oklch(23% 0.16 264)",
+          "oklch(31% 0.21 264)",
+          "oklch(39.1% 0.262 264)",
+          "oklch(49% 0.26 264)",
+          "oklch(61% 0.22 264)",
+          "oklch(77% 0.14 264)",
+          "oklch(95% 0.03 264)"
+        ]
+      },
+      "selection-indigo": {
+        "role": "secondary",
+        "displayName": "Selection Indigo",
+        "canonical": "oklch(41.1% 0.273 268)",
+        "tonalRamp": [
+          "oklch(15% 0.09 268)",
+          "oklch(23% 0.16 268)",
+          "oklch(32% 0.22 268)",
+          "oklch(41.1% 0.273 268)",
+          "oklch(51% 0.26 268)",
+          "oklch(63% 0.21 268)",
+          "oklch(78% 0.13 268)",
+          "oklch(95% 0.03 268)"
+        ]
+      },
+      "status-live": {
+        "role": "tertiary",
+        "displayName": "Status Live",
+        "canonical": "oklch(52% 0.177 142.5)",
+        "tonalRamp": [
+          "oklch(15% 0.05 142.5)",
+          "oklch(25% 0.09 142.5)",
+          "oklch(38% 0.13 142.5)",
+          "oklch(52% 0.177 142.5)",
+          "oklch(64% 0.19 142.5)",
+          "oklch(75% 0.16 142.5)",
+          "oklch(86% 0.11 142.5)",
+          "oklch(95% 0.05 142.5)"
+        ]
+      },
+      "status-paused": {
+        "role": "tertiary",
+        "displayName": "Status Paused",
+        "canonical": "oklch(96.8% 0.211 109.8)",
+        "tonalRamp": [
+          "oklch(15% 0.05 109.8)",
+          "oklch(28% 0.08 109.8)",
+          "oklch(42% 0.11 109.8)",
+          "oklch(56% 0.14 109.8)",
+          "oklch(70% 0.16 109.8)",
+          "oklch(82% 0.18 109.8)",
+          "oklch(90% 0.20 109.8)",
+          "oklch(96.8% 0.211 109.8)"
+        ]
+      },
+      "status-archived": {
+        "role": "tertiary",
+        "displayName": "Status Archived",
+        "canonical": "oklch(62.8% 0.258 29.2)",
+        "tonalRamp": [
+          "oklch(15% 0.07 29.2)",
+          "oklch(26% 0.12 29.2)",
+          "oklch(38% 0.17 29.2)",
+          "oklch(50% 0.22 29.2)",
+          "oklch(62.8% 0.258 29.2)",
+          "oklch(74% 0.20 29.2)",
+          "oklch(85% 0.13 29.2)",
+          "oklch(95% 0.05 29.2)"
+        ]
+      },
+      "github-graphite": {
+        "role": "tertiary",
+        "displayName": "GitHub Graphite",
+        "canonical": "oklch(46.4% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(36% 0 0)",
+          "oklch(46.4% 0 0)",
+          "oklch(58% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(83% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "linkedin-blue": {
+        "role": "tertiary",
+        "displayName": "LinkedIn Blue",
+        "canonical": "oklch(60.5% 0.217 257.2)",
+        "tonalRamp": [
+          "oklch(15% 0.06 257.2)",
+          "oklch(26% 0.11 257.2)",
+          "oklch(37% 0.16 257.2)",
+          "oklch(48% 0.20 257.2)",
+          "oklch(60.5% 0.217 257.2)",
+          "oklch(72% 0.17 257.2)",
+          "oklch(84% 0.10 257.2)",
+          "oklch(95% 0.03 257.2)"
+        ]
+      },
+      "instagram-magenta": {
+        "role": "tertiary",
+        "displayName": "Instagram Magenta",
+        "canonical": "oklch(59.8% 0.218 359.7)",
+        "tonalRamp": [
+          "oklch(15% 0.07 359.7)",
+          "oklch(26% 0.12 359.7)",
+          "oklch(37% 0.16 359.7)",
+          "oklch(48% 0.19 359.7)",
+          "oklch(59.8% 0.218 359.7)",
+          "oklch(72% 0.17 359.7)",
+          "oklch(84% 0.10 359.7)",
+          "oklch(95% 0.03 359.7)"
+        ]
+      },
+      "email-silver": {
+        "role": "tertiary",
+        "displayName": "Email Silver",
+        "canonical": "oklch(78.6% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(28% 0 0)",
+          "oklch(40% 0 0)",
+          "oklch(52% 0 0)",
+          "oklch(64% 0 0)",
+          "oklch(78.6% 0 0)",
+          "oklch(88% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The contact sign-off wordmark at 9.5rem (7.6rem mobile). Appears exactly once on the entire site — the one loud moment that lets everything else stay quiet."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Base h1 at 2.85rem / weight 500. Standalone section titles. Note the hero deliberately overrides this down to 1.9rem so the bordered intro panel keeps its composure."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "h3 and the experience company name at 1.7rem / weight 400. Weight drops to 400 here; below this level hierarchy is size alone."
+      },
+      "subtitle": {
+        "displayName": "Subtitle",
+        "purpose": "h4 at 1.425rem / weight 400. Also the size of social and CV action icons."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All prose and nav links at 0.95rem / line-height 1.6. This is the base unit — every other size in the codebase is a multiple of it."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Experience field labels, dates, locations at 0.855rem (0.9x base), recessed to 70-80% opacity. Never recessed by weight."
+      },
+      "emphasis": {
+        "displayName": "Emphasis",
+        "purpose": "The .highlight class at weight 700. Keyword emphasis in prose is carried by weight only — never colour, never the gradient treatment. Works identically in both performance modes."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "state",
+        "value": "0.3s ease-out",
+        "purpose": "The universal state transition. Every hover, opacity change, and border brighten in the system uses this exact value. There is no second duration for state."
+      },
+      {
+        "name": "reveal",
+        "value": "1s",
+        "purpose": "Framer Motion section entrances (translateY ±50px or translateX ±50px into place). Fires once via triggerOnce intersection observation."
+      },
+      {
+        "name": "nav-entrance",
+        "value": "1s ease-out",
+        "purpose": "The navbar slides down from translateY(-100%) on page load."
+      },
+      {
+        "name": "navbar-glass",
+        "value": "0.3s ease-in-out",
+        "purpose": "Backdrop-filter and background-color crossfade as the navbar transitions from transparent to blurred on first scroll."
+      },
+      {
+        "name": "marquee-forward",
+        "value": "70s linear infinite",
+        "purpose": "Top tech-stack row. Deliberately coprime-ish with the reverse row so the two never resync."
+      },
+      {
+        "name": "marquee-reverse",
+        "value": "43s linear infinite",
+        "purpose": "Bottom tech-stack row, counter-scrolling."
+      },
+      {
+        "name": "gradient-flow",
+        "value": "10s linear infinite",
+        "purpose": "Legacy shimmer on the hero name. Currently implemented with background-clip: text, which the system bans — slated for replacement with solid Signal White."
+      },
+      {
+        "name": "timeline-pulse",
+        "value": "2.4s ease-out infinite",
+        "purpose": "Two offset rings expanding scale(1) to scale(3.2) from the active experience dot, second ring delayed 1.2s. Disabled in low-perf mode."
+      },
+      {
+        "name": "description-expand",
+        "value": "1s ease-in-out",
+        "purpose": "Project card max-height 0 to 300px reveal."
+      }
+    ],
+    "breakpoints": [
+      { "name": "tablet", "value": "1180px" },
+      { "name": "mobile", "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "The base container of the system: a transparent hairline rectangle that brightens its border on hover. Never filled — the shader shows through.",
+      "html": "<div class=\"ds-panel\"><h3 class=\"ds-panel-title\">Solutions Engineer Intern</h3><p class=\"ds-panel-body\">Applications + AI/ML at <strong class=\"ds-emphasis\">Microsoft</strong>.</p></div>",
+      "css": ".ds-panel { background: #000; color: var(--primary-color, #fff); font-family: var(--font-family, Manrope, 'Segoe UI', sans-serif); padding: 2rem; border: 1px solid rgba(255,255,255,0.5); border-radius: 5px; transition: border 0.3s ease-out; text-align: center; } .ds-panel:hover { border-color: rgba(255,255,255,1); } .ds-panel-title { font-size: 1.7rem; font-weight: 400; line-height: 1.25; margin: 0; } .ds-panel-body { font-size: 0.95rem; line-height: 1.6; margin: 0.4rem 0 0; } .ds-emphasis { font-weight: 700; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "The two-state opacity gesture in its purest form. Rests at half-light, comes up to full on hover, focus, or when its section is the active one.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-link--active\" href=\"#about\">About</a><a class=\"ds-nav-link\" href=\"#experience\">Experience</a><a class=\"ds-nav-link\" href=\"#projects\">Projects</a><a class=\"ds-nav-link\" href=\"#contact\">Contact</a></nav>",
+      "css": ".ds-nav { background: #000; display: flex; gap: 2rem; align-items: center; justify-content: space-around; padding: 1rem; font-family: var(--font-family, Manrope, 'Segoe UI', sans-serif); } .ds-nav-link { color: var(--primary-color, #fff); opacity: 0.5; font-size: 0.95rem; text-decoration: none; border-radius: 5px; transition: opacity 0.3s ease-out; } .ds-nav-link:hover { opacity: 1; } .ds-nav-link:focus-visible { opacity: 1; outline: 1px solid rgba(255,255,255,1); outline-offset: 4px; } .ds-nav-link--active { opacity: 1; }"
+    },
+    {
+      "name": "Project Card",
+      "kind": "card",
+      "refersTo": "project-card",
+      "description": "The front door to a self-hosted live demo. A status dot pins to the top-left; the description expands on hover. Every claim on this site routes through one of these.",
+      "html": "<article class=\"ds-project-card\"><span class=\"ds-status\"><span class=\"ds-status-dot ds-status-dot--live\"></span><span class=\"ds-status-label\">Live</span></span><div class=\"ds-project-inner\"><h3 class=\"ds-project-title\">NNUE Chessbot</h3><p class=\"ds-project-desc\">A neural-network chess engine with a browser-native play interface.</p><div class=\"ds-project-links\"><a class=\"ds-project-link\" href=\"#\" aria-label=\"Open live site\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/><polyline points=\"15 3 21 3 21 9\"/><line x1=\"10\" y1=\"14\" x2=\"21\" y2=\"3\"/></svg></a><a class=\"ds-project-link\" href=\"#\" aria-label=\"View source on GitHub\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2 0-.4-.5-1.6.2-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.3v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3\"/></svg></a></div></div></article>",
+      "css": ".ds-project-card { position: relative; display: block; background: #000; color: var(--primary-color, #fff); font-family: var(--font-family, Manrope, 'Segoe UI', sans-serif); border: 1px solid rgba(255,255,255,0.5); border-radius: 5px; cursor: pointer; transition: border 0.3s ease-out; } .ds-project-card:hover, .ds-project-card:focus-within { border-color: rgba(255,255,255,1); } .ds-status { position: absolute; top: 1rem; left: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.855rem; opacity: 0.7; } .ds-status-dot { width: 10px; height: 10px; border-radius: 100%; } .ds-status-dot--live { background: green; } .ds-project-inner { padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; } .ds-project-title { font-size: 1.5rem; font-weight: 400; line-height: 1.25; margin: 0; } .ds-project-desc { font-size: 0.95rem; line-height: 1.6; margin: 0.4rem 0 0; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 1s ease-in-out, opacity 0.3s ease-out; } .ds-project-card:hover .ds-project-desc, .ds-project-card:focus-within .ds-project-desc { max-height: 300px; opacity: 1; } .ds-project-links { display: flex; gap: 1rem; margin-top: 0.5rem; } .ds-project-link { color: var(--primary-color, #fff); opacity: 0.5; display: flex; border-radius: 5px; transition: opacity 0.3s ease-out; } .ds-project-link:hover { opacity: 1; } .ds-project-link:focus-visible { opacity: 1; outline: 1px solid rgba(255,255,255,1); outline-offset: 4px; }"
+    },
+    {
+      "name": "Vertical Rail",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "Signature component. A narrow full-height hairline rail with vertical-rl label and a bottom chevron, used as a call-to-action edge beside the hero and the projects grid. Nothing in a template ships this.",
+      "html": "<a class=\"ds-rail\" href=\"#contact\"><span class=\"ds-rail-label\">Contact me!</span><span class=\"ds-rail-arrow\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"/></svg></span></a>",
+      "css": ".ds-rail { display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 220px; padding: 0.7rem; background: #000; color: var(--primary-color, #fff); font-family: var(--font-family, Manrope, 'Segoe UI', sans-serif); text-decoration: none; border: 1px solid rgba(255,255,255,0.5); border-radius: 5px; transition: border 0.3s ease-out; } .ds-rail:hover { border-color: rgba(255,255,255,1); } .ds-rail:focus-visible { border-color: rgba(255,255,255,1); outline: 1px solid rgba(255,255,255,1); outline-offset: 4px; } .ds-rail-label { writing-mode: vertical-rl; text-orientation: mixed; font-size: 0.95rem; margin-top: 0.3rem; } .ds-rail-arrow { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; }"
+    },
+    {
+      "name": "Social Card",
+      "kind": "chip",
+      "refersTo": "social-card",
+      "description": "A hairline pill with a square platform-coloured icon tile. The only place borrowed brand colour is permitted, and it stays confined to the tile.",
+      "html": "<a class=\"ds-social\" href=\"#\"><span class=\"ds-social-tile ds-social-tile--linkedin\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.76-2.05 4.02 0 4.76 2.6 4.76 5.98V21h-4v-5.5c0-1.31-.02-3-1.85-3-1.85 0-2.13 1.43-2.13 2.9V21H9z\"/></svg></span><span class=\"ds-social-label\">LinkedIn</span></a>",
+      "css": ".ds-social { display: inline-flex; align-items: center; gap: 0.4rem; height: 50px; padding: 0.4rem; background: #000; color: var(--primary-color, #fff); font-family: var(--font-family, Manrope, 'Segoe UI', sans-serif); font-size: 0.95rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.5); border-radius: 5px; transition: border 0.3s ease-out, scale 0.3s ease-out; } .ds-social:hover { border-color: rgba(255,255,255,1); scale: 1.1; } .ds-social:focus-visible { border-color: rgba(255,255,255,1); outline: 1px solid rgba(255,255,255,1); outline-offset: 4px; } .ds-social-tile { display: flex; align-items: center; justify-content: center; height: 100%; aspect-ratio: 1/1; border-radius: 5px; color: #fff; } .ds-social-tile--linkedin { background: #007BFF; } .ds-social-tile--github { background: #595959; } .ds-social-tile--instagram { background: #DD2A7B; } .ds-social-tile--email { background: #B9B9B9; } .ds-social-label { padding-right: 0.4rem; } @media (max-width: 1180px) { .ds-social:hover { scale: 1; } }"
+    },
+    {
+      "name": "Timeline Dot",
+      "kind": "custom",
+      "refersTo": "timeline-dot",
+      "description": "A 14px hairline circle filled with the substrate so it interrupts the timeline spine rather than crossing it. The active variant fills green and emits two offset pulse rings.",
+      "html": "<div class=\"ds-timeline\"><span class=\"ds-timeline-dot ds-timeline-dot--active\"></span><span class=\"ds-timeline-dot\"></span><span class=\"ds-timeline-dot\"></span></div>",
+      "css": ".ds-timeline { position: relative; display: flex; flex-direction: column; gap: 2.5rem; padding: 1rem 2rem; background: #000; } .ds-timeline::before { content: ''; position: absolute; top: 1rem; bottom: 1rem; left: calc(2rem + 6px); width: 1px; background: linear-gradient(to bottom, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.35) calc(100% - 1.5rem), rgba(255,255,255,0) 100%); } .ds-timeline-dot { position: relative; z-index: 1; width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.8); border-radius: 100%; background: #000; } .ds-timeline-dot--active { background: green; border-color: green; } .ds-timeline-dot--active::before, .ds-timeline-dot--active::after { content: ''; position: absolute; inset: -1px; border: 1px solid green; border-radius: 100%; opacity: 0; animation: ds-pulse 2.4s ease-out infinite; } .ds-timeline-dot--active::after { animation-delay: 1.2s; } @keyframes ds-pulse { 0% { opacity: 0.55; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(3.2); } } @media (prefers-reduced-motion: reduce) { .ds-timeline-dot--active::before, .ds-timeline-dot--active::after { animation: none; } }"
+    },
+    {
+      "name": "Tech Stack Chip",
+      "kind": "chip",
+      "refersTo": "nav-link",
+      "description": "The marquee unit. No border, no fill — a logo tile plus a nowrap label sitting at half-light. Third-party logos are inverted to white so they conform to the monochrome surface.",
+      "html": "<div class=\"ds-stack-row\"><span class=\"ds-stack-chip\"><span class=\"ds-stack-tile\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2 2 19h6l4-7 4 7h6z\"/></svg></span><span class=\"ds-stack-label\">Azure</span></span><span class=\"ds-stack-chip\"><span class=\"ds-stack-tile\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"12\" r=\"2.2\"/><ellipse cx=\"12\" cy=\"12\" rx=\"10\" ry=\"4.4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\"/><ellipse cx=\"12\" cy=\"12\" rx=\"10\" ry=\"4.4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\" transform=\"rotate(60 12 12)\"/><ellipse cx=\"12\" cy=\"12\" rx=\"10\" ry=\"4.4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\" transform=\"rotate(120 12 12)\"/></svg></span><span class=\"ds-stack-label\">React</span></span><span class=\"ds-stack-chip\"><span class=\"ds-stack-tile\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M8 10h7M11.5 10v7\" stroke=\"currentColor\" stroke-width=\"1.4\" fill=\"none\" stroke-linecap=\"round\"/></svg></span><span class=\"ds-stack-label\">TypeScript</span></span></div>",
+      "css": ".ds-stack-row { display: flex; gap: 1rem; padding: 1rem 2rem; background: #000; font-family: var(--font-family, Manrope, 'Segoe UI', sans-serif); -webkit-mask: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%); mask: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%); } .ds-stack-chip { display: flex; align-items: center; gap: 0.4rem; height: 36px; color: var(--primary-color, #fff); font-size: 0.95rem; white-space: nowrap; opacity: 0.5; border-radius: 5px; cursor: default; transition: opacity 0.3s ease-out; } .ds-stack-chip:hover { opacity: 1; } .ds-stack-tile { display: flex; align-items: center; justify-content: center; height: 100%; aspect-ratio: 1/1; border-radius: 5px; }"
+    },
+    {
+      "name": "Perf Mode Toggle",
+      "kind": "button",
+      "refersTo": "icon-toggle",
+      "description": "Signature component. A 22px bolt in the navbar that swaps the whole site between data-perf high and low — unmounting the WebGL shader, tearing down the smooth-scroll RAF loop, and stripping every always-on animation. Persisted to localStorage and applied pre-paint so there is no flash.",
+      "html": "<button class=\"ds-perf-toggle\" type=\"button\" aria-pressed=\"true\" aria-label=\"Performance mode: high. Click to turn the animated background off.\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 4-5 7h3.2l-1.2 5 5-7h-3.2z\"/></svg></button>",
+      "css": ".ds-perf-toggle { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; padding: 0; margin: 0; background: none; border: none; border-radius: 5px; color: var(--primary-color, #fff); opacity: 0.5; cursor: pointer; transition: opacity 0.3s ease-out; } .ds-perf-toggle:hover { opacity: 1; } .ds-perf-toggle:focus-visible { opacity: 1; outline: 1px solid rgba(255,255,255,1); outline-offset: 4px; } .ds-perf-toggle[aria-pressed='false'] { opacity: 0.5; }"
+    },
+    {
+      "name": "Back To Top",
+      "kind": "button",
+      "refersTo": "back-to-top",
+      "description": "A 3rem hairline circle fixed bottom-right. Slides in from translateY(100px) once the page is scrolled and is fully removed from the tab order while hidden.",
+      "html": "<button class=\"ds-back-to-top\" type=\"button\" aria-label=\"Back to top\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"18 15 12 9 6 15\"/></svg></button>",
+      "css": ".ds-back-to-top { display: flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; background: #000; color: var(--primary-color, #fff); border: 1px solid var(--primary-color, #fff); border-radius: 100%; opacity: 0.5; cursor: pointer; transform: translateY(0); transition: opacity 0.3s ease-out, transform 0.3s ease-out; } .ds-back-to-top:hover { opacity: 1; } .ds-back-to-top:focus-visible { opacity: 1; outline: 1px solid rgba(255,255,255,1); outline-offset: 4px; } .ds-back-to-top[hidden], .ds-back-to-top.is-hidden { opacity: 0; transform: translateY(100px); pointer-events: none; } @media (prefers-reduced-motion: reduce) { .ds-back-to-top { transition: opacity 0.3s ease-out; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Instrument Panel",
+    "overview": "This is a black cabin at night with one light source. Every surface is a hairline-ruled panel floating on a void, and the only colour in the entire system is a slow electric-blue reactor glowing behind everything at a distance. Nothing is filled, nothing is shadowed, nothing is decorated. The system reads the way a well-designed cockpit reads: dense with information, absolutely legible, and completely uninterested in impressing you on first glance.\n\nThe interaction model follows from the metaphor. Instruments sit at rest in half-light — every link, card, icon, and social tile defaults to 50% opacity — and come up to full brightness the moment you touch them. That single gesture, opacity 0.5 to 1 over 0.3s ease-out, is essentially the entire interaction vocabulary of the site. There are no fills, no colour shifts, no scale bounces. Attention is a light coming on.\n\nThis system explicitly rejects the four things PRODUCT.md names. It is not a generic template portfolio — there is no theme vocabulary here, no purchased section grammar, and the structural units (the vertical rotated-text call-to-action rail, the dual counter-scrolling tech marquees, the perf-mode reactor kill switch) do not exist in any starter kit. It is not SaaS landing-page grammar — there are no hero metric blocks, no gradient blobs, no tracked uppercase eyebrows, no 01 / 02 / 03 markers. It is not a scroll-jacked showreel — Lenis smooths the scroll but never hijacks it, and reveals fire once and stay put. It is not a dev-resume wall — skills appear as a moving marquee at half-light, never as a badge grid or a proficiency bar.",
+    "keyCharacteristics": [
+      "Pure #000000 substrate. Not near-black, not charcoal, not a tinted neutral.",
+      "Exactly one border weight: 1px, via --border-px. Every rule in the system is a hairline.",
+      "Exactly one corner radius: 5px. Circles (100%) only for dots and the back-to-top.",
+      "One typeface, Manrope variable, carrying the whole hierarchy on weight and size alone.",
+      "A single base unit of 0.95rem from which every type size in the codebase is derived.",
+      "Zero shadows. Depth is opacity and blur, never elevation.",
+      "Colour lives behind the content plane, never on it.",
+      "A user-facing performance switch that degrades the whole system gracefully."
+    ],
+    "rules": [
+      {
+        "name": "The Blue Stays Behind Glass Rule",
+        "body": "Reactor Blue exists only on the shader plane and in ::selection. It must never appear as a button background, a heading colour, a border, a link state, or a gradient on the content plane. The entire tension of the design is a monochrome instrument floating over a coloured light it never touches. The moment blue crosses onto a surface, the metaphor collapses and the page becomes an ordinary dark-mode site with an accent colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-State Rule",
+        "body": "Every interactive element has exactly two visual states: resting at 50% opacity, and active at 100%. Not three, not a colour shift, not a background fill. If a component needs a third state, it needs a rethink, not a new token.",
+        "section": "colors"
+      },
+      {
+        "name": "The Black Is Black Rule",
+        "body": "The substrate is #000000 and nothing else. No #0a0a0a, no #111, no warm-tinted near-black, no 'softer on the eyes' charcoal. The shader needs true black to read as a light source rather than a panel.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight-Not-Colour Rule",
+        "body": "Emphasis in prose is font-weight: 700 and nothing else. No accent-coloured keywords, no underlines, no highlight backgrounds. The .highlight class is the entire mechanism.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Loud Moment Rule",
+        "body": "9.5rem display type appears exactly once on the site, in the contact sign-off. If a second element wants that scale, one of them is wrong.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Shadow Rule",
+        "body": "Zero box-shadow declarations. If an element needs to separate from its surroundings, raise its border opacity or give it more space. Never add a shadow, a glow, or a lighter background panel.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Two Glass Surfaces Rule",
+        "body": "backdrop-filter appears on the scrolled navbar and the CV caption. That is the complete list. Every additional blurred surface pushes the system toward the glassmorphism it bans, and costs a GPU layer that low-perf mode then has to unwind.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Transparent Container Rule",
+        "body": "Containers are outlined, never filled. background-color on a card or panel is a bug — it occludes the shader and breaks the floating-instrument metaphor.",
+        "section": "components"
+      },
+      {
+        "name": "The One Easing Rule",
+        "body": "Every state transition is 0.3s ease-out. Entrance reveals are 1s. There is no third duration and no other easing curve in the system.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do keep the substrate at exactly #000000 and let the shader be the only light source.",
+      "Do derive every new font-size as a multiple of the 0.95rem base unit. Pick a multiplier from the table in the Typography section, not a pixel value.",
+      "Do use 1px (var(--border-px)) for every rule, border, and divider. One weight, no exceptions.",
+      "Do use 5px for every rectangle and 100% for every dot.",
+      "Do express state with the two-state opacity gesture: 0.5 at rest, 1 on contact, 0.3s ease-out.",
+      "Do use the decomposed --primary-r/g/b channels when a component needs a custom alpha, rather than adding a new colour token.",
+      "Do pair every new always-on animation with a html[data-perf=\"low\"] override in the same change.",
+      "Do add a @media (prefers-reduced-motion: reduce) block alongside it — the perf toggle is a preference, the media query is an accessibility requirement, and PRODUCT.md targets WCAG 2.1 AA. Neither currently exists in the codebase.",
+      "Do add a visible :focus-visible treatment to every interactive element. There are currently zero in src/, and outline: none is set on roughly a dozen components with nothing replacing it.",
+      "Do ship interactive elements as real <a> and <button> elements. Several navigation affordances are divs and imgs with onClick handlers and are unreachable by keyboard.",
+      "Do verify half-light text against the brightest frame of the moving shader, not against flat black. #FFFFFF at 50% over the reactor's bright pole is materially worse than the same white over #000000, and the shader is the real backdrop.",
+      "Do give the project status dots a non-colour companion (label or shape). Colour-only encoding fails AA."
+    ],
+    "donts": [
+      "Don't use background-clip: text with a gradient. Gradient text is an absolute ban. The .gradient-animation treatment currently on the name in the hero is exactly this pattern and should be replaced with solid Signal White plus weight; the low-perf branch already renders it that way and reads better.",
+      "Don't let Reactor Blue onto the content plane. No blue buttons, no blue headings, no blue borders, no blue gradients. It lives behind the glass.",
+      "Don't add a box-shadow anywhere. Zero exist; keep it that way.",
+      "Don't add a third blurred surface. The scrolled navbar and the CV caption are the complete list.",
+      "Don't fill a card or panel with a background colour. Containers are outlines.",
+      "Don't use border-left or border-right above 1px as a coloured accent stripe. The experience role indent is a 1px structural rule and is the only left-border permitted.",
+      "Don't add a second typeface. Manrope carries the whole hierarchy on weight and size deliberately; a display serif or a mono would be costume.",
+      "Don't ship the generic template portfolio look — Framer / Notion / Astro-theme section grammar, stock hero layouts, or any component that looks like it came with a starter kit. This is PRODUCT.md's primary anti-reference and the site's entire premise is that it was built, not bought.",
+      "Don't import SaaS landing-page grammar: hero metric blocks, gradient blobs, three identical rounded-icon feature cards, tiny uppercase tracked eyebrows above section headings, or 01 / 02 / 03 numbered section markers.",
+      "Don't build a scroll-jacked showreel. Lenis smooths the scroll; it must never seize it. Reveals fire once and stay put, and no reveal may gate content visibility — if the transition never fires, the section must still be there.",
+      "Don't build a dev-resume wall: badge grids, skill percentage bars, or exhaustive technology lists. Skills belong in the half-light marquee, and claims belong behind a link to something running.",
+      "Don't signal an active navigation item or a project status with colour or opacity alone.",
+      "Don't introduce a warm or tinted neutral anywhere. This system is #000000 and #FFFFFF at varying alpha, and that austerity is the point."
+    ]
+  }
+}

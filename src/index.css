@@ -85,6 +85,17 @@ i {
   font-weight: 700;
 }
 
+/* inline code in prose — still Manrope: this system has no monospace */
+.inline-code {
+  font-family: var(--font-family);
+  font-size: 0.855rem;
+  font-variant-numeric: tabular-nums;
+  padding: 0 0.25rem;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.25);
+  border-radius: 5px;
+}
+
 /* name animation */
 .gradient-animation {
   background: linear-gradient(90deg, gray, var(--primary-color), gray);
