@@ -1,0 +1,80 @@
+---
+import { render } from "astro:content";
+import PostNav from "../../components/blog/PostNav.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAdjacentPosts, getPosts, postMeta } from "../../lib/posts";
+import "../../styles/blog.css";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, ...getAdjacentPosts(posts, post.id) },
+  }));
+}
+
+const { post, older, newer } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout
+  title={`${post.data.title} | Aryan Shah`}
+  description={post.data.description}
+  ogType="article"
+>
+  <article class="component blog-post">
+    <div class="blog-post-container" data-reveal>
+      <a class="blog-back" href="/blog">
+        <i class="bx bx-chevron-left"></i>
+        All posts
+      </a>
+
+      <header class="blog-post-header">
+        <h1>{post.data.title}</h1>
+        <p class="blog-post-meta">
+          {
+            post.data.date ? (
+              <time datetime={post.data.date}>{postMeta(post, true)}</time>
+            ) : (
+              postMeta(post, true)
+            )
+          }
+        </p>
+      </header>
+
+      <div class="blog-post-body">
+        <Content />
+      </div>
+
+      <PostNav older={older} newer={newer} />
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  import { initCopyButtons } from "../../lib/copy-button";
+  import { scrollToElement } from "../../lib/scroll";
+
+  document.addEventListener("astro:page-load", initCopyButtons);
+
+  // route heading permalinks through the Lenis-aware helper rather than
+  // letting the browser jump, so both perf modes land identically
+  document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>(
+      ".blog-heading-anchor",
+    );
+    const id = anchor?.getAttribute("href")?.slice(1);
+    const target = id && document.getElementById(id);
+    if (!target) return;
+
+    event.preventDefault();
+    history.pushState(null, "", `#${id}`);
+    scrollToElement(target);
+  });
+</script>

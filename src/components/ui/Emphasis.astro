@@ -1,0 +1,13 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types";
+import { emphasize } from "../../lib/emphasis";
+
+type Props<Tag extends HTMLTag = "span"> = Polymorphic<{ as: Tag }> & {
+  /** Plain text; `**keyword**` becomes a bold highlight. */
+  text: string;
+};
+
+const { as: Tag = "span", text, ...rest } = Astro.props;
+---
+
+<Tag {...rest} set:html={emphasize(text)} />

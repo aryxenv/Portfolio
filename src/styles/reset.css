@@ -1,0 +1,61 @@
+/* Reset and document defaults. */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+  line-height: 1.6;
+}
+
+/*
+ * Type scale. Every size is a multiple of the 0.95rem body unit —
+ * pick a multiplier, never a pixel value.
+ */
+h1 {
+  font-size: 2.85rem; /* ×3 */
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 2.375rem; /* ×2.5 */
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+
+h4 {
+  font-size: 1.425rem; /* ×1.5 */
+  font-weight: 400;
+}
+
+/* The two-state interaction, applied once. */
+a {
+  color: var(--primary-color);
+  opacity: var(--normal-opacity);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--state-duration) var(--ease);
+}
+
+a:hover {
+  opacity: var(--hover-opacity);
+}
+
+i {
+  color: var(--primary-color);
+}

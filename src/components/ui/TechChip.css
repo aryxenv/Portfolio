@@ -1,0 +1,36 @@
+.stack-component {
+  width: auto;
+  height: 100%;
+  opacity: var(--normal-opacity);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: default;
+  transition: opacity var(--state-duration) var(--ease);
+}
+
+.stack-component:hover {
+  opacity: var(--hover-opacity);
+}
+
+.stack-component-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  aspect-ratio: 1/1;
+  border-radius: 5px;
+}
+
+.stack-component-bg img {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.stack-component-txt {
+  flex: 1;
+  white-space: nowrap;
+}

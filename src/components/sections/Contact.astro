@@ -1,0 +1,107 @@
+---
+import cvImage from "../../assets/aryan_shah_cv.png";
+import { socials } from "../../data/socials";
+import Reveal from "../ui/Reveal.astro";
+import "./Contact.css";
+
+const CV_PDF = "/assets/aryan_shah_cv.pdf";
+const letters = [..."Let's talk!"];
+const year = new Date().getFullYear();
+---
+
+<section class="component contact" id="contact">
+  <div class="contact-container">
+    <div class="main-contact-container">
+      <Reveal as="h3">Like what you see?</Reveal>
+
+      <h2>
+        {
+          /* One span per letter for the stagger. The space must stay a real
+             space, not an &nbsp; — it is the only wrap opportunity in the line,
+             and without it the heading cannot break and pushes the CV column
+             off the grid below 1180px. */
+          letters.map((letter, index) => (
+            <span data-reveal style={`--reveal-delay: ${index * 40}ms`}>
+              {letter}
+            </span>
+          ))
+        }
+      </h2>
+
+      <Reveal class="sepLineContact" index={1} />
+
+      <div class="socials">
+        {
+          socials.map((social, index) => (
+            <Reveal
+              as="a"
+              class={`socialCard ${social.name.toLowerCase()}`}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              index={index}
+            >
+              <div class="social-opacityLayer">
+                <div class={`socialbg ${social.bgClass}`}>
+                  <i class={social.icon} />
+                </div>
+
+                <div class={`socialtxt ${social.name.toLowerCase()}-text`}>
+                  {social.name}
+                </div>
+              </div>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+
+    <Reveal class="cv-section-container" index={1}>
+      <h4>Want more details?</h4>
+
+      <div class="cv-container">
+        <a
+          class="imgWrapper"
+          href={CV_PDF}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src={cvImage.src}
+            alt="Aryan Shah CV"
+            class="photo"
+            loading="lazy"
+            decoding="async"
+          />
+
+          <div class="caption-wrapper">
+            <div class="caption">Aryan Shah CV</div>
+          </div>
+        </a>
+
+        <a
+          class="openPDF"
+          href={CV_PDF}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open CV in a new tab"
+        >
+          <i class="bx bx-link-external"></i>
+        </a>
+
+        <a
+          class="downloadPDF"
+          href={CV_PDF}
+          download="aryan_shah_cv.pdf"
+          aria-label="Download CV"
+        >
+          <i class="bx bx-download"></i>
+        </a>
+      </div>
+    </Reveal>
+
+    <Reveal as="p" class="contact-footer" index={2}>
+      Designed &amp; Developed by Aryan Shah &nbsp;|&nbsp; © {year} All rights reserved.
+    </Reveal>
+  </div>
+</section>

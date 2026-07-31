@@ -1,0 +1,54 @@
+/*
+ * Design tokens. The single source of truth for colour, rhythm and motion.
+ * See DESIGN.md — nothing here is arbitrary.
+ */
+
+:root {
+  /* ── Substrate and ink ─────────────────────────────────────────────── */
+  --primary-color: rgb(255, 255, 255);
+  --primary-r: 255;
+  --primary-g: 255;
+  --primary-b: 255;
+  --border-color: rgba(255, 255, 255, 0.5);
+  --bg-color: rgb(0, 0, 0);
+
+  /* ── Type ──────────────────────────────────────────────────────────── */
+  --font-family: "Manrope", "Segoe UI", sans-serif;
+
+  /* ── Structure ─────────────────────────────────────────────────────── */
+  --navbar-height: 4rem;
+  --border-px: 1px;
+  --navbar-bg-scroll: rgba(255, 255, 255, 0);
+
+  /* ── Interaction: the entire two-state vocabulary ──────────────────── */
+  --normal-opacity: 0.5;
+  --hover-opacity: 1;
+  --state-duration: 0.3s;
+  --ease: ease-out;
+  --invertHover: 1;
+
+  /* ── Motion: entrance reveals ──────────────────────────────────────── */
+  --reveal-distance: 8px;
+  --reveal-duration: 0.4s;
+  --reveal-stagger: 40ms;
+
+  /* ── Chrome ────────────────────────────────────────────────────────── */
+  --selection-bg: 0.5;
+  --scrollbar-color-normal: rgba(255, 255, 255, 0.5);
+  --scrollbar-color-hovered: rgba(255, 255, 255, 1);
+
+  /* functional accents — the only hues on the content plane besides the
+     project status dots, and deliberately clear of the reactor's indigo band.
+     They encode blog callout severity and code token type, nothing else. */
+  --accent-cyan: #00b7c3;
+  --accent-green: #3fb950;
+  --accent-violet: #c77dff;
+  --accent-amber: #e3b341;
+  --accent-red: #ff7b72;
+
+  --alert-note: var(--accent-cyan);
+  --alert-tip: var(--accent-green);
+  --alert-important: var(--accent-violet);
+  --alert-warning: var(--accent-amber);
+  --alert-caution: var(--accent-red);
+}

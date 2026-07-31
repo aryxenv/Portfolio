@@ -1,0 +1,253 @@
+/* The rendered markdown body: headings, lists, alerts, images, tables. */
+
+.blog-post-body {
+  margin-top: 2rem;
+}
+
+.blog-post-body > * + * {
+  margin-top: 1.25rem;
+}
+
+.blog-post-body h1,
+.blog-post-body h2,
+.blog-post-body h3,
+.blog-post-body h4 {
+  margin-top: 2rem;
+}
+
+.blog-post-body h1 {
+  font-size: 1.7rem;
+}
+
+.blog-post-body h2 {
+  font-size: 1.425rem;
+}
+
+.blog-post-body h3 {
+  font-size: 1.14rem;
+}
+
+.blog-post-body h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* heading permalinks: the marker stays out of the way until the heading is
+   touched, so it never becomes decoration on a page made of headings.
+   Scoped to .blog-post-body so it outranks the body link rule above.
+   No scroll-margin-top here — html already sets scroll-padding-top: 6rem and
+   the two stack, which would park headings 192px down instead of 96px. */
+
+.blog-post-body .blog-heading-anchor {
+  margin-left: 0.5rem;
+  opacity: 0;
+  text-decoration: none;
+  transition: opacity 0.3s ease-out;
+}
+
+.blog-post-body .blog-heading:hover .blog-heading-anchor,
+.blog-post-body .blog-heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+/* no hover to reveal it on touch, so keep it visible at half-light there */
+@media (hover: none) {
+  .blog-post-body .blog-heading-anchor {
+    opacity: 0.5;
+  }
+}
+
+.blog-post-body ul,
+.blog-post-body ol {
+  padding-left: 1.25rem;
+}
+
+.blog-post-body li + li {
+  margin-top: 0.5rem;
+}
+
+/* markdown nests code blocks and images inside list items */
+.blog-post-body li > * {
+  margin-top: 0.75rem;
+}
+
+.blog-post-body li > :first-child {
+  margin-top: 0;
+}
+
+.blog-post-body hr {
+  border: none;
+  border-top: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.25);
+}
+
+.blog-post-body a {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+  overflow-wrap: anywhere;
+  text-decoration-color: rgba(
+    var(--primary-r),
+    var(--primary-g),
+    var(--primary-b),
+    0.5
+  );
+  transition: text-decoration-color 0.3s ease-out;
+}
+
+.blog-post-body a:hover {
+  text-decoration-color: rgba(
+    var(--primary-r),
+    var(--primary-g),
+    var(--primary-b),
+    1
+  );
+}
+
+.blog-post-body blockquote {
+  padding: 1.5rem;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+}
+
+.blog-post-body blockquote p {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* GitHub alerts (> [!NOTE]) — hairline panel, tinted by severity. The label
+   text names the severity, so the hue only reinforces it and never carries
+   the meaning alone. Outlined, never filled: a tinted fill would occlude the
+   shader and break the floating-instrument metaphor. */
+
+.blog-alert {
+  --alert-color: var(--primary-color);
+  padding: 1.5rem;
+  border: var(--border-px) solid
+    color-mix(in srgb, var(--alert-color) 80%, transparent);
+  border-radius: 5px;
+}
+
+.blog-alert-note {
+  --alert-color: var(--alert-note);
+}
+
+.blog-alert-tip {
+  --alert-color: var(--alert-tip);
+}
+
+.blog-alert-important {
+  --alert-color: var(--alert-important);
+}
+
+.blog-alert-warning {
+  --alert-color: var(--alert-warning);
+}
+
+.blog-alert-caution {
+  --alert-color: var(--alert-caution);
+}
+
+.blog-alert > * + * {
+  margin-top: 0.5rem;
+}
+
+.blog-alert-label {
+  font-size: 0.855rem;
+  font-weight: 700;
+  color: var(--alert-color);
+}
+
+/* collapsed sections (<details> in the markdown) */
+
+.blog-post-body details {
+  padding: 1.25rem 1.5rem;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+  transition: border 0.3s ease-out;
+}
+
+.blog-post-body details:hover {
+  border-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.blog-post-body summary {
+  /* pulled out to the panel edges and re-padded, so the whole collapsed
+     box is the hit target rather than just the label row */
+  margin: -1.25rem -1.5rem;
+  padding: 1.25rem 1.5rem;
+  opacity: 0.5;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.3s ease-out;
+}
+
+.blog-post-body summary::-webkit-details-marker {
+  display: none;
+}
+
+.blog-post-body summary::before {
+  content: "+";
+  display: inline-block;
+  width: 1rem;
+}
+
+.blog-post-body details[open] > summary::before {
+  content: "−";
+}
+
+.blog-post-body summary:hover,
+.blog-post-body details[open] > summary {
+  opacity: 1;
+}
+
+/* the summary's own bottom padding is the gap to the content below it */
+.blog-post-body details[open] > summary {
+  margin-bottom: 0;
+}
+
+.blog-post-body summary:focus-visible {
+  outline: var(--border-px) solid var(--primary-color);
+  outline-offset: -4px;
+  border-radius: 5px;
+}
+
+/* images ship alongside the markdown in the post's assets/ folder */
+
+.blog-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+}
+
+/* tables */
+
+.blog-table {
+  overflow-x: auto;
+}
+
+.blog-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.blog-table th,
+.blog-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.25);
+}
+
+.blog-table th {
+  font-weight: 700;
+}
+
+/* code keeps the one-typeface rule: Manrope, preserved whitespace,
+   tabular figures. There is no monospace in this system (DESIGN.md §3). */

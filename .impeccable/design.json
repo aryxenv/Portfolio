@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-28T12:26:26.742Z",
+  "generatedAt": "2026-07-31T09:55:46.349Z",
   "title": "Design System: Aryan Shah — Portfolio",
   "extensions": {
     "colorMeta": {
@@ -269,13 +269,13 @@
       },
       {
         "name": "reveal",
-        "value": "1s",
-        "purpose": "Framer Motion section entrances (translateY ±50px or translateX ±50px into place). Fires once via triggerOnce intersection observation."
+        "value": "0.4s ease-out",
+        "purpose": "Section and card entrances: translateY(8px) into place, exposed as --reveal-distance / --reveal-duration / --reveal-stagger (40ms step when several land together). Pure CSS keyframes fired once by a single shared IntersectionObserver in lib/reveal.ts."
       },
       {
         "name": "nav-entrance",
         "value": "1s ease-out",
-        "purpose": "The navbar slides down from translateY(-100%) on page load."
+        "purpose": "The navbar slides down from translateY(-100%) on page load. Neutralised by the prefers-reduced-motion block."
       },
       {
         "name": "navbar-glass",
@@ -295,7 +295,7 @@
       {
         "name": "gradient-flow",
         "value": "10s linear infinite",
-        "purpose": "Legacy shimmer on the hero name. Currently implemented with background-clip: text, which the system bans — slated for replacement with solid Signal White."
+        "purpose": "Shimmer on the hero name, implemented with background-clip: text, which the system bans — slated for replacement with solid Signal White. Disabled in low-perf mode."
       },
       {
         "name": "timeline-pulse",
@@ -303,14 +303,20 @@
         "purpose": "Two offset rings expanding scale(1) to scale(3.2) from the active experience dot, second ring delayed 1.2s. Disabled in low-perf mode."
       },
       {
-        "name": "description-expand",
-        "value": "1s ease-in-out",
-        "purpose": "Project card max-height 0 to 300px reveal."
+        "name": "description-reveal",
+        "value": "0.3s ease-out",
+        "purpose": "Project card description fades opacity 0 to 1 on hover or focus-within. It holds its space at all times, so the row height never reflows."
       }
     ],
     "breakpoints": [
-      { "name": "tablet", "value": "1180px" },
-      { "name": "mobile", "value": "768px" }
+      {
+        "name": "tablet",
+        "value": "1180px"
+      },
+      {
+        "name": "mobile",
+        "value": "768px"
+      }
     ]
   },
   "components": [
@@ -443,7 +449,7 @@
       },
       {
         "name": "The One Easing Rule",
-        "body": "Every state transition is 0.3s ease-out. Entrance reveals are 1s. There is no third duration and no other easing curve in the system.",
+        "body": "Every state transition is 0.3s ease-out (--state-duration). Entrance reveals are 0.4s ease-out over 8px (--reveal-duration / --reveal-distance), stepped by 40ms (--reveal-stagger) when several land together. There is no third duration and no other easing curve in the system.",
         "section": "components"
       }
     ],
@@ -455,9 +461,9 @@
       "Do express state with the two-state opacity gesture: 0.5 at rest, 1 on contact, 0.3s ease-out.",
       "Do use the decomposed --primary-r/g/b channels when a component needs a custom alpha, rather than adding a new colour token.",
       "Do pair every new always-on animation with a html[data-perf=\"low\"] override in the same change.",
-      "Do add a @media (prefers-reduced-motion: reduce) block alongside it — the perf toggle is a preference, the media query is an accessibility requirement, and PRODUCT.md targets WCAG 2.1 AA. Neither currently exists in the codebase.",
-      "Do add a visible :focus-visible treatment to every interactive element. There are currently zero in src/, and outline: none is set on roughly a dozen components with nothing replacing it.",
-      "Do ship interactive elements as real <a> and <button> elements. Several navigation affordances are divs and imgs with onClick handlers and are unreachable by keyboard.",
+      "Do add a @media (prefers-reduced-motion: reduce) block alongside it — the perf toggle is a preference, the media query is an accessibility requirement, and PRODUCT.md targets WCAG 2.1 AA. Both now exist and live together in styles/motion.css, so neither can be added without the other being obvious.",
+      "Do rely on the single global :focus-visible treatment in styles/base.css (1px outline, 4px offset, full opacity) and never reset outline in a component. A blanket outline: none leaves a control focusable with nothing to show for it, which is why none remain in src/.",
+      "Do ship interactive elements as real <a> and <button> elements. The logo, the back-to-top control, the three vertical rails, the bio and role toggles, and the technology category controls are all native elements — there is no div with a click handler left in the codebase.",
       "Do verify half-light text against the brightest frame of the moving shader, not against flat black. #FFFFFF at 50% over the reactor's bright pole is materially worse than the same white over #000000, and the shader is the real backdrop.",
       "Do give the project status dots a non-colour companion (label or shape). Colour-only encoding fails AA."
     ],

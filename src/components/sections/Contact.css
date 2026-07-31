@@ -1,0 +1,289 @@
+.contact-container {
+  display: grid;
+  height: 100%;
+  /* min-height: calc(100vh - var(--navbar-height) - 5rem); */
+  width: 100%;
+  grid-template-rows: max-content;
+  grid-template-columns: 10fr max-content;
+  gap: 2rem;
+}
+
+.main-contact-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+  width: 100%;
+}
+
+.main-contact-container h2 {
+  font-size: 9.5rem;
+  line-height: 9.5rem;
+  margin-bottom: 3rem;
+}
+
+.main-contact-container p {
+  margin-top: 2rem;
+}
+
+/*
+ * The footer sits under the left column on desktop and last in the stack on
+ * mobile — one element, placed by the grid, instead of two duplicated copies
+ * behind a `matchMedia` branch.
+ */
+.contact-footer {
+  grid-column: 1;
+  text-align: left;
+}
+
+.sepLineContact {
+  width: 20%;
+  height: var(--border-px);
+  background-color: var(--primary-color);
+  margin: 1rem 0;
+  opacity: 0.3;
+  transition:
+    width var(--reveal-duration) var(--ease),
+    opacity var(--reveal-duration) var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html[data-reveal-ready] .sepLineContact:not([data-revealed]) {
+  width: 0;
+  transform: none;
+}
+
+html[data-reveal-ready] .sepLineContact[data-revealed] {
+  opacity: 0.3;
+}
+
+.socials {
+  height: auto;
+  margin-top: 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  flex-direction: row;
+}
+
+/*
+ * An `<a>` for keyboard access, so it opts out of the global text-link rest
+ * opacity in `reset.css` — the card is always fully drawn and it is the border
+ * that responds to contact. Overriding `transition` on a `data-reveal` element
+ * also means restating the reveal's opacity/transform and delay.
+ */
+.socialCard {
+  width: auto;
+  height: 50px;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+  opacity: 1;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  transition:
+    border-color var(--state-duration) var(--ease),
+    opacity var(--reveal-duration) var(--ease),
+    transform var(--reveal-duration) var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Border opacity only — the card must not change size on contact. */
+.socialCard:hover {
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.social-opacityLayer {
+  width: auto;
+  height: 100%;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.socialbg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 5px;
+}
+
+.github-background {
+  background-color: #595959;
+}
+
+.linkedin-background {
+  background-color: #007bff;
+}
+
+.instagram-background {
+  background-color: #dd2a7b;
+}
+
+.email-background {
+  background-color: #b9b9b9;
+}
+
+.socials i {
+  font-size: 1.425rem;
+  -webkit-tap-highlight-color: transparent;
+  color: #fff;
+}
+
+.cv-section-container {
+  text-align: left;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * `max-width`, not `width`: the grid column is `max-content`, and the track is
+ * sized from the photo's intrinsic width clamped to this value. Giving the
+ * photo a CSS `width` instead would zero out that contribution and collapse the
+ * column to the width of the <h4> above it. `min-width` pins the same value so
+ * the track is stable before the lazy-loaded photo reports its size.
+ */
+.cv-container {
+  margin-top: 1rem;
+  min-width: calc(799px / 3);
+  max-width: calc(799px / 3);
+  max-height: calc(1134px / 3);
+  background-color: #595959;
+  display: flex;
+  position: relative;
+  cursor: pointer;
+  border-radius: 5px;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  transition: all 0.3s ease-out;
+}
+
+.cv-container:hover {
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.cv-container i {
+  color: #000;
+}
+
+/*
+ * An `<a>` wrapping the whole thumbnail, so it opts out of the global text-link
+ * rest opacity in `reset.css` — the photo is always fully drawn and it is the
+ * container border that responds to contact.
+ */
+.cv-container .imgWrapper {
+  min-width: 100%;
+  display: flex;
+  opacity: 1;
+}
+
+/*
+ * Deliberately no `width`/`height` here, and none as attributes on the <img>
+ * either: the flex row shrinks the photo to the container's max-width, and any
+ * specified size would win over that and leave only its top-left corner visible.
+ */
+.cv-container .photo {
+  object-fit: cover;
+  transition: transform var(--state-duration) var(--ease);
+}
+
+.cv-container .photo:hover {
+  transform: scale(1.05);
+}
+
+.cv-container .caption-wrapper {
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  padding: 0 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Caption text */
+.cv-container .caption {
+  width: max-content;
+  text-align: center;
+  padding: 0 8px;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+  border: var(--border-px) solid #000;
+  border-radius: 5px;
+}
+
+.cv-container .openPDF {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  opacity: 0.5;
+  transition: all 0.3s ease-out;
+}
+
+.cv-container .downloadPDF {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  opacity: 0.5;
+  transition: all 0.3s ease-out;
+}
+
+.cv-container .openPDF i {
+  font-size: 1.425rem;
+}
+
+.cv-container .downloadPDF i {
+  font-size: 1.425rem;
+}
+
+.cv-container .downloadPDF:hover,
+.cv-container .openPDF:hover {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  #contact {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .contact-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-contact-container h2 {
+    font-size: 7.6rem;
+    line-height: 7.6rem;
+    margin-bottom: 1rem;
+  }
+
+  /* The box becomes a short banner; the photo crops to its top band. */
+  .cv-container {
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: 200px;
+    align-items: stretch;
+  }
+
+  .cv-container .photo {
+    width: 100%;
+  }
+}

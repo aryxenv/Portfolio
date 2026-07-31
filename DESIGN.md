@@ -134,6 +134,7 @@ The interaction model follows from the metaphor. Instruments sit at rest in half
 This system explicitly rejects the four things PRODUCT.md names. It is not a **generic template portfolio** — there is no theme vocabulary here, no purchased section grammar, and the structural units (the vertical rotated-text call-to-action rail, the dual counter-scrolling tech marquees, the perf-mode reactor kill switch) do not exist in any starter kit. It is not **SaaS landing-page grammar** — there are no hero metric blocks, no gradient blobs, no tracked uppercase eyebrows, no `01 / 02 / 03` markers. It is not a **scroll-jacked showreel** — Lenis smooths the scroll but never hijacks it, and reveals fire once and stay put. It is not a **dev-resume wall** — skills appear as a moving marquee at half-light, never as a badge grid or a proficiency bar.
 
 **Key Characteristics:**
+
 - Pure `#000000` substrate. Not near-black, not charcoal, not a tinted neutral.
 - Exactly one border weight: `1px`, via `--border-px`. Every rule in the system is a hairline.
 - Exactly one corner radius: `5px`, via `panel`. Circles (`100%`) only for dots and the back-to-top.
@@ -148,20 +149,24 @@ This system explicitly rejects the four things PRODUCT.md names. It is not a **g
 A monochrome instrument surface lit from behind by a single saturated blue that the interface itself is never allowed to touch.
 
 ### Primary
+
 - **Reactor Blue** (`#1000C4`): The core of the WebGL shader sphere. This is the brand colour and it appears in exactly one place — the animated gradient plane fixed behind all content at `z-index: 0`, rendered at `brightness: 0.6` with grain on. It is never a button fill, never a text colour, never a border.
 - **Reactor Arc** (`#000ECE`): The shader's highlight pole. Slightly brighter and cooler than the core; it produces the moving bright edge of the sphere.
 - **Reactor Deep** (`#000062`): The shader's shadow pole. Where the sphere falls off into the void, this is the last blue before black.
 
 ### Secondary
+
 - **Selection Indigo** (`#1D04DB` at 50% alpha): The `::selection` highlight. The only moment the reactor colour crosses onto the content plane — and it only does so because the user asked for it by dragging. Treat this as a deliberate exception, not a precedent.
 
 ### Neutral
+
 - **Void Black** (`#000000`): The body substrate and the fallback background when the shader is off. True black, no tint. In low-perf mode this is the entire background, and the design must still hold.
 - **Signal White** (`#FFFFFF`): Primary ink and the source of every border, rule, and icon in the system. Exposed as both `--primary-color` and as decomposed `--primary-r/g/b` channels so opacity can be varied per-component without new tokens.
 - **Half-Light** (`#FFFFFF` at 50% alpha): The universal resting state. Body links, nav links, tech-stack chips, the perf toggle, and the back-to-top all sit here until hovered. Also the default border colour (`--border-color`).
 - **Quarter-Light** (`#FFFFFF` at 25–35% alpha): Structural rules that should recede — the experience timeline spine at 35%, the role indent rule at 25%, the section separator lines at 30%.
 
 ### Tertiary (functional only)
+
 - **Status Live** (`green`), **Status Paused** (`yellow`), **Status Archived** (`red`): 10px dots on project cards and the pulsing 14px dot on the current role in the experience timeline. These exist purely to encode state.
 - **Functional accents** — Cyan (`#00B7C3`), Green (`#3FB950`), Violet (`#C77DFF`), Amber (`#E3B341`), Red (`#FF7B72`), exposed as `--accent-cyan` … `--accent-red`. One accent vocabulary shared by the two places in the blog that need to encode a category: callout severity (`--alert-note` … `--alert-caution` alias straight onto them) and code syntax tokens. Every one is deliberately clear of the reactor's indigo band so the Blue Stays Behind Glass rule holds, and all five clear 4.5:1 against the shader as painted (`brightness: 0.6`) — the worst case is Violet at 5.89:1. They never appear on prose, a heading, a fill, or a control.
 - **Platform marks** — GitHub Graphite (`#595959`), LinkedIn Blue (`#007BFF`), Instagram Magenta (`#DD2A7B`), Email Silver (`#B9B9B9`): borrowed identity colours confined to the square icon tile inside each social card. They belong to those platforms, not to this system; never pull them outward into the interface.
@@ -186,29 +191,30 @@ A monochrome instrument surface lit from behind by a single saturated blue that 
 
 Every single font-size in this codebase is a multiple of the `0.95rem` body size. This is the system's most distinctive and least obvious property, and it is exact:
 
-| Multiplier | Size | Where |
-|---|---|---|
-| ×0.4 | `0.38rem` | Tooltip description |
-| ×0.6 | `0.57rem` | Rotated rail label (small variant) |
-| ×0.8 | `0.76rem` | Card body below 1180px |
-| ×0.9 | `0.855rem` | Experience labels, role location |
-| ×1 | `0.95rem` | Body, nav links, rail labels |
-| ×1.2 | `1.14rem` | Hero role line |
-| ×1.4 | `1.33rem` | Card title below 1180px |
-| ×1.5 | `1.425rem` | `h4`, social and CV icons |
-| ×1.79 | `1.7rem` | `h3`, company name |
-| ×2 | `1.9rem` | Hero `h1` |
-| ×2.5 | `2.375rem` | `h2` |
-| ×3 | `2.85rem` | `h1` |
-| ×8 | `7.6rem` | Contact display below 768px |
-| ×10 | `9.5rem` | Contact display |
+| Multiplier | Size       | Where                              |
+| ---------- | ---------- | ---------------------------------- |
+| ×0.4       | `0.38rem`  | Tooltip description                |
+| ×0.6       | `0.57rem`  | Rotated rail label (small variant) |
+| ×0.8       | `0.76rem`  | Card body below 1180px             |
+| ×0.9       | `0.855rem` | Experience labels, role location   |
+| ×1         | `0.95rem`  | Body, nav links, rail labels       |
+| ×1.2       | `1.14rem`  | Hero role line                     |
+| ×1.4       | `1.33rem`  | Card title below 1180px            |
+| ×1.5       | `1.425rem` | `h4`, social and CV icons          |
+| ×1.79      | `1.7rem`   | `h3`, company name                 |
+| ×2         | `1.9rem`   | Hero `h1`                          |
+| ×2.5       | `2.375rem` | `h2`                               |
+| ×3         | `2.85rem`  | `h1`                               |
+| ×8         | `7.6rem`   | Contact display below 768px        |
+| ×10        | `9.5rem`   | Contact display                    |
 
 New sizes must land on this grid. Pick a multiplier, not a pixel value.
 
 ### Hierarchy
+
 - **Display** (500, `9.5rem` / `7.6rem` mobile, line-height 1): The contact section's oversized wordmark. The single loudest gesture on the site, and it appears exactly once — at the very end, as the sign-off. Its scale is the whole reason the rest of the page can stay quiet.
 - **Headline** (500, `2.85rem`): The base `h1`. Section-level, used at full scale for standalone titles.
-- **Hero** (500, `1.9rem`): The `h1` override inside `.introduction`. Deliberately *smaller* than the base `h1` — the hero panel is dense and bordered, and a full-scale headline would break the panel's composure.
+- **Hero** (500, `1.9rem`): The `h1` override inside `.introduction`. Deliberately _smaller_ than the base `h1` — the hero panel is dense and bordered, and a full-scale headline would break the panel's composure.
 - **Title** (400, `1.7rem`): `h3` and the experience company name. Weight drops to 400 here; from this level down, hierarchy is carried by size alone.
 - **Subtitle** (400, `1.425rem`): `h4`.
 - **Body** (400, `0.95rem`, line-height 1.6): All prose. Note that the global `line-height: 1.6` is already the light-on-dark compensation this system needs; do not reduce it.
@@ -242,6 +248,7 @@ Depth is expressed through three mechanisms instead:
 The component character across the board: **hairline-outlined containers at rest in half-light, brightening on contact.** Nothing is filled. Nothing is elevated. Everything is a rectangle drawn in one-pixel white on black with a 5px corner.
 
 ### Panels / Cards
+
 - **Corner Style:** `5px` (`{rounded.panel}`) — universal, no exceptions.
 - **Background:** `transparent`. The shader shows through. Never give a card a solid or tinted fill.
 - **Border:** `1px solid rgba(255,255,255,0.5)` at rest → `rgba(255,255,255,1)` on hover. Written via the decomposed `--primary-r/g/b` channels so the alpha is the only thing that changes.
@@ -251,68 +258,77 @@ The component character across the board: **hairline-outlined containers at rest
 - **Mobile:** the hero panel drops its border and padding entirely below 768px. On a small screen the frame is noise; the content is the panel.
 
 ### Navigation
+
 - **Style:** Fixed, full-width, `4rem` tall (`--navbar-height`), `z-index: 1000`. Fully transparent at scroll position 0; transitions to `backdrop-filter: blur(10px)` once scrolled. Entrance animation slides it down from `-100%` over `1s ease-out` on load.
 - **Typography:** Body (`0.95rem`, weight 400).
-- **States:** rest `opacity: 0.5` → hover `1` → active `1`, over `0.3s ease-out`. Within the one-pager the active section is driven by `useInView` scroll-spy at a `-50%` viewport margin; on the blog routes the Blog item is active by pathname.
-- **Items:** About · Experience · Projects · Blog · Contact, driven by the `NAV_ITEMS` array in `Navbar.tsx`. A `section` item is a plain in-page anchor while on `/` and becomes a router link to `/#section` from any other route; a `route` item is its own page. Reordering the nav means reordering that array — nothing is positioned by JSX structure.
-- **Mobile:** below 768px, labels are replaced by 20px Phosphor icons (User / SuitcaseSimple / Package / AddressBook / Notebook). Icon-only, no text.
+- **States:** rest `opacity: 0.5` → hover `1` → active `1`, over `0.3s ease-out`. Within the one-pager the active section is driven by an `IntersectionObserver` scroll-spy at a `-50%` viewport margin (`lib/navbar.ts`); on the blog routes the Blog item is active by pathname.
+- **Items:** About · Experience · Projects · Blog · Contact, driven by the `NAV_ITEMS` array in `data/nav.ts`. A `section` item is a plain in-page anchor while on `/` and becomes a link to `/#section` from any other route; a `route` item is its own page. Reordering the nav means reordering that array — nothing is positioned by markup structure.
+- **Mobile:** below 768px, labels are replaced by 20px icons (User / SuitcaseSimple / Package / AddressBook / Notebook). Both are rendered and swapped by CSS, so the markup stays static; the icon carries a visually-hidden label so it is never an unnamed link.
 - **Note:** active state is signalled by opacity alone, which is a colour-independence gap against the WCAG AA target in PRODUCT.md. It needs a second signal that is not a rule or an underline — those were tried and rejected as visual noise in a nav this quiet.
 - **Note:** the `nav`, `ul`, and `li` rules in `Navbar.css` are scoped to `.navbar` — they are global stylesheets, and bare element selectors there style every list and `<nav>` in the app.
 
 ### Project Card
-- **Character:** A transparent hairline rectangle that reveals its description on interaction by animating `max-height: 0 → 300px` over `1s ease-in-out`. The card is the demo's front door; the whole point is that it is clickable through to a live, self-hosted build under `public/`.
+
+- **Character:** A transparent hairline rectangle whose description holds its space at rest and fades in on contact (`opacity 0 → 1` over `0.3s ease-out`), so hovering a card never reflows the grid around it. The card is the demo's front door; the whole point is that it is clickable through to a live, self-hosted build under `public/`.
 - **Title:** `1.5rem`, line-height `1.25`.
 - **Status:** a 10px dot pinned at `top: 1rem; left: 1rem` — green live, yellow paused, red archived. Colour-only encoding; needs a text or shape companion for AA.
 - **Links:** `1.4rem` Boxicons row, `1rem` gap, centred.
 
 ### Blog
+
 - **Character:** The one component family that is not a section of the one-pager. `/blog` is a single column of hairline post cards; `/blog/<slug>` is a `720px` reading column. Both keep the outlined-container grammar — nothing is filled, nothing is elevated — and both are left-aligned, overriding the site's centred default because prose is not a poster.
-- **Authoring:** posts are markdown. `src/components/Blog/posts/<folder>/post.md` plus an optional `assets/` folder beside it; Vite picks both up at build time, so publishing is adding a folder. The slug is the frontmatter title lowercased with dashes, so it is never typed twice.
+- **Authoring:** posts are markdown. `src/content/blog/<folder>/index.md` plus an optional `assets/` folder beside it; the content collection's `glob()` loader picks both up at build time, so publishing is adding a folder. The slug is the frontmatter title lowercased with dashes, so it is never typed twice.
 - **Post card:** `2rem` padding (`1.5rem` below 768px), `5px` radius, `1px` border 50% → 100% on hover. Title `1.7rem` (`1.425rem` mobile), summary at 70% opacity, date / reading time / tags as `0.855rem` labels at 50%. Tags are plain middot-separated text — never pills, never a badge grid.
 - **Post page:** `h1` at `2.85rem` (`1.9rem` below 768px), a single `0.855rem` meta line, body at `0.95rem`. In-body headings step down `1.7 / 1.425 / 1.14rem`, and the markdown's own top-level `# title` is dropped so it is not printed twice.
 - **Alerts:** GitHub alert blockquotes (`> [!NOTE]`) become a hairline panel tinted by severity — the functional alert hue on the 1px border at 80% and on the `0.855rem` weight-700 label, over a transparent body. The word carries the meaning and the hue reinforces it, so the callout survives being read in greyscale. No fill: a tinted background would occlude the shader and break the Transparent Container Rule.
-- **Heading permalinks:** every heading in a post body gets an id slugged from its own text (repeats get `-1`, `-2`, … like GitHub), assigned by a rehype plugin so the numbering is document-ordered and deterministic. A `#` marker sits at `opacity: 0` and comes up to `1` on heading hover or keyboard focus; under `@media (hover: none)` it stays visible at half-light, since touch has no hover to reveal it. The click is routed through `utils/scroll.ts` rather than left to the browser, so both perf modes land the heading at the same 96px offset. **Do not add `scroll-margin-top` to a heading** — `html` already carries `scroll-padding-top: 6rem`, and the two stack, parking the target 192px down.
+- **Heading permalinks:** every heading in a post body gets an id slugged from its own text (repeats get `-1`, `-2`, … like GitHub), assigned by a rehype plugin so the numbering is document-ordered and deterministic. A `#` marker sits at `opacity: 0` and comes up to `1` on heading hover or keyboard focus; under `@media (hover: none)` it stays visible at half-light, since touch has no hover to reveal it. The click is routed through `lib/scroll.ts` rather than left to the browser, so both perf modes land the heading at the same 96px offset. **Do not add `scroll-margin-top` to a heading** — `html` already carries `scroll-padding-top: 6rem`, and the two stack, parking the target 192px down.
 - **Collapsed sections:** `<details>` renders as a hairline panel whose summary sits at 50% and brightens on contact, marked `+` / `−` rather than a native disclosure triangle. The summary is pulled out to the panel edges with negative margins and re-padded, so the entire collapsed box is the hit target instead of just the label row.
 - **Code:** still Manrope. Code blocks and inline code use `white-space: pre` and tabular figures inside a hairline panel at `0.855rem`, with the fence's language as the panel label — a monospace face would be the second typeface this system refuses.
-- **Syntax highlighting:** Prism grammars via `refractor`, rendered to elements rather than injected HTML, with a theme built from the functional accent set: keywords violet, strings green, numbers amber, functions and types cyan, comments white at 60% italic, punctuation at 70%, everything else at 85%. Four hues total — a stock editor theme would drag a dozen unrelated colours onto a monochrome page. Any token class without a rule inherits the base colour, so an unknown grammar degrades to plain text instead of vanishing. Grammars are registered explicitly in `highlightCode.ts`; adding a language means adding an import there.
+- **Syntax highlighting:** Prism grammars via `refractor`, applied by a rehype plugin **at build time** so no grammar is shipped to the browser, with a theme built from the functional accent set: keywords violet, strings green, numbers amber, functions and types cyan, comments white at 60% italic, punctuation at 70%, everything else at 85%. Four hues total — a stock editor theme would drag a dozen unrelated colours onto a monochrome page. Any token class without a rule inherits the base colour, so an unknown grammar degrades to plain text instead of vanishing. Grammars are registered explicitly in `lib/markdown/highlight-code.ts`; adding a language means adding an import there.
 - **Copy control:** a `1.14rem` icon button sitting opposite the language label in the code panel's caption row (`justify-content: space-between`). Rest `0.5` → `1` on contact and while copied. Feedback is a copy/check icon cross-fade over `0.3s ease-out`, both icons stacked in one grid cell so the button never changes width; the check scales `0.6 → 1` on the way in, and `prefers-reduced-motion: reduce` drops the scale for a straight cross-fade. The state also carries an `aria-live` "Copied", so the animation is never the only signal.
-- **Motion:** entrance reveals only (`0.6s` staggered cards, `1s` post fade). There is no always-on animation in the blog, so low-perf mode has nothing to unwind.
+- **Motion:** entrance reveals only, on the system's single reveal token (`8px` over `0.4s ease-out`). There is no always-on animation in the blog, so low-perf mode has nothing to unwind.
 
 ### Vertical Rail (signature component)
+
 - **Character:** The site's most distinctive structural element. A narrow full-height hairline rectangle with its label set in `writing-mode: vertical-rl` and a chevron pinned at the bottom, used as a call-to-action rail beside the hero and the projects grid ("Contact me!", "View more projects"). It gives the layout a vertical edge that no template ships with, and it costs almost no horizontal space.
 - **Shape:** `5px` radius, `1px` border at 50% → 100% on hover, `0.7rem` padding (`0.2rem` in the compact variant).
 - **Label:** `0.95rem` vertical (`0.57rem` in the compact variant).
-- **Accessibility note:** currently a `div` with an `onClick` that assigns `window.location.href`. It must become an `<a>` to be keyboard-reachable.
+- **Accessibility note:** it is an `<a>`, so it is keyboard-reachable and reads as a link.
 
 ### Tech-Stack Marquee
+
 - **Character:** Two counter-scrolling rows of technology chips behind a horizontal fade mask, running `70s` forward and `43s` reverse on `linear infinite`. The mismatched durations are deliberate — they never resync, so the composition never repeats.
 - **Chip:** no border, no fill; a square logo tile plus a nowrap label at `opacity: 0.5`, rising to `1` on hover.
 - **Mask:** `linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%)` on both axes of the row.
 - **Logos:** inverted to white via `filter: invert(var(--invertHover))` so third-party brand marks conform to the monochrome surface.
 
 ### Experience Timeline
+
 - **Spine:** a `1px` vertical gradient rule at `left: 12px`, holding 35% alpha and fading to transparent over its final `1.5rem`.
 - **Dot:** 14px circle, `1px` border at 80% alpha, filled with `--bg-color` so the spine is visually interrupted rather than crossed.
 - **Active dot:** filled green with two `::before`/`::after` rings pulsing `scale(1) → scale(3.2)` over `2.4s`, offset by `1.2s`. Disabled entirely in low-perf mode.
 - **Role indent:** `border-left: 1px solid rgba(255,255,255,0.25)`. This is the one permitted left-border in the system, and it is permitted **only** because it is a 1px structural indent rule on a nested list — not a coloured accent stripe. Do not thicken it and do not colour it.
 
 ### Social Card
+
 - **Shape:** `50px` tall, auto width, `5px` radius, `1px` border 50% → 100%, plus `scale: 1.1` on hover (suppressed below 1180px).
 - **Icon tile:** square `aspect-ratio: 1/1` filled with the platform's own brand colour, `1.425rem` white glyph.
 
 ### Perf-Mode Toggle (signature component)
-- **Character:** A 22px bolt icon in the navbar that switches the entire site between `data-perf="high"` and `data-perf="low"`, persisted to `localStorage` and applied pre-paint by an inline script in `index.html` so there is no flash. Low mode unmounts the WebGL shader, tears down the Lenis RAF loop, sets Framer Motion's `reducedMotion` to `"always"`, and strips every marquee, pulse, gradient shimmer, and backdrop-filter via CSS attribute selectors.
-- **Why it is a design component, not a settings control:** it is the clearest single expression of PRODUCT.md's principle that *the machine is part of the message*. Treat it as first-class surface, and make sure every new always-on animation gets a `html[data-perf="low"]` off-switch in the same commit.
+
+- **Character:** A 22px bolt icon in the navbar that switches the entire site between `data-perf="high"` and `data-perf="low"`, persisted to `localStorage` and applied pre-paint by an inline script in `layouts/BaseLayout.astro` so there is no flash. Low mode unmounts the WebGL shader, tears down the Lenis RAF loop, and strips every marquee, pulse, gradient shimmer, and backdrop-filter via CSS attribute selectors.
+- **Why it is a design component, not a settings control:** it is the clearest single expression of PRODUCT.md's principle that _the machine is part of the message_. Treat it as first-class surface, and make sure every new always-on animation gets a `html[data-perf="low"]` off-switch in the same commit.
 
 ### Named Rules
 
 **The Transparent Container Rule.** Containers are outlined, never filled. `background-color` on a card or panel is a bug — it occludes the shader and breaks the floating-instrument metaphor.
 
-**The One Easing Rule.** Every state transition is `0.3s ease-out`. Entrance reveals are `1s`. There is no third duration and no other easing curve in the system.
+**The One Easing Rule.** Every state transition is `0.3s ease-out` (`--state-duration`). Entrance reveals are `0.4s ease-out` over `8px` (`--reveal-duration` / `--reveal-distance`), stepped by `40ms` (`--reveal-stagger`) when several land together. There is no third duration and no other easing curve in the system.
 
 ## 6. Do's and Don'ts
 
 ### Do:
+
 - **Do** keep the substrate at exactly `#000000` and let the shader be the only light source.
 - **Do** derive every new font-size as a multiple of the `0.95rem` base unit. Pick a multiplier from the table in §3, not a pixel value.
 - **Do** use `1px` (`var(--border-px)`) for every rule, border, and divider. One weight, no exceptions.
@@ -320,13 +336,14 @@ The component character across the board: **hairline-outlined containers at rest
 - **Do** express state with the two-state opacity gesture: `0.5` at rest, `1` on contact, `0.3s ease-out`.
 - **Do** use the decomposed `--primary-r/g/b` channels when a component needs a custom alpha, rather than adding a new colour token.
 - **Do** pair every new always-on animation with a `html[data-perf="low"]` override in the same change.
-- **Do** add a `@media (prefers-reduced-motion: reduce)` block alongside it — the perf toggle is a preference, the media query is an accessibility requirement, and PRODUCT.md targets WCAG 2.1 AA. Neither currently exists in the codebase.
-- **Do** add a visible `:focus-visible` treatment to every interactive element. The navbar and the blog routes now carry one (`1px` outline, `4px` offset); the rest of `src/` still sets `outline: none` with nothing replacing it.
-- **Do** ship interactive elements as real `<a>` and `<button>` elements. The logo and the back-to-top control are now a link and a button; the vertical rails are still `div`s with `onClick` handlers and are unreachable by keyboard.
-- **Do** verify half-light text against the *brightest frame of the moving shader*, not against flat black. `#FFFFFF` at 50% over the reactor's bright pole is materially worse than the same white over `#000000`, and the shader is the real backdrop.
+- **Do** add a `@media (prefers-reduced-motion: reduce)` block alongside it — the perf toggle is a preference, the media query is an accessibility requirement, and PRODUCT.md targets WCAG 2.1 AA. Both now exist and live together in `styles/motion.css`: the `html[data-perf="low"]` overrides and the reduced-motion block sit side by side so neither can be added without the other being obvious.
+- **Do** rely on the single global `:focus-visible` treatment in `styles/base.css` (`1px` outline, `4px` offset, full opacity) and never reset `outline` in a component. A blanket `outline: none` leaves a control focusable with nothing to show for it, which is why none remain in `src/`.
+- **Do** ship interactive elements as real `<a>` and `<button>` elements. The logo, the back-to-top control, the three vertical rails, the bio and role toggles, and the technology category controls are all native elements — there is no `div` with a click handler left in the codebase.
+- **Do** verify half-light text against the _brightest frame of the moving shader_, not against flat black. `#FFFFFF` at 50% over the reactor's bright pole is materially worse than the same white over `#000000`, and the shader is the real backdrop.
 - **Do** give the project status dots a non-colour companion (label or shape). Colour-only encoding fails AA.
 
 ### Don't:
+
 - **Don't** use `background-clip: text` with a gradient. Gradient text is an absolute ban. The `.gradient-animation` treatment currently on the name in the hero is exactly this pattern and should be replaced with solid `Signal White` plus weight; the low-perf branch already renders it that way and reads better.
 - **Don't** let Reactor Blue onto the content plane. No blue buttons, no blue headings, no blue borders, no blue gradients. It lives behind the glass.
 - **Don't** add a `box-shadow` anywhere. Zero exist; keep it that way.

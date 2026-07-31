@@ -1,0 +1,119 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Navbar from "../components/layout/Navbar.astro";
+import ShaderBackground from "../islands/ShaderBackground";
+import "../styles/global.css";
+import "boxicons/css/boxicons.min.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or root-relative URL of the social preview image. */
+  image?: string;
+  ogType?: "website" | "article";
+}
+
+const DEFAULT_DESCRIPTION =
+  "Aryan Shah is a Solutions Engineer Intern in Applications and AI/ML at Microsoft and a Data Science graduate building Azure AI apps, agentic demos, and full-stack projects.";
+
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  image = "/favicon.ico",
+  ogType = "website",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const socialImage = new URL(image, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script is:inline>
+      // apply saved performance preference before first paint (defaults to high)
+      (function () {
+        try {
+          const pref = localStorage.getItem("perfMode");
+          document.documentElement.dataset.perf =
+            pref === "low" ? "low" : "high";
+        } catch {
+          document.documentElement.dataset.perf = "high";
+        }
+      })();
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-1SB9NQND3M"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(...args) {
+        window.dataLayer.push(args);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-1SB9NQND3M");
+    </script>
+
+    <ClientRouter />
+  </head>
+
+  <body>
+    <div class="shaderBackground" aria-hidden="true" transition:persist>
+      <ShaderBackground client:only="react" />
+    </div>
+
+    <Navbar transition:persist />
+
+    <div class="page">
+      <div class="app">
+        <slot />
+      </div>
+    </div>
+
+    <script>
+      import { initNavbar, syncNavbarToRoute } from "../lib/navbar";
+      import { initReveal } from "../lib/reveal";
+      import { initSmoothScroll } from "../lib/smooth-scroll";
+      import { onPerfModeChange } from "../lib/perf-mode";
+
+      initNavbar();
+      initSmoothScroll();
+      initReveal();
+
+      onPerfModeChange(() => initReveal());
+
+      document.addEventListener("astro:page-load", () => {
+        syncNavbarToRoute();
+        initReveal();
+      });
+    </script>
+  </body>
+</html>

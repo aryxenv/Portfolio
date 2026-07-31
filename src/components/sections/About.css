@@ -1,0 +1,464 @@
+.about-container {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-template-rows: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.about-me-container {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 1fr max-content;
+  gap: 1rem;
+}
+
+.about-me-title {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin-bottom: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-me-text {
+  display: flex;
+  height: auto;
+  padding: 2rem;
+  flex-direction: column;
+  border: var(--border-px) solid var(--border-color);
+  border-radius: 5px;
+}
+
+.about-me-text-1,
+.about-me-text-2 {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: max-content 1fr;
+}
+
+.about-me-text-1-content p:not([data-expanded]) .bio-more,
+.about-me-text-1-content p[data-expanded] .see-more-expand {
+  display: none;
+}
+
+.about-me-text-1-title,
+.about-me-text-2-title {
+  display: flex;
+  margin-bottom: 1rem;
+  /* width: 100%;
+    height: 100%; */
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.about-me-text-1-content,
+.about-me-text-2-content {
+  display: flex;
+  margin-bottom: 2rem;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
+
+.about-me-text-2-content {
+  margin-bottom: 0;
+}
+
+.about-me-text-2-content table {
+  width: 100%;
+  height: 100%;
+  border: var(--border-px) solid var(--border-color);
+  border-radius: 5px;
+  border-spacing: 0;
+}
+
+.about-me-text-2-content table td,
+.about-me-text-2-content table th {
+  border: var(--border-px) solid var(--border-color);
+  padding: 8px;
+}
+
+.about-me-text-2-content table td:hover,
+.about-me-text-2-content table th:hover {
+  border: var(--border-px) solid var(--border-color);
+}
+
+.about-me-text-1-content p,
+.about-me-text-2-content p {
+  white-space: pre-line;
+}
+
+.skills-container {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 12fr max-content;
+  gap: 1rem;
+}
+
+.technologies {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: max-content 8fr;
+  border: var(--border-px) solid var(--border-color);
+  border-radius: 5px;
+}
+
+.technologies-title {
+  display: flex;
+  padding: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.technologies-list-container {
+  display: flex;
+  flex-direction: column;
+  /* grid-template-columns: 100%;
+    grid-template-rows: max-content; */
+  position: relative;
+  gap: 1rem;
+  padding: 2rem;
+  padding-top: 1.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.technologies-list-title {
+  display: flex;
+  width: 100%;
+  height: min-content;
+  margin: 0;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.technologies-list-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.technologies-list-label {
+  font-size: 1.425rem;
+  font-weight: 400;
+}
+
+.technologies-list-toggle i {
+  font-size: 1.32rem;
+  line-height: 1;
+  transition: transform 0.18s var(--ease);
+}
+
+.technologies-list-title[data-open] .bx-chevron-down {
+  transform: rotate(180deg);
+}
+
+.technologies-category-menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  display: flex;
+  min-width: 240px;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.35);
+  border-radius: 5px;
+  background-color: rgba(
+    var(--primary-r),
+    var(--primary-g),
+    var(--primary-b),
+    0.04
+  );
+  backdrop-filter: blur(18px);
+  transform-origin: top left;
+  opacity: 0;
+  transform: translateY(-4px);
+  visibility: hidden;
+  transition:
+    opacity 0.16s var(--ease),
+    transform 0.16s var(--ease),
+    visibility 0.16s;
+}
+
+.technologies-list-title[data-open] .technologies-category-menu {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}
+
+.technologies-category-option {
+  appearance: none;
+  padding: 0.7rem 0.9rem;
+  border: none;
+  border-bottom: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.12);
+  background-color: transparent;
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  opacity: 0.75;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease-out,
+    opacity 0.2s ease-out;
+}
+
+.technologies-category-option:last-child {
+  border-bottom: none;
+}
+
+.technologies-category-option:hover,
+.technologies-category-option.active {
+  background-color: rgba(
+    var(--primary-r),
+    var(--primary-g),
+    var(--primary-b),
+    0.08
+  );
+  opacity: 1;
+}
+
+.technologies-list {
+  height: min-content;
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1rem;
+  position: relative;
+  /* border: 2px solid var(--primary-color); */
+}
+
+.technologyCard {
+  width: calc(50% - 0.5rem);
+  height: 50px;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  /* opacity: 0.5; */
+  /* padding: 0.4rem; */
+  border-radius: 5px;
+  /* display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    position: relative;
+    cursor: default; */
+  transition: border 0.3s ease-out;
+}
+
+.technologyCard:hover {
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.technology-opacityLayer {
+  width: 100%;
+  height: 100%;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  cursor: default;
+}
+
+/* .technologyCard:hover {
+    opacity: 1;
+} */
+
+.technology-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 5px;
+  background-color: blue;
+}
+
+.technology-txt {
+  flex: 1;
+  text-align: left;
+}
+
+.technologies-list img {
+  filter: invert(1);
+}
+
+/* Style each slide */
+.technologies-list-container .slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* Next & previous buttons */
+.technologies-list-container .prev,
+.technologies-list-container .next {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: calc(1.5rem + 1.5rem + 1rem);
+  bottom: 2rem;
+  width: 32px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 17px;
+  opacity: 0.5;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity var(--state-duration) var(--ease);
+  border-radius: 16px;
+}
+
+.technologies-list-container .prev {
+  left: 5px;
+}
+
+/* Position the "next" button to the right */
+.technologies-list-container .next {
+  right: 5px;
+}
+
+.technologies-list-container .prev:hover,
+.technologies-list-container .next:hover {
+  opacity: 1;
+}
+
+.technologies-list-container i {
+  color: var(--primary-color);
+}
+
+/*
+ * An `<a>` for keyboard access, so it has to opt out of the global text-link
+ * rest opacity in `reset.css` — the panel is always fully drawn and it is the
+ * border that responds to contact. It is also a `data-reveal` element, so
+ * overriding `transition` means owning the whole list: the reveal's
+ * opacity/transform and its delay have to be restated here.
+ */
+.viewProjects {
+  width: 100%;
+  height: 100%;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  opacity: 1;
+  cursor: pointer;
+  border-radius: 5px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--state-duration) var(--ease),
+    opacity var(--reveal-duration) var(--ease),
+    transform var(--reveal-duration) var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.viewProjects:hover {
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.viewProjects-opacityLayer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.viewProjects-arrow {
+  height: 24px;
+  width: 24px;
+}
+
+.viewProjects-arrow i {
+  color: var(--primary-color);
+  height: 24px;
+  width: 24px;
+}
+
+/* .viewProjects:hover {
+    opacity: 1;
+} */
+
+@media (max-width: 1180px) {
+}
+
+@media (max-width: 950px) {
+  .technologies-list {
+    flex-direction: column;
+  }
+
+  .technologyCard {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  #about {
+    padding-top: 0;
+  }
+
+  .about-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-me-text {
+    border: none;
+    padding: 0;
+    margin-bottom: 1.2rem;
+  }
+
+  .technologies {
+    border: none;
+  }
+
+  .technologies-title {
+    padding: 0;
+    padding-bottom: 1rem;
+  }
+
+  .technologies-list-container {
+    border: var(--border-px) solid var(--border-color);
+    border-radius: 5px;
+    padding-top: 2rem;
+  }
+
+  .technologies-list-title {
+    margin-top: 0;
+  }
+
+  .technologies-list-container .prev,
+  .technologies-list-container .next {
+    top: calc(2rem + 1.5rem + 1rem);
+  }
+}

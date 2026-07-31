@@ -1,0 +1,57 @@
+---
+import Icon from "../icons/Icon.astro";
+import { NAV_ITEMS } from "../../data/nav";
+import logo from "./logo.png";
+import "./Navbar.css";
+
+const pathname = Astro.url.pathname;
+const isHome = pathname === "/";
+
+const href = (item: (typeof NAV_ITEMS)[number]) =>
+  item.kind === "route"
+    ? `/${item.id}`
+    : isHome
+      ? `#${item.id}`
+      : `/#${item.id}`;
+
+const isActive = (item: (typeof NAV_ITEMS)[number]) =>
+  item.kind === "route" && pathname.startsWith(`/${item.id}`);
+---
+
+<nav class="navbar">
+  <a class="navbar-logo" href="/" aria-label="Aryan Shah — back to top">
+    <img src={logo.src} alt="" id="logo" aria-hidden="true" />
+  </a>
+
+  <ul>
+    {
+      NAV_ITEMS.map((item) => (
+        <li>
+          <a
+            href={href(item)}
+            data-nav-id={item.id}
+            data-nav-kind={item.kind}
+            class={isActive(item) ? "active" : undefined}
+            aria-current={isActive(item) ? "page" : undefined}
+          >
+            <span class="nav-label">{item.label}</span>
+            <span class="nav-icon">
+              <Icon name={item.icon} />
+              <span class="visually-hidden">{item.label}</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="colorModeWrapper">
+    <button type="button" id="perfMode" class="perfModeToggle">
+      <i class="bx bxs-bolt-circle"></i>
+    </button>
+  </div>
+</nav>
+
+<button type="button" class="back-to-top hidden" aria-label="Back to top">
+  <i class="bx bx-chevron-up"></i>
+</button>

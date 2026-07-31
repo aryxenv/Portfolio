@@ -1,0 +1,86 @@
+---
+import type { Project } from "../../data/projects";
+import Emphasis from "./Emphasis.astro";
+import "./ProjectCard.css";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { id, title, description, websiteLink, githubLink, status } = project;
+
+const primaryLink = websiteLink || githubLink;
+const external = (href: string) => !href.startsWith("/");
+
+const STATUS_LABEL: Record<string, string> = {
+  green: "Online",
+  yellow: "In Development",
+  red: "Offline",
+};
+const statusLabel = STATUS_LABEL[status] ?? "Offline";
+---
+
+<article class:list={["project-card", `project${id}`]}>
+  <div class="blurLayer">
+    <h3>
+      <a
+        class="project-card-link"
+        href={primaryLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {title}
+      </a>
+    </h3>
+
+    {
+      description.trim() !== "" && (
+        <Emphasis as="p" class="project-description" text={description} />
+      )
+    }
+
+    <div class="project-card-links">
+      {
+        websiteLink.trim() !== "" && (
+          <a
+            class="link-to-website"
+            href={websiteLink}
+            target="_blank"
+            rel={external(websiteLink) ? "noopener noreferrer" : undefined}
+            aria-label={`${title} — live site`}
+          >
+            <i class="bx bx-world" />
+          </a>
+        )
+      }
+
+      {
+        githubLink.trim() !== "" && (
+          <a
+            class="link-to-github"
+            href={githubLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${title} — source on GitHub`}
+          >
+            <i class="bx bxl-github" />
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    status !== "none" && (
+      <div class="project-card-status-container">
+        <div
+          class:list={["project-card-status", `project-card-status-${status}`]}
+        />
+        <div class="tooltipDesc">
+          <span>{statusLabel}</span>
+        </div>
+      </div>
+    )
+  }
+</article>

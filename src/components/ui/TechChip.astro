@@ -1,0 +1,17 @@
+---
+import { TECH, type TechKey } from "../../data/tech-stack";
+import "./TechChip.css";
+
+interface Props {
+  tech: TechKey;
+}
+
+const { name, src, alt } = TECH[Astro.props.tech];
+---
+
+<div class="stack-component">
+  <div class="stack-component-bg">
+    <img src={src} alt={alt} width="19" height="19" loading="lazy" />
+  </div>
+  <div class="stack-component-txt">{name}</div>
+</div>
