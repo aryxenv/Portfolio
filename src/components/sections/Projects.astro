@@ -1,0 +1,46 @@
+---
+import { projects } from "../../data/projects";
+import ProjectCard from "../ui/ProjectCard.astro";
+import Reveal from "../ui/Reveal.astro";
+import VerticalRail from "../ui/VerticalRail.astro";
+import "./Projects.css";
+
+const featured = projects.filter((p) => p.status !== "none").slice(0, 5);
+const seeMore = projects.find((p) => p.status === "none");
+---
+
+<section class="component projects" id="projects">
+  <div class="projects-container">
+    <Reveal class="projects-title">
+      <h2>Projects</h2>
+    </Reveal>
+
+    <div class="projects-list-container">
+      {
+        featured.map((project, index) => (
+          <Reveal index={index}>
+            <ProjectCard project={project} />
+          </Reveal>
+        ))
+      }
+
+      <div class="extra-options-container">
+        {
+          seeMore && (
+            <Reveal index={featured.length}>
+              <ProjectCard project={seeMore} />
+            </Reveal>
+          )
+        }
+
+        <Reveal index={featured.length + 1}>
+          <VerticalRail
+            href="#contact"
+            label="Or... Contact me!"
+            variant="contact-me"
+          />
+        </Reveal>
+      </div>
+    </div>
+  </div>
+</section>

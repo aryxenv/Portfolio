@@ -1,0 +1,26 @@
+---
+import About from "../components/sections/About.astro";
+import Contact from "../components/sections/Contact.astro";
+import Experience from "../components/sections/Experience.astro";
+import Home from "../components/sections/Home.astro";
+import Projects from "../components/sections/Projects.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Portfolio | Aryan Shah"
+  description="Aryan Shah, ex-Solutions Engineer Intern (Applications + AI/ML) at Microsoft. Data Science graduate building full-stack apps, agentic AI and Azure AI demos."
+>
+  <div class="section-slot"><Home /></div>
+  <div class="section-slot"><About /></div>
+  <div class="section-slot"><Experience /></div>
+  <div class="section-slot"><Projects /></div>
+  <div class="section-slot"><Contact /></div>
+</BaseLayout>
+
+<script>
+  import { initProjectCards } from "../lib/project-cards";
+
+  initProjectCards();
+  document.addEventListener("astro:page-load", initProjectCards);
+</script>

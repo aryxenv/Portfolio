@@ -1,3 +1,9 @@
-# Ignore artifacts:
-build
-coverage
+# build output
+dist
+.astro
+
+# self-hosted demo apps and vendored assets — not ours to format
+public
+
+# tool-managed design sidecar
+.impeccable

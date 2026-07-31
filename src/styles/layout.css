@@ -1,0 +1,40 @@
+/* The page shell: the 1280px column every section sits inside. */
+
+.page {
+  max-width: 1280px;
+  width: 90%;
+  margin: calc(var(--navbar-height) + 1.5rem) auto 3rem;
+  text-align: center;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* One full-height slot per section of the one-pager. */
+.component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  height: auto;
+  min-height: calc(100vh - var(--navbar-height) - 5rem);
+  width: 100%;
+}
+
+.section-slot {
+  width: 100%;
+}
+
+@media (max-width: 1180px) {
+  .page {
+    overflow-x: hidden;
+  }
+}

@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/not-found.css";
+---
+
+<BaseLayout
+  title="Page not found | Aryan Shah"
+  description="That page does not exist."
+>
+  <section class="component not-found">
+    <div class="not-found-container" data-reveal>
+      <h1>404</h1>
+      <p>That page does not exist here.</p>
+
+      <div class="not-found-links">
+        <a href="/">Portfolio</a>
+        <a href="/blog">Blog</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

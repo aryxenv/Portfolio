@@ -1,0 +1,182 @@
+---
+import { TECH, TECH_CATEGORIES } from "../../data/tech-stack";
+import Emphasis from "../ui/Emphasis.astro";
+import Reveal from "../ui/Reveal.astro";
+import "./About.css";
+
+const moreAboutMe = `\n\nI like turning customer problems into **Azure AI app demos**, **technical validations**, and practical solution paths. In my free time, I build **full-stack apps**, experiment with **agentic AI**, and keep up with **finance** on the side.\n\nI'm always looking to expand my skills and build cool things. Oh, and the ultimate life goal? Owning my favorite car, a **Porsche 918 Spyder**.`;
+---
+
+<section class="component about" id="about">
+  <div class="about-container">
+    <Reveal class="about-me-container">
+      <div class="about-me-title">
+        <h2>About Me</h2>
+      </div>
+
+      <div class="about-me-text">
+        <div class="about-me-text-1">
+          <div class="about-me-text-1-title">
+            <h3>Who am I</h3>
+          </div>
+
+          <div class="about-me-text-1-content">
+            <p data-bio>
+              I'm Aryan Shah, based in <strong class="highlight"
+                >Antwerp, Belgium</strong
+              >. I'm a <strong class="highlight">Data Science</strong> graduate from
+              Thomas More University of Applied Sciences, and recently rounded off
+              an internship as a <strong class="highlight"
+                >Solutions Engineer Intern (Applications + AI/ML)</strong
+              > at <strong class="highlight">Microsoft</strong>.<button
+                type="button"
+                class="see-more see-more-expand"
+                data-bio-toggle>See more...</button
+              ><span class="bio-more"
+                ><Emphasis text={moreAboutMe} /><button
+                  type="button"
+                  class="see-more see-more-collapse"
+                  data-bio-toggle>See less...</button
+                ></span
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="about-me-text-2">
+          <div class="about-me-text-2-title">
+            <h3>Goals</h3>
+          </div>
+
+          <div class="about-me-text-2-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Goal(s)</th>
+                  <th>Deadline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Life</td>
+                  <td>Buy Porsche 918 Spyder</td>
+                  <td>September 2035</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </Reveal>
+
+    <div class="skills-container">
+      <Reveal class="technologies" index={1}>
+        <div class="technologies-title">
+          <h3>Technologies</h3>
+        </div>
+
+        <div class="technologies-list-container">
+          <div class="technologies-list-title">
+            <button
+              type="button"
+              class="technologies-list-toggle"
+              aria-expanded="false"
+              aria-label="Choose technology category"
+            >
+              <span class="technologies-list-label"
+                >{TECH_CATEGORIES[0]!.title}</span
+              >
+              <i class="bx bx-chevron-down"></i>
+            </button>
+
+            <div class="technologies-category-menu">
+              {
+                TECH_CATEGORIES.map((category, index) => (
+                  <button
+                    type="button"
+                    class:list={[
+                      "technologies-category-option",
+                      index === 0 && "active",
+                    ]}
+                  >
+                    {category.title}
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          {
+            TECH_CATEGORIES.map((category, index) => (
+              <div class:list={[index !== 0 && "slide"]} data-category>
+                <div class="technologies-list">
+                  {category.items.map((key) => {
+                    const tech = TECH[key];
+
+                    return (
+                      <div class="technologyCard">
+                        <div class="technology-opacityLayer">
+                          <div
+                            class="technology-bg"
+                            style={`background-color: ${tech.hex}`}
+                          >
+                            <img
+                              width={24}
+                              height={24}
+                              src={tech.src}
+                              alt={tech.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+
+                          <div class="technology-txt">{tech.name}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          }
+
+          <button type="button" class="prev" aria-label="Previous category">
+            <i class="bx bx-chevron-left"></i>
+          </button>
+
+          <button type="button" class="next" aria-label="Next category">
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      </Reveal>
+
+      <Reveal as="a" href="#projects" class="viewProjects" index={2}>
+        <div class="viewProjects-opacityLayer">
+          <div class="viewProjects-title">
+            <p>Enough chatting, let's see some projects!</p>
+          </div>
+
+          <div class="viewProjects-arrow">
+            <i class="bx bx-chevron-right"></i>
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initTechSwitcher } from "../../lib/tech-switcher";
+
+  document.addEventListener("astro:page-load", () => {
+    initTechSwitcher();
+
+    document.querySelector("[data-bio]")?.addEventListener("click", (event) => {
+      const target = event.target as Element | null;
+      if (!target?.closest("[data-bio-toggle]")) return;
+
+      target.closest("[data-bio]")?.toggleAttribute("data-expanded");
+    });
+  });
+</script>

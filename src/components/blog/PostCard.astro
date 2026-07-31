@@ -1,0 +1,36 @@
+---
+import { postMeta, type Post } from "../../lib/posts";
+
+interface Props {
+  post: Post;
+  index?: number;
+}
+
+const { post, index = 0 } = Astro.props;
+---
+
+<li
+  data-reveal
+  style={`--reveal-delay: calc(var(--reveal-stagger) * ${index})`}
+>
+  <a class="blog-card" href={`/blog/${post.id}`}>
+    <p class="blog-card-meta">
+      {
+        post.data.date && (
+          <time datetime={post.data.date}>{postMeta(post)}</time>
+        )
+      }
+    </p>
+
+    <h2>{post.data.title}</h2>
+    <p class="blog-card-summary">{post.data.description}</p>
+
+    <p class="blog-card-footer">
+      <span class="blog-tags">{post.data.tags.join(" · ")}</span>
+      <span class="blog-card-cta">
+        Read
+        <i class="bx bx-chevron-right"></i>
+      </span>
+    </p>
+  </a>
+</li>

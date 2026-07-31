@@ -1,0 +1,173 @@
+.project-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  border-radius: 5px;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--state-duration) var(--ease);
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  border-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.blurLayer {
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.project-card h3 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+/*
+ * The title link stretches over the whole card, so the card is clickable
+ * without a click handler and reachable by keyboard. The icon links sit above
+ * it on their own stacking context.
+ */
+.project-card-link {
+  color: inherit;
+  opacity: 1;
+}
+
+.project-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+}
+
+/*
+ * The description is collapsed at rest on desktop and opens on contact — the
+ * `max-height` reveal the SPA had, on the original `1s ease-in-out`.
+ *
+ * The cards sit in `fr` tracks, which take their minimum from content, so the
+ * row would grow as a card opened. `lib/project-cards.ts` reserves the opened
+ * height up front; `data-measuring` is how it reads that height, releasing the
+ * card from its track and opening the description with no transition.
+ */
+.project-card h3 + .project-description {
+  margin-top: 0.4rem;
+}
+
+@media (min-width: 1181px) {
+  .project-description {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 1s ease-in-out;
+  }
+
+  .project-card h3 + .project-description {
+    margin-top: 0;
+  }
+
+  .project-card:hover .project-description,
+  .project-card:focus-within .project-description,
+  .project-card[data-measuring] .project-description {
+    max-height: 300px;
+    margin-top: 0.4rem;
+  }
+
+  /* released from its grid track, opened instantly, so it reports its own height */
+  .project-card[data-measuring] {
+    align-self: start;
+    height: auto;
+    min-height: 0;
+  }
+
+  .project-card[data-measuring] .project-description {
+    max-height: none;
+    transition: none;
+  }
+}
+
+.project-card-links {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.project-card-links a {
+  display: flex;
+  align-items: center;
+}
+
+.project-card-links a:focus-visible {
+  opacity: 1;
+}
+
+.project-card-links i {
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.project-card-status-container {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-card-status {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+}
+
+.project-card-status-green {
+  background-color: green;
+}
+
+.project-card-status-yellow {
+  background-color: yellow;
+}
+
+.project-card-status-red {
+  background-color: red;
+}
+
+.tooltipDesc {
+  font-size: 0.38rem; /* ×0.4 */
+  opacity: 0;
+  transition: opacity var(--state-duration) var(--ease);
+}
+
+.project-card-status:hover + .tooltipDesc {
+  opacity: 1;
+}
+
+@media (max-width: 1180px) {
+  /* no hover on touch: the description is simply always open and never animates */
+  .project-description {
+    font-size: 0.76rem; /* ×0.8 */
+  }
+
+  .project-card h3 {
+    font-size: 1.32rem;
+  }
+
+  .project-card p {
+    font-size: 0.76rem; /* ×0.8 */
+  }
+}

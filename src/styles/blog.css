@@ -1,0 +1,13 @@
+/*
+ * Blog styles.
+ *
+ * Outlined containers only, one border weight, one radius, one easing — see
+ * DESIGN.md §5. No always-on animation lives in here, so there is nothing for
+ * low-perf mode to unwind.
+ */
+
+@import "./blog/index.css";
+@import "./blog/post.css";
+@import "./blog/prose.css";
+@import "./blog/code.css";
+@import "./blog/responsive.css";

@@ -1,0 +1,33 @@
+---
+import type { TechKey } from "../../data/tech-stack";
+import TechChip from "./TechChip.astro";
+
+/**
+ * An infinitely scrolling row of tech chips.
+ *
+ * The list is repeated so the strip is wider than any viewport; the keyframes
+ * translate by an exact fraction of that width so the loop is seamless.
+ */
+interface Props {
+  items: readonly TechKey[];
+  direction?: "left" | "right";
+  /** Repeats needed to outrun the widest viewport. */
+  repeat?: number;
+}
+
+const { items, direction = "left", repeat = 4 } = Astro.props;
+
+const strip = Array.from({ length: repeat }, () => items).flat();
+---
+
+<div class="introduction-stack">
+  <div class="introduction-stack-list">
+    <div
+      class={direction === "left"
+        ? "marquee-wrapper"
+        : "marquee-wrapper-reverse"}
+    >
+      {strip.map((tech) => <TechChip tech={tech} />)}
+    </div>
+  </div>
+</div>

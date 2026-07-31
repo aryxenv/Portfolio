@@ -1,0 +1,26 @@
+---
+/**
+ * Entrance reveal wrapper.
+ *
+ * Replaces the fifteen copies of the Framer Motion `initial`/`animate`/
+ * `transition` prop block. Motion itself is defined once in
+ * `styles/motion.css`; this only marks the element and its place in the queue.
+ */
+import type { HTMLTag, Polymorphic } from "astro/types";
+
+type Props<Tag extends HTMLTag = "div"> = Polymorphic<{ as: Tag }> & {
+  /** Position in the stagger queue. Each step adds `--reveal-stagger`. */
+  index?: number;
+};
+
+const { as: Tag = "div", index = 0, class: className, ...rest } = Astro.props;
+
+const style =
+  index > 0
+    ? `--reveal-delay: calc(var(--reveal-stagger) * ${index});`
+    : undefined;
+---
+
+<Tag data-reveal class={className} style={style} {...rest}>
+  <slot />
+</Tag>

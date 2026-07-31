@@ -1,0 +1,26 @@
+/* Narrow viewports. */
+
+@media (max-width: 768px) {
+  .blog-header h1,
+  .blog-post-header h1 {
+    font-size: 1.9rem;
+  }
+
+  .blog-card {
+    padding: 1.5rem;
+  }
+
+  .blog-card h2 {
+    font-size: 1.425rem;
+  }
+
+  .blog-post-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-post-nav-link-newer {
+    grid-column: 1;
+    align-items: flex-start;
+    text-align: left;
+  }
+}

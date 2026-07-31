@@ -1,0 +1,65 @@
+---
+import { projects } from "../../data/projects";
+import { MARQUEE_BOTTOM, MARQUEE_TOP } from "../../data/tech-stack";
+import Marquee from "../ui/Marquee.astro";
+import ProjectCard from "../ui/ProjectCard.astro";
+import Reveal from "../ui/Reveal.astro";
+import VerticalRail from "../ui/VerticalRail.astro";
+import "./Home.css";
+
+const [first, second] = projects;
+---
+
+<section class="component home" id="home">
+  <div class="home-container">
+    <Reveal class="introduction">
+      <div class="introduction-title">
+        <div class="introduction-name">
+          <h1>Hi! I'm <span class="gradient-animation">Aryan Shah</span></h1>
+        </div>
+
+        <div class="introduction-role">
+          <h2>Solutions Engineer Intern (Applications + AI/ML)</h2>
+        </div>
+      </div>
+
+      <div class="sep-line"></div>
+
+      <div class="introduction-text">
+        <p>
+          Hey, I'm Aryan Shah, based in <strong class="highlight"
+            >Antwerp, Belgium</strong
+          >. I'm a <strong class="highlight">Data Science</strong> graduate from Thomas
+          More University of Applied Sciences, currently working as a <strong
+            class="highlight"
+            >Solutions Engineer Intern (Applications + AI/ML)</strong
+          > at <strong class="highlight">Microsoft</strong>.
+        </p>
+      </div>
+
+      <div class="introduction-stack-container">
+        <div class="introduction-stacks">
+          <Marquee items={MARQUEE_TOP} direction="left" />
+          <Marquee items={MARQUEE_BOTTOM} direction="right" />
+        </div>
+
+        <VerticalRail href="#contact" label="Contact me!" variant="smaller" />
+      </div>
+    </Reveal>
+
+    <div class="recents">
+      <Reveal class="recentAndProject1" index={1}>
+        <div class="recent">
+          <h3>Recents</h3>
+        </div>
+
+        <ProjectCard project={first!} />
+      </Reveal>
+
+      <Reveal class="project2AndViewProjects" index={2}>
+        <ProjectCard project={second!} />
+        <VerticalRail href="#projects" label="View more projects" />
+      </Reveal>
+    </div>
+  </div>
+</section>

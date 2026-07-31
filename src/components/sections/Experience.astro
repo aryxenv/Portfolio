@@ -1,0 +1,124 @@
+---
+import { experience } from "../../data/experience";
+import Emphasis from "../ui/Emphasis.astro";
+import Reveal from "../ui/Reveal.astro";
+import "./Experience.css";
+---
+
+<section class="component experience" id="experience">
+  <div class="experience-container">
+    <Reveal class="experience-title">
+      <h2>Experience</h2>
+    </Reveal>
+
+    <div class="experience-list-container">
+      {
+        experience.map((company, index) => (
+          <Reveal class="experience-item" index={index}>
+            <div class="experience-timeline-marker">
+              <div
+                class:list={[
+                  "experience-timeline-dot",
+                  company.status === "green" &&
+                    "experience-timeline-dot-active",
+                ]}
+              />
+            </div>
+
+            <div class="experience-item-opacity">
+              <div class="experience-left">
+                <div class="experience-header">
+                  <h3 class="experience-company">{company.company}</h3>
+                </div>
+                <p class="experience-date">{company.dateRange}</p>
+
+                <div class="experience-field">
+                  <span class="experience-label">Base</span>
+                  <span class="experience-value">{company.location}</span>
+                </div>
+                <div class="experience-field">
+                  <span class="experience-label">Industry</span>
+                  <span class="experience-value">{company.industry}</span>
+                </div>
+                <div class="experience-field">
+                  <span class="experience-label">Website</span>
+                  <a
+                    class="experience-value"
+                    href={company.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {company.website}
+                  </a>
+                </div>
+              </div>
+
+              <div class="experience-roles">
+                {company.roles.map((role) => {
+                  const expandable = role.description.length > 1;
+
+                  return (
+                    <div class="experience-role">
+                      <div class="experience-role-header">
+                        <div>
+                          <h4 class="experience-role-title">{role.position}</h4>
+                          <p class="experience-date">{role.date}</p>
+                        </div>
+                        <p class="experience-role-location">{role.location}</p>
+                      </div>
+
+                      <div class="experience-right">
+                        {role.description.map((paragraph, i) => (
+                          <p
+                            class:list={[
+                              "experience-desc-paragraph",
+                              i > 0 && "experience-desc-bullet",
+                            ]}
+                          >
+                            <Emphasis text={paragraph} />
+                            {expandable && i === 0 && (
+                              <button
+                                type="button"
+                                class="see-more see-more-expand"
+                                data-role-toggle
+                              >
+                                See more...
+                              </button>
+                            )}
+                            {expandable &&
+                              i === role.description.length - 1 && (
+                                <button
+                                  type="button"
+                                  class="see-more see-more-collapse"
+                                  data-role-toggle
+                                >
+                                  See less...
+                                </button>
+                              )}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </Reveal>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  // expand/collapse a role's remaining bullets; the visibility itself is CSS
+  document.addEventListener("click", (event) => {
+    const toggle = (event.target as Element | null)?.closest(
+      "[data-role-toggle]",
+    );
+    const list = toggle?.closest(".experience-right");
+    if (!list) return;
+
+    list.toggleAttribute("data-expanded");
+  });
+</script>

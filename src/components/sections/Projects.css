@@ -1,0 +1,103 @@
+#projects {
+  padding-top: 0;
+}
+
+.projects-container {
+  display: grid;
+  height: 100%;
+  /* min-height: calc(100vh - var(--navbar-height) - 5rem); */
+  width: 100%;
+  grid-template-rows: max-content 10fr;
+  grid-template-columns: 100%;
+  gap: 1rem;
+}
+
+.projects-title {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.projects-list-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+}
+
+.extra-options-container {
+  display: grid;
+  grid-template-columns: 8fr max-content;
+  grid-template-rows: 100%;
+  gap: 1rem;
+}
+
+/*
+ * An `<a>` for keyboard access. Two things follow from that: it opts out of the
+ * global text-link rest opacity in `reset.css` (the panel is always fully drawn
+ * and it is the border that responds to contact), and it needs an explicit
+ * `display` — an `<a>` is inline by default, and inline boxes ignore
+ * width/height, which the original `<div>` did not have to say.
+ */
+.contact-me-container-vertical {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  opacity: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 5px;
+  transition: border 0.3s ease-out;
+}
+
+.contact-me-container-vertical:hover {
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1);
+}
+
+.contact-me-opacityLayer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  padding: 0.7rem;
+}
+
+/* .contact-me-container-vertical:hover {
+    opacity: 1;
+} */
+
+/* .contact-me-container:hover {
+    opacity: 1;
+} */
+
+.contact-me-arrow {
+  height: 24px;
+  width: 24px;
+}
+
+.contact-me-arrow i {
+  color: var(--primary-color);
+  height: 24px;
+  width: 24px;
+}
+
+@media (max-width: 1180px) {
+}
+
+@media (max-width: 768px) {
+  #projects {
+    padding-bottom: 4rem;
+  }
+  .projects-list-container {
+    display: flex;
+    flex-direction: column;
+  }
+}

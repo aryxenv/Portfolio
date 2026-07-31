@@ -1,0 +1,105 @@
+/* Shared utilities and chrome. */
+
+/*
+ * One focus treatment for the whole system. Browsers only draw a ring for
+ * keyboard focus, so a component must never reset `outline` — a reset leaves
+ * the control focusable with nothing to show for it.
+ */
+:focus-visible {
+  outline: var(--border-px) solid var(--primary-color);
+  outline-offset: 4px;
+  opacity: 1;
+}
+
+/* removed from the page but still announced by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
+}
+
+/* keyword emphasis (works in both perf modes) */
+.highlight {
+  font-weight: 700;
+}
+
+/* inline code in prose — still Manrope: this system has no monospace */
+.inline-code {
+  font-family: var(--font-family);
+  font-size: 0.855rem; /* ×0.9 */
+  font-variant-numeric: tabular-nums;
+  padding: 0 0.25rem;
+  border: var(--border-px) solid
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.25);
+  border-radius: 5px;
+}
+
+/*
+ * Inline "See more…" / "See less…" disclosure, used at the end of a paragraph
+ * in About and Experience. Half-lit at rest so it reads as a control instead of
+ * as more prose, and spaced off the sentence with a margin so the markup does
+ * not need a literal space before it.
+ */
+.see-more {
+  margin-left: 0.5rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  opacity: var(--normal-opacity);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity var(--state-duration) var(--ease);
+}
+
+/*
+ * Restated for focus because this rule sits after the global `:focus-visible`
+ * block, which is only class-specific and would otherwise lose to `.see-more`.
+ */
+.see-more:hover,
+.see-more:focus-visible {
+  opacity: 1;
+}
+
+/* Reactor Blue, behind glass. The only place the hue touches the content plane. */
+::selection {
+  background-color: rgba(29, 4, 219, var(--selection-bg));
+  color: var(--primary-color);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color-normal);
+  border-radius: 10px;
+  cursor: grab;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-color-hovered);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+@media (max-width: 1180px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+}

@@ -10,7 +10,7 @@ brand
 
 **Secondary: Microsoft colleagues and internal partners** (credibility inside the org), **fellow engineers** (who read the code and the demos, not the copy), and **prospective clients or freelance leads**.
 
-The job to be done is the same for all of them: *decide, quickly and confidently, whether this person can build real things.* Everything on the page exists to make that decision easy and to make the answer yes.
+The job to be done is the same for all of them: _decide, quickly and confidently, whether this person can build real things._ Everything on the page exists to make that decision easy and to make the answer yes.
 
 ## Product Purpose
 
@@ -31,7 +31,7 @@ Success looks like an inbound email or a CV download from someone who was undeci
 
 The voice is first-person, plain, and specific. It states what was built and where it runs; it does not sell. Adjectives are earned by a link. There is no hype vocabulary, no "passionate about," no exclamation-driven enthusiasm standing in for evidence.
 
-Emotionally, the target is *quiet confidence*. A visitor should feel that the person behind this is careful — that the same attention visible in a 1px border and a smooth scroll is what they would bring to a codebase. The site should never feel like it is trying hard, but it must obviously *be* hard to make.
+Emotionally, the target is _quiet confidence_. A visitor should feel that the person behind this is careful — that the same attention visible in a 1px border and a smooth scroll is what they would bring to a codebase. The site should never feel like it is trying hard, but it must obviously _be_ hard to make.
 
 ## Anti-references
 
@@ -56,9 +56,9 @@ Emotionally, the target is *quiet confidence*. A visitor should feel that the pe
 
 **Target: WCAG 2.1 Level AA.**
 
-- **Contrast.** Body text ≥ 4.5:1, large text ≥ 3:1 — measured against the *animated shader background*, not against flat black. The moving blue gradient is the real backdrop and it changes luminance over time, so muted and half-opacity white text must be verified in the worst-case frame, not the best one.
+- **Contrast.** Body text ≥ 4.5:1, large text ≥ 3:1 — measured against the _animated shader background_, not against flat black. The moving blue gradient is the real backdrop and it changes luminance over time, so muted and half-opacity white text must be verified in the worst-case frame, not the best one.
 - **Keyboard.** Every interactive element must be reachable and operable by keyboard. Clickable `div`s and `img`s driving navigation need to become real buttons or links. A visible `:focus-visible` style is required everywhere; there is currently none in the codebase.
-- **Motion.** `prefers-reduced-motion: reduce` must be honoured independently of the perf-mode toggle — the toggle is a user preference, the media query is an accessibility requirement, and a visitor who never touches the toggle still deserves the reduced experience. Applies to the marquees, the gradient shimmer, Lenis smooth scroll, and every Framer Motion reveal.
+- **Motion.** `prefers-reduced-motion: reduce` must be honoured independently of the perf-mode toggle — the toggle is a user preference, the media query is an accessibility requirement, and a visitor who never touches the toggle still deserves the reduced experience. Applies to the marquees, the gradient shimmer, Lenis smooth scroll, and every entrance reveal.
 - **Content visibility.** Reveal animations must enhance an already-visible default. Nothing may be gated behind a scroll-triggered transition, so the page stays complete for screen readers, headless renderers, and background tabs.
 - **Colour independence.** Active navigation state and project status must never be signalled by colour or opacity alone.
 - **Semantics.** Meaningful images carry real alt text; decorative ones (the shader canvas, the logo mark) stay `aria-hidden`.
