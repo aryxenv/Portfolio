@@ -4,12 +4,14 @@ import "./TechChip.css";
 
 interface Props {
   tech: TechKey;
+  id?: number;
 }
 
 const { name, src, alt } = TECH[Astro.props.tech];
+const { id } = Astro.props;
 ---
 
-<div class="stack-component">
+<div class="stack-component" style={`--position: ${id}`}>
   <div class="stack-component-bg">
     <img src={src} alt={alt} width="19" height="19" loading="lazy" />
   </div>

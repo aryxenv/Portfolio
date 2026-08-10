@@ -60,25 +60,29 @@
  * height up front; `data-measuring` is how it reads that height, releasing the
  * card from its track and opening the description with no transition.
  */
-.project-card h3 + .project-description {
+.project-card h3 + .project-description-wrapper {
   margin-top: 0.4rem;
 }
 
 @media (min-width: 1181px) {
-  .project-description {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 1s ease-in-out;
+  .project-description-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--state-duration) var(--ease), margin-top var(--state-duration) var(--ease);
   }
 
-  .project-card h3 + .project-description {
+  .project-description-inner {
+    overflow: hidden;
+  }
+
+  .project-card h3 + .project-description-wrapper {
     margin-top: 0;
   }
 
-  .project-card:hover .project-description,
-  .project-card:focus-within .project-description,
-  .project-card[data-measuring] .project-description {
-    max-height: 300px;
+  .project-card:hover .project-description-wrapper,
+  .project-card:focus-within .project-description-wrapper,
+  .project-card[data-measuring] .project-description-wrapper {
+    grid-template-rows: 1fr;
     margin-top: 0.4rem;
   }
 
@@ -89,8 +93,7 @@
     min-height: 0;
   }
 
-  .project-card[data-measuring] .project-description {
-    max-height: none;
+  .project-card[data-measuring] .project-description-wrapper {
     transition: none;
   }
 }

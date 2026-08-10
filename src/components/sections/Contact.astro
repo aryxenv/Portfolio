@@ -35,7 +35,7 @@ const year = new Date().getFullYear();
           socials.map((social, index) => (
             <Reveal
               as="a"
-              class={`socialCard ${social.name.toLowerCase()}`}
+              class={`socialCard glow-card ${social.name.toLowerCase()}`}
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -59,7 +59,7 @@ const year = new Date().getFullYear();
     <Reveal class="cv-section-container" index={1}>
       <h4>Want more details?</h4>
 
-      <div class="cv-container">
+      <div class="cv-container glow-card">
         <a
           class="imgWrapper"
           href={CV_PDF}

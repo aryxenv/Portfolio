@@ -13,7 +13,7 @@ const { post, index = 0 } = Astro.props;
   data-reveal
   style={`--reveal-delay: calc(var(--reveal-stagger) * ${index})`}
 >
-  <a class="blog-card" href={`/blog/${post.id}`}>
+  <a class="blog-card glow-card" href={`/blog/${post.id}`}>
     <p class="blog-card-meta">
       {
         post.data.date && (

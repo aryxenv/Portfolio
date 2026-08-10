@@ -1,0 +1,64 @@
+/* Glow hover effect */
+.glow-card {
+  position: relative;
+}
+
+.glow-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: var(--border-px, 1px);
+  background: radial-gradient(
+    500px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 1),
+    transparent 40%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.glow-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    1000px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+    rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.glow-card:hover::before,
+.glow-card:hover::after {
+  opacity: 1;
+}
+
+/* Ensure the default border hover colors stay normal so the glow takes over */
+.technologyCard.glow-card:hover,
+.socialCard.glow-card:hover,
+.cv-container.glow-card:hover,
+.project-card.glow-card:hover,
+.contact-me-container-vertical.glow-card:hover,
+.viewProjects.glow-card:hover,
+.blog-card.glow-card:hover {
+  border-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5) !important;
+}
