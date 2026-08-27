@@ -89,11 +89,12 @@ function addItem() {
     itemCount++;
 
     // making connection and inputting API elements
-    var apiUrl = "https://api.jikan.moe/v4/anime";
+    var apiUrl = "https://api.tenrai.org/v1/anime";
     var queryParams = {
       q: animeName,
       limit: 1,
       order_by: "end_date",
+      sort: "desc",
       type: "tv",
     };
     var queryString = new URLSearchParams(queryParams).toString();
@@ -492,10 +493,14 @@ function addItem() {
                 })
                 .then((data) => {
                   const parser = new DOMParser();
+                  const cleanHTML = data.contents
+                    .replace(/<img[^>]*>/gi, "")
+                    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+                    .replace(/<script[\s\S]*?<\/script>/gi, "");
                   const htmlDocument = parser.parseFromString(
-                    data.contents,
+                    cleanHTML,
                     "text/html",
-                  ); // data.contents contains the fetched HTML
+                  ); // cleanHTML contains the fetched HTML without active elements
 
                   // Attempt to find the first 'a' tag with the class 'film-poster-ahref'
                   const linkElement = htmlDocument.querySelector(
