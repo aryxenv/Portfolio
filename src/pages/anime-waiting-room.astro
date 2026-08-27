@@ -55,13 +55,17 @@ import Reveal from "../components/ui/Reveal.astro";
     justify-content: center;
   }
 
+  .anime-container.empty-state .anime-list-wrapper {
+    display: none;
+  }
+
   .anime-header {
     text-align: center;
     flex-shrink: 0;
   }
 
   .anime-header h1 {
-    font-size: 3rem;
+    font-size: clamp(2rem, 8vw, 3rem);
     font-weight: 700;
     margin-bottom: 0.5rem;
     color: var(--primary-color);
@@ -69,7 +73,7 @@ import Reveal from "../components/ui/Reveal.astro";
 
   .subtitle {
     color: var(--primary-color);
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
     opacity: 0.9;
   }
 
@@ -80,6 +84,10 @@ import Reveal from "../components/ui/Reveal.astro";
     flex-shrink: 0;
   }
 
+  .anime-waiting-room {
+    width: 100%;
+  }
+
   #anime-form {
     display: flex;
     width: 100%;
@@ -88,7 +96,12 @@ import Reveal from "../components/ui/Reveal.astro";
     border: var(--border-px) solid var(--border-color);
     border-radius: 12px;
     position: relative;
+    transition: max-width 0.5s var(--ease);
     /* transition is handled by glow-card hover effect */
+  }
+
+  :global(#anime-form.expanded) {
+    max-width: 720px !important;
   }
 
   #anime-form input {
@@ -428,6 +441,7 @@ import Reveal from "../components/ui/Reveal.astro";
 
       if (animeList.length === 0) {
         document.querySelector(".anime-container")?.classList.add("empty-state");
+        document.getElementById("anime-form")?.classList.add("expanded");
       }
     });
   }
@@ -450,8 +464,10 @@ import Reveal from "../components/ui/Reveal.astro";
     if (animeList.length === 0) {
       listContainer.innerHTML = "";
       container.classList.add("empty-state");
+      form.classList.add("expanded");
     } else {
       container.classList.remove("empty-state");
+      form.classList.remove("expanded");
       
       // Render skeleton cards matching the number of cached items
       listContainer.innerHTML = animeList.map(() => `
@@ -500,6 +516,7 @@ import Reveal from "../components/ui/Reveal.astro";
       }
 
       container.classList.remove("empty-state");
+      form.classList.remove("expanded");
 
       // Show temporary loading card
       const tempCard = document.createElement("div");
