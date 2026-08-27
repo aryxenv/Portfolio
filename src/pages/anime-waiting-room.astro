@@ -1,0 +1,541 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Reveal from "../components/ui/Reveal.astro";
+---
+
+<BaseLayout
+  title="Anime Waiting Room | Aryan Shah"
+  description="Track countdowns for your favorite airing anime. Snappy, lightweight, and responsive."
+>
+  <section class="anime-waiting-room" id="anime-waiting-room">
+    <div class="anime-container">
+      <Reveal class="anime-header">
+        <h1>Anime Waiting Room</h1>
+        <p class="subtitle">Track countdowns for your favorite airing anime.</p>
+      </Reveal>
+
+      <Reveal class="anime-search-wrapper" index={1}>
+        <form id="anime-form" class="glow-card">
+          <input type="text" id="anime-search" placeholder="Search anime to add..." required autocomplete="off" />
+          <button type="submit" id="add-anime-btn" aria-label="Add Anime">
+            <i class="bx bx-plus"></i>
+          </button>
+        </form>
+      </Reveal>
+
+      <Reveal class="anime-list-wrapper" index={2} data-lenis-prevent="true">
+        <div id="anime-list" class="anime-list">
+          <p class="status-msg">Loading your anime...</p>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Override the default layout margins to perfectly fit the screen */
+  :global(.page) {
+    margin-top: calc(var(--navbar-height) + 1.5rem) !important;
+    margin-bottom: 0 !important;
+  }
+
+  .anime-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 0 auto;
+    text-align: left;
+    height: calc(100dvh - var(--navbar-height) - 3rem);
+    transition: justify-content 0.3s var(--ease);
+  }
+
+  .anime-container.empty-state {
+    justify-content: center;
+  }
+
+  .anime-header {
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .anime-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+  }
+
+  .subtitle {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  .anime-search-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  #anime-form {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    background: transparent;
+    border: var(--border-px) solid var(--border-color);
+    border-radius: 12px;
+    position: relative;
+    /* transition is handled by glow-card hover effect */
+  }
+
+  #anime-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 1.2rem 1.5rem;
+    color: var(--primary-color);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    outline: none;
+  }
+  
+  #anime-form input::placeholder {
+    color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
+  }
+
+  #anime-form button {
+    background: transparent;
+    border: none;
+    border-left: var(--border-px) solid var(--border-color);
+    color: var(--primary-color);
+    padding: 0 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: background-color var(--state-duration) var(--ease), color var(--state-duration) var(--ease);
+  }
+
+  #anime-form button:hover {
+    background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
+  }
+
+  .anime-list-wrapper {
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    position: relative;
+    z-index: 10;
+  }
+
+  .anime-list-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+
+  .anime-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* Skeleton Loading Styles */
+  :global(.skeleton-card) {
+    pointer-events: none;
+  }
+  
+  :global(.skeleton-line) {
+    background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
+    border-radius: 4px;
+    animation: pulse 1.5s infinite var(--ease);
+  }
+  
+  :global(.title-skeleton) { height: 1.25rem; width: 50%; margin-bottom: 0.5rem; }
+  :global(.status-skeleton) { height: 0.9rem; width: 30%; }
+  :global(.timer-skeleton) { height: 2.5rem; width: 160px; border-radius: 8px; }
+  :global(.btn-skeleton) { height: 40px; width: 40px; border-radius: 8px; flex-shrink: 0; }
+  
+  @keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.4; }
+  }
+
+  /* Global styles for dynamic items */
+  :global(.anime-item) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border: var(--border-px) solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    gap: 1rem;
+    position: relative;
+  }
+
+  :global(.anime-item .main-info) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  :global(.anime-item .name) {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :global(.anime-item .status-row) {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+
+  :global(.anime-item .status) {
+    color: var(--primary-color);
+    opacity: 0.85;
+  }
+
+  :global(.anime-item .mal-link) {
+    color: var(--primary-color);
+    opacity: 0.5;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity var(--state-duration) var(--ease);
+    font-size: 0.85rem;
+  }
+
+  :global(.anime-item .mal-link:hover) {
+    opacity: 1;
+  }
+
+  :global(.anime-item .timer) {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    min-width: 160px;
+    text-align: center;
+    border: var(--border-px) solid rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
+  }
+
+  :global(.anime-item .remove-btn) {
+    background: transparent;
+    border: var(--border-px) solid rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.3);
+    color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--state-duration) var(--ease);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  :global(.anime-item .remove-btn:hover) {
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+    background: rgba(255, 123, 114, 0.1);
+  }
+  
+  :global(.anime-item.fade-out) {
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+
+  @media (max-width: 650px) {
+    :global(.anime-item) {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+    
+    :global(.anime-item .timer) {
+      width: 100%;
+    }
+
+    :global(.anime-item .remove-btn) {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      border: none;
+      background: transparent;
+    }
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "selectedAnimes";
+  let activeTimers = new Map<string, { nextBroadcastDay: Date; element: HTMLElement }>();
+  let intervalId: ReturnType<typeof setInterval> | null = null;
+  let animeList: { input: string; title: string | null }[] = [];
+
+  function getNextDayOfWeek(date: Date, dayOfWeek: number) {
+    const nextDay = new Date(date);
+    nextDay.setDate(date.getDate() + ((dayOfWeek + 7 - date.getDay()) % 7));
+    return nextDay;
+  }
+
+  function parseBroadcast(broadcast: any) {
+    if (!broadcast || !broadcast.day || !broadcast.time) return null;
+    const daysMap: Record<string, number> = {
+      sundays: 0,
+      mondays: 1,
+      tuesdays: 2,
+      wednesdays: 3,
+      thursdays: 4,
+      fridays: 5,
+      saturdays: 6,
+    };
+    const dayOfWeek = daysMap[broadcast.day.toLowerCase()];
+    if (dayOfWeek === undefined) return null;
+
+    const nowDate = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+    const nextBroadcastDay = getNextDayOfWeek(nowDate, dayOfWeek);
+
+    const [broadcastHour, broadcastMinute] = broadcast.time.split(":");
+    nextBroadcastDay.setHours(parseInt(broadcastHour, 10));
+    nextBroadcastDay.setMinutes(parseInt(broadcastMinute, 10));
+    nextBroadcastDay.setSeconds(0);
+
+    const [thours, tminutes] = broadcast.time.split(":").map(Number);
+    const date = new Date();
+    date.setUTCHours(thours - 9, tminutes, 0, 0);
+
+    const localTime = new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+      timeZoneName: "short",
+    }).format(date);
+
+    return {
+      nextBroadcastDay,
+      formattedDate: `${(nextBroadcastDay.getMonth() + 1).toString().padStart(2, "0")}/${nextBroadcastDay.getDate().toString().padStart(2, "0")}/${nextBroadcastDay.getFullYear()} - ${localTime}`,
+    };
+  }
+
+  function updateTimers() {
+    const nowDate = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+
+    activeTimers.forEach((timerInfo) => {
+      const { nextBroadcastDay, element } = timerInfo;
+      const differenceMs = nextBroadcastDay.getTime() - nowDate.getTime();
+
+      if (differenceMs > 0) {
+        const differenceSeconds = Math.floor(differenceMs / 1000);
+        const days = Math.floor(differenceSeconds / (60 * 60 * 24));
+        const hours = Math.floor((differenceSeconds % (60 * 60 * 24)) / (60 * 60));
+        const minutes = Math.floor((differenceSeconds % (60 * 60)) / 60);
+        const seconds = differenceSeconds % 60;
+        element.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      } else {
+        element.textContent = "0d 0h 0m 0s";
+      }
+    });
+  }
+
+  async function fetchAnimeInfo(animeName: string) {
+    const url = `https://api.tenrai.org/v1/anime?q=${encodeURIComponent(animeName)}&limit=1&order_by=end_date&sort=desc&type=tv`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      if (data && data.data && data.data.length > 0) {
+        return { input: animeName, data: data.data[0] };
+      }
+    } catch (e) {
+      console.error("Error fetching data for", animeName, e);
+    }
+    return null;
+  }
+
+  function renderAnime(animeData: any, inputName: string, listContainer: HTMLElement) {
+    const { mal_id, title_english, title, status, broadcast } = animeData;
+    const displayTitle = title_english || title;
+
+    const card = document.createElement("div");
+    card.className = "anime-item glow-card";
+
+    let statusText = status;
+    let timerText = "0d 0h 0m 0s";
+    let bCastInfo = null;
+
+    if (status === "Currently Airing") {
+      bCastInfo = parseBroadcast(broadcast);
+      if (bCastInfo) {
+        statusText = bCastInfo.formattedDate;
+      }
+    } else if (status === "Not yet aired") {
+      statusText = "To be announced";
+    }
+
+    card.innerHTML = `
+      <div class="main-info">
+        <div class="name">${displayTitle}</div>
+        <div class="status-row">
+          <span class="status">${statusText}</span>
+          <a href="https://myanimelist.net/anime/${mal_id}" target="_blank" rel="noopener noreferrer" class="mal-link">See Details (MAL)</a>
+        </div>
+      </div>
+      <div class="timer" id="timer-${mal_id}">${timerText}</div>
+      <button class="remove-btn" aria-label="Remove" data-input="${inputName}">
+        <i class="bx bx-x"></i>
+      </button>
+    `;
+
+    listContainer.appendChild(card);
+
+    if (status === "Currently Airing" && bCastInfo) {
+      activeTimers.set(mal_id.toString(), {
+        nextBroadcastDay: bCastInfo.nextBroadcastDay,
+        element: card.querySelector(`#timer-${mal_id}`) as HTMLElement,
+      });
+      updateTimers();
+    }
+
+    // Attach remove event listener
+    const removeBtn = card.querySelector(".remove-btn");
+    removeBtn?.addEventListener("click", () => {
+      card.classList.add("fade-out");
+      setTimeout(() => {
+        card.remove();
+      }, 300);
+      
+      activeTimers.delete(mal_id.toString());
+      animeList = animeList.filter((a) => a.input.toLowerCase() !== inputName.toLowerCase());
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(animeList));
+
+      if (animeList.length === 0) {
+        document.querySelector(".anime-container")?.classList.add("empty-state");
+      }
+    });
+  }
+
+  async function initAnimeRoom() {
+    const listContainer = document.getElementById("anime-list");
+    const form = document.getElementById("anime-form");
+    const input = document.getElementById("anime-search") as HTMLInputElement;
+    const container = document.querySelector(".anime-container");
+
+    if (!listContainer || !form || !input || !container) return;
+
+    // Reset state on initialization (useful for client-side navigation)
+    activeTimers.clear();
+    if (intervalId) clearInterval(intervalId);
+
+    const savedAnimes = localStorage.getItem(STORAGE_KEY);
+    animeList = savedAnimes ? JSON.parse(savedAnimes) : [];
+
+    if (animeList.length === 0) {
+      listContainer.innerHTML = "";
+      container.classList.add("empty-state");
+    } else {
+      container.classList.remove("empty-state");
+      
+      // Render skeleton cards matching the number of cached items
+      listContainer.innerHTML = animeList.map(() => `
+        <div class="anime-item glow-card skeleton-card">
+          <div class="main-info">
+            <div class="skeleton-line title-skeleton"></div>
+            <div class="skeleton-line status-skeleton"></div>
+          </div>
+          <div class="skeleton-line timer-skeleton"></div>
+          <div class="skeleton-line btn-skeleton"></div>
+        </div>
+      `).join('');
+      
+      // Parallel fetch
+      const results = await Promise.allSettled(
+        animeList.map((anime) => fetchAnimeInfo(anime.input))
+      );
+
+      listContainer.innerHTML = "";
+
+      // Track mal_ids rendered to prevent duplicates
+      const renderedMalIds = new Set();
+      
+      results.forEach((res) => {
+        if (res.status === "fulfilled" && res.value) {
+          const malId = res.value.data.mal_id;
+          if (!renderedMalIds.has(malId)) {
+            renderedMalIds.add(malId);
+            renderAnime(res.value.data, res.value.input, listContainer);
+          }
+        }
+      });
+    }
+
+    intervalId = setInterval(updateTimers, 1000);
+
+    // Form Submission
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const query = input.value.trim();
+      if (!query) return;
+
+      if (animeList.some((a) => a.input.toLowerCase() === query.toLowerCase())) {
+        input.value = "";
+        return;
+      }
+
+      container.classList.remove("empty-state");
+
+      // Show temporary loading card
+      const tempCard = document.createElement("div");
+      tempCard.className = "anime-item glow-card skeleton-card";
+      tempCard.innerHTML = `
+        <div class="main-info">
+          <div class="skeleton-line title-skeleton"></div>
+          <div class="skeleton-line status-skeleton"></div>
+        </div>
+        <div class="skeleton-line timer-skeleton"></div>
+        <div class="skeleton-line btn-skeleton"></div>
+      `;
+      listContainer.insertBefore(tempCard, listContainer.firstChild);
+
+      const result = await fetchAnimeInfo(query);
+      tempCard.remove();
+
+      if (result) {
+        // Unshift to place at the start in cache
+        animeList.unshift({
+          input: query,
+          title: result.data.title_english || result.data.title,
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(animeList));
+
+        // Render at top
+        const dummyWrapper = document.createElement("div");
+        renderAnime(result.data, query, dummyWrapper);
+        const newCard = dummyWrapper.firstElementChild;
+        if (newCard) listContainer.insertBefore(newCard, listContainer.firstChild);
+      }
+
+      input.value = "";
+    });
+  }
+
+  // Handle Astro's view transitions correctly
+  document.addEventListener("astro:page-load", initAnimeRoom);
+</script>
