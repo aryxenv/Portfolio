@@ -33,3 +33,11 @@ cv/*.fls
 cv/*.log
 cv/*.out
 cv/*.synctex.gz
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv
+.pytest_cache/
