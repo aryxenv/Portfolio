@@ -26,7 +26,7 @@ from config import (
     EMBEDDING_BATCH_SIZE,
     UPLOAD_BATCH_SIZE,
 )
-from parser import collect_markdown_documents
+from parser import collect_markdown_documents, collect_single_file
 from embeddings import initialize_openai_client, generate_embeddings
 from cosmos import (
     create_or_update_cosmos_resources,
@@ -117,6 +117,12 @@ def parse_cli_args(args: list[str] | None = None) -> argparse.Namespace:
         help="Batch size for Cosmos DB upload",
     )
     parser.add_argument(
+        "--file",
+        type=str,
+        default=None,
+        help="Re-index a single markdown file incrementally (skips full corpus scan)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Parse and chunk files locally without calling Azure cloud APIs",
@@ -178,7 +184,10 @@ def main(cli_args: list[str] | None = None) -> None:
         return
 
     # 1. Parse and chunk Markdown files
-    chunks = collect_markdown_documents(base_dir, custom_content_dir=custom_content)
+    if opts.file:
+        chunks = collect_single_file(Path(opts.file))
+    else:
+        chunks = collect_markdown_documents(base_dir, custom_content_dir=custom_content)
     if not chunks:
         print("[ERROR] No chunks found to ingest. Exiting.")
         return

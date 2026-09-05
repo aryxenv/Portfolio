@@ -55,3 +55,29 @@ uv run cosmosdb/main.py --verify-only
 # Ingest from a custom directory instead of the default 'content/'
 uv run cosmosdb/main.py --content-dir path/to/other/content
 ```
+
+### Automated CI/CD Pipeline (GitHub Actions)
+
+The repository includes an automated incremental indexing pipeline in `.github/workflows/rag-index.yml`.
+
+- **Trigger:** Triggers only when a PR is merged into `main` or direct push to `main` occurs **AND** files in `rag/content/**` have changed.
+- **Authentication:** Uses Azure OIDC Workload Identity / Federated Credentials (`azure/login@v2`). No static credentials or client secrets stored.
+- **Package Manager:** Powered by `uv` (`astral-sh/setup-uv@v6`) with lockfile dependency caching (`rag/uv.lock`).
+- **Upsert & Change Detection:**
+  - `ci_index.py` detects added, modified, or deleted markdown files via `git diff`.
+  - Computes SHA-256 content hashes cached in `.content_hashes.json` (restored via GitHub Actions cache) to avoid re-embedding unchanged documents.
+  - Automatically cleans up stale chunks for deleted documents from both Azure AI Search and Cosmos DB.
+  - Clears existing chunks for modified documents prior to re-upload to ensure chunk count reductions don't leave orphaned chunks behind.
+- **Manual Trigger:** Available via GitHub Actions `workflow_dispatch` with an optional `full_reindex` flag.
+
+```bash
+# Run incremental change detection locally
+uv run ci_index.py
+
+# Run dry-run parse on specific changed files
+uv run ci_index.py --dry-run --files content/about/bio.md
+
+# Force full re-index of all content files
+uv run ci_index.py --all
+```
+

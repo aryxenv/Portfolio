@@ -7,6 +7,7 @@ status: "production"
 tech_stack:
   - "Azure AI Foundry"
   - "Azure AI Search"
+  - "Azure Cosmos DB"
   - "text-embedding-3-large"
   - "Python"
   - "Groq"
@@ -16,12 +17,13 @@ tags:
   - "rag"
   - "architecture"
   - "azure-ai-search"
+  - "azure-cosmos-db"
   - "azure-ai-foundry"
   - "vector-search"
   - "embeddings"
   - "chunking"
   - "metadata"
-summary: "Technical architecture and ingestion specification for Aryan Shah's portfolio RAG system, covering document parsing, header-based chunking, 3072-dimension embeddings via Azure AI Foundry, and hybrid retrieval in Azure AI Search."
+summary: "Technical architecture and ingestion specification for Aryan Shah's portfolio RAG system, covering document parsing, header-based chunking, 3072-dimension embeddings via Azure AI Foundry, and hybrid retrieval across Azure AI Search and Azure Cosmos DB NoSQL."
 source: "rag/rag_strategy.md"
 ---
 
@@ -33,7 +35,8 @@ The Portfolio Retrieval-Augmented Generation (RAG) system provides interactive, 
 
 The architecture is built on enterprise-grade cloud AI services:
 - **Embedding Generation**: Azure AI Foundry (`ai-portfolio` project under `ai-portfolio-resource`) executing OpenAI's `text-embedding-3-large` (3072 dimensions) via `AIProjectClient`.
-- **Vector & Keyword Indexing**: Azure AI Search (`ais-portfolio`) utilizing Hierarchical Navigable Small World (HNSW) vector search and full-text keyword indexing with rich OData metadata filtering.
+- **Vector & Keyword Indexing (AI Search)**: Azure AI Search (`ais-portfolio`) utilizing Hierarchical Navigable Small World (HNSW) vector search and full-text keyword indexing with rich OData metadata filtering.
+- **Vector & Document Indexing (Cosmos DB)**: Azure Cosmos DB NoSQL (`cdb-portfolio`) providing document-oriented vector storage with DiskANN indexing, range/composite indexes for metadata filtering, and integrated cross-partition vector search.
 - **LLM Inference**: Ultra-low latency generation powered by Groq (Llama 3 / Mixtral) with streaming Server-Sent Events (SSE).
 - **Authentication**: Zero-secret credential flow powered by Microsoft Entra ID via `DefaultAzureCredential`.
 
@@ -45,16 +48,19 @@ The architecture is built on enterprise-grade cloud AI services:
 │  + YAML Metadata    Chunking          (Title + Path)         Foundry         │
 │  (content/ & docs)  (H1, H2, H3)                             (3072 dims)     │
 │                                                                   │          │
-│                                                                   ▼          │
-│                                                       Azure AI Search        │
-│                                                       (ais-portfolio Index)  │
+│                                                        ┌──────────┴────────┐ │
+│                                                        │                   │ │
+│                                                        ▼                   ▼ │
+│                                              Azure AI Search     Cosmos DB   │
+│                                              (ais-portfolio)   (cdb-portfolio)│
 └───────────────────────────────────────────────────────────────────┬──────────┘
                                                                     │
 ┌───────────────────────────────────────────────────────────────────▼──────────┐
 │                             Query Pipeline                                   │
 │                                                                              │
 │  User Query ──> Query Embedding ──> Hybrid Retrieval ──> Prompt Assembly ──> │
-│  (Portfolio UI) (Azure AI Foundry)  (ais-portfolio)      + Groq Inference    │
+│  (Portfolio UI) (Azure AI Foundry)  (AI Search or        + Groq Inference    │
+│                                      Cosmos DB)                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -152,29 +158,67 @@ Document chunks and dense vectors are indexed into Azure AI Search service `ais-
 - **Metric**: Cosine Similarity (`VectorSearchAlgorithmMetric.COSINE`).
 - **Search Mode**: Supports pure vector search, hybrid vector + keyword BM25 search, and filtered semantic queries.
 
-## 6. Runtime Query & Generation Pipeline
+## 6. Azure Cosmos DB NoSQL Indexing & Retrieval Schema
+
+Document chunks and dense vectors are also indexed into Azure Cosmos DB NoSQL account `cdb-portfolio`, database `portfolio`, container `chunks`.
+
+### Document Schema
+Each chunk is stored as a JSON document with:
+- `id`: Unique chunk identifier (`{doc_id}_{chunk_index}`).
+- `chunk_id`: Same as `id`, used as the partition key.
+- All metadata fields from YAML frontmatter (`title`, `type`, `category`, `company`, `role`, `project_name`, `tech_stack`, `tags`, `summary`, `source`, `week_number`, `nda_redacted`, `has_external_logs`, etc.).
+- `content`: Enriched Markdown text chunk.
+- `content_vector`: 3072-dimension dense vector embedding.
+
+### Indexing Policy
+- **Range Indexes**: Applied to all string, number, and boolean properties for efficient equality and range filtering.
+- **Composite Indexes**: Configured for common multi-field query patterns (e.g., `type` + `company`, `company` + `week_number`).
+- **Vector Index**: DiskANN index on `content_vector` with cosine distance metric and 3072 dimensions, enabling approximate nearest neighbor vector search.
+
+### Vector Search Configuration
+- **Algorithm**: DiskANN (disk-based approximate nearest neighbor).
+- **Metric**: Cosine distance.
+- **Search Mode**: Supports vector similarity queries via the `VectorDistance` SQL function, combined with standard SQL WHERE clauses for metadata filtering.
+
+## 7. Runtime Query & Generation Pipeline
 
 When an end-user poses an inquiry on Aryan's portfolio:
 1. **Query Processing**: The user's prompt is converted into a 3072-dimension query vector using `text-embedding-3-large`.
-2. **Hybrid Search Execution**: Azure AI Search evaluates cosine similarity against `content_vector` while executing BM25 term matching on `content`, `title`, and `tech_stack`.
-3. **Faceted Filtering**: Optional metadata filters (e.g., `$filter=company eq 'Microsoft' and week_number eq 5` or `$filter=tech_stack/any(t: t eq 'FastAPI')`) restrict search space deterministically.
+2. **Hybrid Search Execution**: The query is dispatched to either Azure AI Search (HNSW cosine similarity + BM25 term matching) or Cosmos DB (DiskANN vector distance + SQL filtering) depending on the backend configuration.
+3. **Faceted Filtering**: Optional metadata filters restrict search space deterministically. AI Search uses OData syntax (e.g., `$filter=company eq 'Microsoft'`), while Cosmos DB uses SQL WHERE clauses (e.g., `WHERE c.company = 'Microsoft'`).
 4. **Context Injection**: Top candidate chunks (typically 3 to 5) are extracted and injected into the Groq LLM system prompt.
 5. **Streaming Generation**: Groq streams the grounded answer back to the frontend with citation breadcrumbs.
 
-## 7. Ingestion Script Execution & Synchronization
+## 8. Ingestion Script Execution & Synchronization
 
-The RAG pipeline is executed via a functional Python script in `main.py`:
-- Executed cleanly using `uv run main.py`.
-- Authenticates without API keys or connection strings using Azure CLI login credentials (`DefaultAzureCredential`).
+The RAG pipeline is organized into two backend-specific pipelines sharing common logic:
+
+### Shared Components (`rag/`)
+- `parser.py`: Markdown parsing, YAML frontmatter extraction, and header-aware chunking.
+- `embeddings.py`: Azure AI Foundry embedding generation via `AIProjectClient`.
+- `config.py`: Shared constants (embedding dimensions, batch sizes, endpoints).
+
+### AI Search Pipeline (`rag/ai_search/`)
+- Executed via `uv run ai_search/main.py`.
 - Recreates or updates the index idempotently with full 30-field schema and HNSW vector configuration.
-- Parses all repository content files and uploads enriched chunks with vectors.
-- Supports flexible CLI flags and environment variables:
-  - `--dry-run`: Locally parses and chunks documents, validating frontmatter schemas and chunk structures without making Azure cloud API calls.
-  - `--verify-only`: Runs the 10 comprehensive index verification tests against Azure AI Search and Azure AI Foundry without re-ingesting documents.
-  - `--content-dir`: Overrides default content directory path.
-  - `--index-name`, `--search-endpoint`, `--foundry-endpoint`, `--openai-base-url`, `--embedding-model`: Customizes cloud resource endpoints.
-  - `--embedding-batch-size` and `--upload-batch-size`: Customizes throughput.
+
+### Cosmos DB Pipeline (`rag/cosmosdb/`)
+- Executed via `uv run cosmosdb/main.py`.
+- Creates the database and container with vector, range, and composite indexing policies.
+- Uploads chunks using upsert semantics with 429 rate-limit retry logic.
+
+### Common CLI Flags
+Both pipelines support:
+- `--dry-run`: Locally parses and chunks documents without making Azure cloud API calls.
+- `--verify-only`: Runs verification tests against the live index/container without re-ingesting.
+- `--skip-verify`: Runs ingestion but skips post-upload verification.
+- `--content-dir`: Overrides the default content directory path.
+- `--file`: Re-indexes a single file incrementally without reprocessing the entire corpus.
+- `--embedding-batch-size` and `--upload-batch-size`: Customizes throughput.
+
+### Resilience
 - Enforces resilient upload with positional result matching (preventing document loss when result keys are null) and automatic binary batch splitting on HTTP 413 (payload too large) or request timeouts.
 - Normalizes all relative and explicit paths to POSIX forward-slash format for seamless cross-platform execution on Windows, Linux, and macOS.
 - Sanitizes embedding inputs against empty strings and token length limits (8192 tokens) to guarantee zero `BadRequestError` exceptions during embedding generation.
-- Accompanied by `verify.py` for standalone verification and non-zero exit code reporting on failure.
+- Accompanied by `verify.py` scripts for standalone verification and non-zero exit code reporting on failure.
+

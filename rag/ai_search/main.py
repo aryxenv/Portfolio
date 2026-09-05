@@ -1,4 +1,4 @@
-"""Portfolio RAG Ingestion Pipeline."""
+"""Portfolio RAG Ingestion Pipeline for Azure AI Search."""
 from __future__ import annotations
 
 import sys
@@ -7,8 +7,6 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 import argparse
 import logging
-import sys
-from pathlib import Path
 
 # Silence non-critical failsafe deserializer warning from azure-search-documents
 logging.getLogger("azure.search.documents._utils.model_base").setLevel(logging.ERROR)
@@ -18,11 +16,11 @@ from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
 
 from config import (
-    DEFAULT_SEARCH_ENDPOINT, DEFAULT_INDEX_NAME, 
+    DEFAULT_SEARCH_ENDPOINT, DEFAULT_INDEX_NAME,
     DEFAULT_FOUNDRY_PROJECT_ENDPOINT, DEFAULT_AZURE_OPENAI_BASE_URL,
     DEFAULT_EMBEDDING_MODEL, EMBEDDING_BATCH_SIZE, UPLOAD_BATCH_SIZE
 )
-from parser import collect_markdown_documents
+from parser import collect_markdown_documents, collect_single_file
 from embeddings import initialize_openai_client, generate_embeddings
 from search import create_or_update_index, upload_documents_to_search, verify_uploaded_index
 
@@ -85,6 +83,12 @@ def parse_cli_args(args: list[str] | None = None) -> argparse.Namespace:
         help="Batch size for Azure AI Search upload",
     )
     parser.add_argument(
+        "--file",
+        type=str,
+        default=None,
+        help="Re-index a single markdown file incrementally (skips full corpus scan)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Parse and chunk files locally without calling Azure cloud APIs",
@@ -107,14 +111,14 @@ def parse_cli_args(args: list[str] | None = None) -> argparse.Namespace:
 # ---------------------------------------------------------------------------
 
 def main(cli_args: list[str] | None = None) -> None:
-    """Execute the full RAG ingestion pipeline."""
+    """Execute the full RAG ingestion pipeline for Azure AI Search."""
     opts = parse_cli_args(cli_args)
 
     print("=" * 60)
-    print("Starting Portfolio RAG Ingestion Pipeline")
+    print("Starting Portfolio RAG Ingestion Pipeline (Azure AI Search)")
     print("=" * 60)
-    
-    base_dir = Path(__file__).resolve().parent
+
+    base_dir = Path(__file__).resolve().parent.parent
     custom_content = Path(opts.content_dir).resolve() if opts.content_dir else None
 
     # Handle verify-only flag
@@ -139,7 +143,10 @@ def main(cli_args: list[str] | None = None) -> None:
         return
 
     # 1. Parse and chunk Markdown files
-    chunks = collect_markdown_documents(base_dir, custom_content_dir=custom_content)
+    if opts.file:
+        chunks = collect_single_file(Path(opts.file))
+    else:
+        chunks = collect_markdown_documents(base_dir, custom_content_dir=custom_content)
     if not chunks:
         print("[ERROR] No chunks found to ingest. Exiting.")
         return
@@ -147,7 +154,7 @@ def main(cli_args: list[str] | None = None) -> None:
     # Handle dry-run flag
     if opts.dry_run:
         print(f"\n[DRY-RUN] Successfully parsed and generated {len(chunks)} chunks.")
-        print(f"[DRY-RUN] Schema and chunk validation complete. Exiting without cloud operations.")
+        print("[DRY-RUN] Schema and chunk validation complete. Exiting without cloud operations.")
         return
 
     # 2. Azure Authentication
@@ -196,7 +203,7 @@ def main(cli_args: list[str] | None = None) -> None:
             sys.exit(1)
     else:
         print("[INFO] Post-upload verification skipped via --skip-verify.")
-    
+
     print("\n" + "=" * 60)
     print("Portfolio RAG Ingestion Pipeline Completed Successfully")
     print("=" * 60)
@@ -204,5 +211,3 @@ def main(cli_args: list[str] | None = None) -> None:
 
 if __name__ == "__main__":
     main()
-
-

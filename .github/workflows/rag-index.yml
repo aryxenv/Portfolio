@@ -1,0 +1,108 @@
+# -------------------------------------------------------------------
+# RAG Content Indexing – Automated CI/CD Pipeline
+# -------------------------------------------------------------------
+# Triggers on push to main (including PR merges) when any file under
+# rag/content/ changes. Authenticates to Azure via OIDC (Workload Identity
+# / Federated Credentials) and runs incremental upsert indexing into
+# both Azure AI Search and Azure Cosmos DB NoSQL.
+#
+# GitHub Secrets configured via Azure CLI:
+#   AZURE_CLIENT_ID       – Entra App registration client ID
+#   AZURE_TENANT_ID       – Microsoft Entra ID tenant ID
+#   AZURE_SUBSCRIPTION_ID – Azure subscription ID
+# -------------------------------------------------------------------
+
+name: RAG Content Index
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "rag/content/**"
+  workflow_dispatch:
+    inputs:
+      full_reindex:
+        description: "Force full re-index (ignore git diff and hash cache)"
+        required: false
+        type: boolean
+        default: false
+
+# Prevent concurrent indexing runs on main; queue sequentially
+concurrency:
+  group: rag-index-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write   # Required for requesting Azure OIDC federated token
+  contents: read     # Required to checkout code and run git diff
+
+jobs:
+  index:
+    name: Incremental RAG Indexing
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rag
+
+    steps:
+      # ---- Checkout repository with full history for accurate git diff ----
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ---- Install uv ----
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "rag/uv.lock"
+
+      # ---- Set up Python via uv ----
+      - name: Set up Python
+        run: uv python install
+
+      # ---- Install Python dependencies ----
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      # ---- Azure OIDC Login ----
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ---- Restore content hash cache ----
+      - name: Restore content hash cache
+        uses: actions/cache/restore@v4
+        with:
+          path: rag/.content_hashes.json
+          key: rag-hashes-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            rag-hashes-${{ github.ref_name }}-
+            rag-hashes-
+
+      # ---- Run incremental RAG indexing ----
+      - name: Run RAG indexing
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          GIT_DIFF_BASE: ${{ github.event.before }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.full_reindex }}" = "true" ]; then
+            echo "::notice::Full re-index requested via workflow_dispatch"
+            uv run ci_index.py --all
+          else
+            uv run ci_index.py
+          fi
+
+      # ---- Save content hash cache for next run ----
+      - name: Save content hash cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: rag/.content_hashes.json
+          key: rag-hashes-${{ github.ref_name }}-${{ github.sha }}

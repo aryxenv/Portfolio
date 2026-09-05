@@ -310,3 +310,19 @@ def collect_markdown_documents(
     print(f"[INFO] Generated {len(all_chunks)} chunks across {len(target_files)} files.")
     return all_chunks
 
+
+def collect_single_file(file_path: Path) -> list[dict[str, Any]]:
+    """Parse and chunk a single markdown file for incremental re-indexing."""
+    resolved = file_path.resolve()
+    if not resolved.is_file():
+        print(f"[ERROR] File does not exist: {resolved}")
+        return []
+    if resolved.suffix.lower() != ".md":
+        print(f"[ERROR] Not a markdown file: {resolved}")
+        return []
+
+    print(f"[INFO] Incremental re-index: parsing single file {resolved.name}")
+    fm, body = parse_markdown_file(resolved)
+    chunks = chunk_markdown_by_headers(body, fm, resolved)
+    print(f"[INFO] Generated {len(chunks)} chunks from {resolved.name}.")
+    return chunks
