@@ -76,11 +76,20 @@ def build_container_definition(
                     {"path": "/status", "order": "ascending"},
                 ],
             ],
+            "fullTextIndexes": [
+                {"path": "/content"}
+            ],
             "vectorIndexes": [
                 {
                     "path": "/content_vector",
                     "type": vector_index_type,
                 }
+            ],
+        },
+        "fullTextPolicy": {
+            "defaultLanguage": "en-US",
+            "fullTextPaths": [
+                {"path": "/content", "language": "en-US"}
             ],
         },
         "vectorEmbeddingPolicy": {
@@ -112,7 +121,7 @@ def create_or_update_cosmos_resources(
     max_propagation_retries: int = 60,
     propagation_wait_sec: int = 15,
 ) -> tuple[CosmosClient, Any]:
-    """Create or verify the Cosmos DB database and container with vector indexing.
+    """Create or verify the Cosmos DB database and container with vector indexing and full text policy.
     
     Uses DefaultAzureCredential to acquire an ARM bearer token for management plane
     resource provisioning, then initializes a CosmosClient for data plane operations.
@@ -124,26 +133,24 @@ def create_or_update_cosmos_resources(
         container_client = db_client.get_container_client(container_name)
         container_props = container_client.read()
         v_policy = container_props.get("vectorEmbeddingPolicy")
+        ft_policy = container_props.get("fullTextPolicy")
+        has_matching_vector = False
         if v_policy and v_policy.get("vectorEmbeddings"):
             embeddings = v_policy.get("vectorEmbeddings", [])
             has_matching_vector = any(
                 e.get("path") == "/content_vector" and e.get("dimensions") == EMBEDDING_DIMENSIONS
                 for e in embeddings
             )
-            if has_matching_vector:
-                print(
-                    f"[INFO] Cosmos DB container '{container_name}' already exists with valid vector policy ({EMBEDDING_DIMENSIONS} dims) and is ready.",
-                    flush=True,
-                )
-                return cosmos_client, container_client
-            else:
-                print(
-                    f"[WARN] Existing container '{container_name}' vector policy does not match /content_vector ({EMBEDDING_DIMENSIONS} dims): {embeddings}. Proceeding to ensure configuration...",
-                    flush=True,
-                )
+        has_matching_ft = bool(ft_policy and ft_policy.get("fullTextPaths"))
+        if has_matching_vector and has_matching_ft:
+            print(
+                f"[INFO] Cosmos DB container '{container_name}' already exists with valid vector policy ({EMBEDDING_DIMENSIONS} dims) and full-text search policy.",
+                flush=True,
+            )
+            return cosmos_client, container_client
         else:
             print(
-                f"[WARN] Existing container '{container_name}' lacks vectorEmbeddingPolicy. Proceeding to ensure configuration...",
+                f"[WARN] Existing container '{container_name}' policy (vector: {has_matching_vector}, full-text: {has_matching_ft}). Proceeding to ensure configuration...",
                 flush=True,
             )
     except Exception:
