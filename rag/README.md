@@ -33,5 +33,25 @@ uv run ai_search/main.py --content-dir path/to/other/content
 
 ### Shared Logic
 
-Shared logic between vector database pipelines (like markdown parsing, header-aware chunking, and Azure AI Foundry embedding generation) are kept in the root of
-ag/ (e.g. parser.py, embeddings.py, config.py).
+Shared logic between vector database pipelines (like markdown parsing, header-aware chunking, and Azure AI Foundry embedding generation) are kept in the root of `rag/` (e.g. `parser.py`, `embeddings.py`, `config.py`).
+
+### Cosmos DB Pipeline
+
+The ingestion pipeline for Cosmos DB NoSQL is located in `cosmosdb/main.py`.
+
+```bash
+# Run the full ingestion and verification pipeline
+uv run cosmosdb/main.py
+
+# Dry-run: parse and chunk locally without hitting Cosmos DB
+uv run cosmosdb/main.py --dry-run
+
+# Run the upload, but skip post-upload verification checks
+uv run cosmosdb/main.py --skip-verify
+
+# Only run verification checks on the existing container
+uv run cosmosdb/main.py --verify-only
+
+# Ingest from a custom directory instead of the default 'content/'
+uv run cosmosdb/main.py --content-dir path/to/other/content
+```
