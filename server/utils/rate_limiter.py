@@ -1,4 +1,4 @@
-"""IP-based sliding-window rate limiter for FastAPI routes.
+"""IP-based sliding-window rate limiter for FastAPI routes
 
 Extracts client IP across direct connections, Cloudflare and reverse proxies,
 enforcing rolling window request limits with HTTP 429 and Retry-After headers.
