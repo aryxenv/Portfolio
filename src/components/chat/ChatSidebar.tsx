@@ -204,12 +204,12 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
               aria-hidden="true"
             />
             <img
-              src="/assets/deepseek.png"
+              src="/assets/openai.svg"
               alt=""
               className="chat-badge-logo"
               aria-hidden="true"
             />
-            <span className="chat-badge-text">DeepSeek-V4-Flash</span>
+            <span className="chat-badge-text">GPT-5.6-Luna</span>
           </span>
         </div>
 
@@ -249,7 +249,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         {messages.length === 0 ? (
           <div className="chat-empty-state">
             <p className="chat-empty-intro">
-              Powered by Microsoft Agent Framework and DeepSeek-V4-Flash, this agent
+              Powered by Microsoft Agent Framework and GPT-5.6-Luna, this agent
               executes hybrid retrieval across Azure AI Search and Cosmos DB, offering
               deeper technical insights beyond what&apos;s shown on this portfolio.
             </p>

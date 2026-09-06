@@ -9,7 +9,7 @@ tech_stack:
   - "Azure AI Search"
   - "Azure Cosmos DB"
   - "text-embedding-3-large"
-  - "DeepSeek-V4-Flash"
+  - "gpt-5.6-luna"
   - "Microsoft Agent Framework"
   - "Python"
   - "FastAPI"
@@ -20,7 +20,7 @@ tags:
   - "azure-ai-search"
   - "azure-cosmos-db"
   - "azure-ai-foundry"
-  - "deepseek"
+  - "openai"
   - "agent-framework"
   - "vector-search"
   - "embeddings"
@@ -40,7 +40,7 @@ The architecture is built on enterprise-grade cloud AI services:
 - **Embedding Generation**: Azure AI Foundry (`ai-portfolio` project under `ai-portfolio-resource`) executing OpenAI's `text-embedding-3-large` (3072 dimensions) via `AIProjectClient`.
 - **Vector & Keyword Indexing (AI Search)**: Azure AI Search (`ais-portfolio`) utilizing Hierarchical Navigable Small World (HNSW) vector search and full-text keyword indexing with rich OData metadata filtering.
 - **Vector & Document Indexing (Cosmos DB)**: Azure Cosmos DB NoSQL (`cdb-portfolio`) providing document-oriented vector storage with DiskANN indexing, range/composite indexes for metadata filtering, and integrated cross-partition vector search.
-- **LLM Inference & Agent Orchestration**: Microsoft Agent Framework coordinating dual-deployment Azure AI Foundry models (`DeepSeek-V4-Flash-0731` and `DeepSeek-V4-Flash`) with in-application load balancing, automatic 429 failover and streaming response generation.
+- **LLM Inference & Agent Orchestration**: Microsoft Agent Framework orchestrating an Azure AI Foundry deployment running OpenAI's `gpt-5.6-luna` with native server-side conversation threads (`service_session_id`), autonomous tool calling and streaming response generation.
 - **Authentication**: Zero-secret credential flow powered by Microsoft Entra ID via `DefaultAzureCredential`.
 
 ```text
@@ -61,8 +61,8 @@ The architecture is built on enterprise-grade cloud AI services:
 ┌───────────────────────────────────────────────────────────────────▼──────────┐
 │                             Query Pipeline                                   │
 │                                                                              │
-│  User Query ──> FastAPI Route ──> DeploymentManager ──> FoundryChatClient    │
-│  (Portfolio UI) (POST /agent)     (Least-Loaded RPM)    (DeepSeek Models)    │
+│  User Query ──> FastAPI Route ──> Agent Orchestrator ──> FoundryChatClient   │
+│  (Portfolio UI) (POST /agent)     (Server Session)       (gpt-5.6-luna)      │
 │                                                                 │            │
 │                                                        ┌────────┴────────┐   │
 │                                                        │ Tool Calling    │   │
@@ -193,11 +193,13 @@ Each chunk is stored as a JSON document with:
 ## 7. Runtime Query & Generation Pipeline
 
 When an end-user poses an inquiry on Aryan's portfolio:
-1. **Query Processing**: The user's prompt is converted into a 3072-dimension query vector using `text-embedding-3-large`.
-2. **Hybrid Search Execution**: The query is dispatched to either Azure AI Search (HNSW cosine similarity + BM25 term matching) or Cosmos DB (DiskANN vector distance + SQL filtering) depending on the backend configuration.
-3. **Faceted Filtering**: Optional metadata filters restrict search space deterministically. AI Search uses OData syntax (e.g., `$filter=company eq 'Microsoft'`), while Cosmos DB uses SQL WHERE clauses (e.g., `WHERE c.company = 'Microsoft'`).
-4. **Context Injection**: Top candidate chunks (typically 3 to 5) are extracted and injected into the Groq LLM system prompt.
-5. **Streaming Generation**: Groq streams the grounded answer back to the frontend with citation breadcrumbs.
+1. **Query Ingestion**: The user query and session identifier are received by the FastAPI `/agent` endpoint. An in-memory session cache maintains the Azure OpenAI server-side conversation thread (`service_session_id`), enabling multi-turn dialog without client-side message replay.
+2. **Autonomous Tool Selection**: The Microsoft Agent Framework agent (powered by `gpt-5.6-luna` via `FoundryChatClient`) interprets the prompt, reformulates search terms and autonomously invokes tools:
+   - `vector_search`: Dispatches hybrid vector and keyword search to Azure AI Search (`ais-portfolio`) or Azure Cosmos DB (`cdb-portfolio`) with optional metadata filtering.
+   - `inspect_metadata_options`: Explores available filter facets (companies, doc types, technologies) when queries require taxonomy verification.
+3. **Hybrid Search Execution**: During tool execution, queries are converted into 3072-dimension vectors via `text-embedding-3-large` and retrieved using HNSW (AI Search) or DiskANN (Cosmos DB).
+4. **Context Synthesis & Grounding**: The agent evaluates returned chunks, executes multi-hop retrieval if needed (up to 3 retrieval steps) and synthesizes a factual answer strictly grounded in retrieved documentation.
+5. **Streaming Generation**: The server streams Server-Sent Events (SSE) back to the portfolio frontend in real time, delivering progressive token deltas, tool invocation notifications and final completion status.
 
 ## 8. Ingestion Script Execution & Synchronization
 

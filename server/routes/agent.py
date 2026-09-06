@@ -1,7 +1,7 @@
 """Portfolio Agent Route and Initialization.
 
 Configures the portfolio assistant agent using Microsoft Agent Framework,
-powered by Groq for ultra-low latency inference and wired to Azure AI Search
+powered by GPT-5.6-Luna on Azure AI Foundry and wired to Azure AI Search
 and Azure Cosmos DB hybrid RAG tools with metadata filtering.
 """
 from __future__ import annotations
@@ -9,10 +9,9 @@ from __future__ import annotations
 import json
 import logging
 import os
-import time
 from typing import Any
 import uuid
-from agent_framework import Agent, InMemoryHistoryProvider, Message
+from agent_framework import Agent
 from agent_framework_foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
 from fastapi import APIRouter, Depends
@@ -29,7 +28,6 @@ try:
     )
     from utils.rate_limiter import agent_rate_limiter
     from utils.session_cache import session_cache
-    from utils.deployment_manager import Deployment, DeploymentManager
 except ImportError:
     from server.utils.tools import (  # type: ignore[no-redef]
         inspect_metadata_options,
@@ -37,7 +35,6 @@ except ImportError:
     )
     from server.utils.rate_limiter import agent_rate_limiter  # type: ignore[no-redef]
     from server.utils.session_cache import session_cache  # type: ignore[no-redef]
-    from server.utils.deployment_manager import Deployment, DeploymentManager  # type: ignore[no-redef]
 
 # ---------------------------------------------------------------------------
 # System Prompt: Concise, Instructional Agent Behavior & Multi-Turn Guidance
@@ -73,46 +70,24 @@ PORTFOLIO_SYSTEM_PROMPT = """You are the AI technical representative for Aryan S
    - **Markdown formatting**: Do not use level-one headings (`#`). Start with level-two headings (`##`) or any smaller heading level.
 """
 
-# Dual Deployments: Primary (DeepSeek-V4-Flash-0731) and Secondary (DeepSeek-V4-Flash)
-foundry_endpoint = os.getenv("FOUNDRY_PROJECT_ENDPOINT", "https://ai-portfolio-resource.services.ai.azure.com/api/projects/ai-portfolio")
+foundry_endpoint = os.getenv(
+    "FOUNDRY_PROJECT_ENDPOINT",
+    "https://ai-portfolio-resource.services.ai.azure.com/api/projects/ai-portfolio",
+)
 credential = DefaultAzureCredential()
 
-client_primary = FoundryChatClient(
+client = FoundryChatClient(
     project_endpoint=foundry_endpoint,
-    model=os.getenv("FOUNDRY_MODEL_PRIMARY", os.getenv("FOUNDRY_MODEL", "DeepSeek-V4-Flash-0731")),
+    model=os.getenv("FOUNDRY_MODEL_PRIMARY", os.getenv("FOUNDRY_MODEL", "gpt-5.6-luna")),
     credential=credential,
 )
 
-agent_primary = Agent(
-    client=client_primary,
-    name="PortfolioAgentPrimary",
+agent = Agent(
+    client=client,
+    name="PortfolioAgent",
     instructions=PORTFOLIO_SYSTEM_PROMPT,
     tools=[vector_search, inspect_metadata_options],
-    context_providers=[InMemoryHistoryProvider()],
-    default_options={"store": False},
 )
-
-client_secondary = FoundryChatClient(
-    project_endpoint=foundry_endpoint,
-    model=os.getenv("FOUNDRY_MODEL_SECONDARY", "DeepSeek-V4-Flash"),
-    credential=credential,
-)
-agent_secondary = Agent(
-    client=client_secondary,
-    name="PortfolioAgentSecondary",
-    instructions=PORTFOLIO_SYSTEM_PROMPT,
-    tools=[vector_search, inspect_metadata_options],
-    context_providers=[InMemoryHistoryProvider()],
-    default_options={"store": False},
-)
-
-deployment_manager = DeploymentManager([
-    Deployment(name="DeepSeek-V4-Flash-0731", agent=agent_primary, max_rpm=20),
-    Deployment(name="DeepSeek-V4-Flash", agent=agent_secondary, max_rpm=20),
-])
-
-# Backward compatibility alias
-agent = agent_primary
 
 router = APIRouter()
 
@@ -132,11 +107,11 @@ def format_sse(event_data: dict[str, Any]) -> str:
 
 @router.post("/agent", dependencies=[Depends(agent_rate_limiter)])
 async def ask_agent(request: AgentQueryRequest):
-    """Conversational endpoint with dual-deployment load balancing, transparent failover, and event streaming."""
+    """Conversational endpoint with streaming responses and server-side session management."""
     active_session_id = request.session_id or str(uuid.uuid4())
     session, _ = session_cache.get_or_create(
         active_session_id,
-        lambda sid: agent_primary.create_session(session_id=sid),
+        lambda sid: agent.create_session(session_id=sid),
     )
 
     async def generate_response():
@@ -145,29 +120,12 @@ async def ask_agent(request: AgentQueryRequest):
         stream_started = False
         text_streamed = False
 
-        # Session Affinity: Keep conversation turns on the same deployment to preserve Azure thread context
-        preferred_name = session.state.get("deployment_name")
-        selected_deployment = None
-        if preferred_name and deployment_manager.is_available(preferred_name):
-            selected_deployment = deployment_manager.get_deployment(preferred_name)
-
-        if not selected_deployment:
-            selected_deployment = deployment_manager.get_preferred_deployment()
-            # If switching deployments across turns, reset service_session_id because Azure
-            # server-side conversation threads cannot cross model deployment boundaries.
-            if preferred_name and preferred_name != selected_deployment.name:
-                logger.info(
-                    f"Session {active_session_id} switching deployment '{preferred_name}' -> '{selected_deployment.name}'. Clearing service_session_id."
-                )
-                session.service_session_id = None
-
-        session.state["deployment_name"] = selected_deployment.name
-        deployment_manager.record_request(selected_deployment.name)
-
-        async def stream_agent(agent_instance):
+        async def stream_agent():
             nonlocal stream_started, text_streamed
-            async for chunk in agent_instance.run(
-                request.query, session=session, stream=True, options={"store": False}
+            tool_call_state: dict[str, dict[str, Any]] = {}
+
+            async for chunk in agent.run(
+                request.query, session=session, stream=True
             ):
                 for c in chunk.contents:
                     c_type = getattr(c, "type", None)
@@ -190,57 +148,108 @@ async def ask_agent(request: AgentQueryRequest):
                     elif c_type == "function_call":
                         stream_started = True
                         call_id = getattr(c, "call_id", None) or str(uuid.uuid4())
-                        name = getattr(c, "name", "tool")
+                        name = getattr(c, "name", None)
                         raw_args = getattr(c, "arguments", None)
-                        parsed_args = raw_args
-                        if isinstance(raw_args, str):
-                            try:
-                                parsed_args = json.loads(raw_args)
-                            except Exception:
-                                parsed_args = raw_args
 
-                        tool_block = {
-                            "type": "tool_call",
-                            "id": call_id,
-                            "name": name,
-                            "args": parsed_args,
-                            "status": "running",
-                        }
-                        recorded_blocks.append(tool_block)
-                        yield format_sse(tool_block)
+                        if call_id not in tool_call_state:
+                            tool_block = {
+                                "type": "tool_call",
+                                "id": call_id,
+                                "name": name or "tool",
+                                "args": {},
+                                "status": "running",
+                            }
+                            recorded_blocks.append(tool_block)
+                            tool_call_state[call_id] = {
+                                "name": name or "tool",
+                                "raw_args": "",
+                                "args": {},
+                                "block": tool_block,
+                                "emitted": False,
+                            }
+
+                        entry = tool_call_state[call_id]
+                        if name and entry["name"] == "tool":
+                            entry["name"] = name
+                            entry["block"]["name"] = name
+
+                        # Accumulate arguments
+                        if isinstance(raw_args, str):
+                            entry["raw_args"] += raw_args
+                            try:
+                                parsed = json.loads(entry["raw_args"])
+                                if isinstance(parsed, dict):
+                                    entry["args"] = parsed
+                                    entry["block"]["args"] = parsed
+                            except Exception:
+                                pass
+                        elif isinstance(raw_args, dict):
+                            entry["args"] = raw_args
+                            entry["block"]["args"] = raw_args
+
+                        # Emit initial event on start, or emit update once args are fully parsed
+                        if not entry["emitted"]:
+                            entry["emitted"] = True
+                            yield format_sse({
+                                "type": "tool_call",
+                                "id": call_id,
+                                "name": entry["name"],
+                                "args": entry["args"],
+                                "status": "running",
+                            })
+                        elif entry["args"] and entry["block"].get("_last_emitted_args") != entry["args"]:
+                            entry["block"]["_last_emitted_args"] = entry["args"]
+                            yield format_sse({
+                                "type": "tool_call",
+                                "id": call_id,
+                                "name": entry["name"],
+                                "args": entry["args"],
+                                "status": "running",
+                            })
 
                     elif c_type == "function_result":
                         stream_started = True
                         call_id = getattr(c, "call_id", None)
+
+                        # Finalize args if not yet parsed
+                        final_args = None
+                        if call_id and call_id in tool_call_state:
+                            entry = tool_call_state[call_id]
+                            if not entry["args"] and entry["raw_args"]:
+                                try:
+                                    entry["args"] = json.loads(entry["raw_args"])
+                                except Exception:
+                                    entry["args"] = entry["raw_args"].strip()
+                                entry["block"]["args"] = entry["args"]
+                            final_args = entry["args"]
+
                         for b in recorded_blocks:
                             if b.get("type") == "tool_call" and b.get("id") == call_id:
                                 b["status"] = "completed"
+                                b.pop("_last_emitted_args", None)
                                 break
 
                         yield format_sse({
                             "type": "tool_result",
                             "call_id": call_id,
                             "name": getattr(c, "name", None),
+                            "args": final_args,
                         })
 
         try:
-            async for sse_chunk in stream_agent(selected_deployment.agent):
+            async for sse_chunk in stream_agent():
                 yield sse_chunk
 
-            # Safeguard: If agent executed tools or completed run without emitting any text response
+            # Safeguard: If agent executed tools but produced no text answer
             if not "".join(full_response).strip():
                 logger.warning(
-                    f"Agent on '{selected_deployment.name}' produced no text answer for query '{request.query}'. Running synthesis recovery..."
-                )
-                recovery_deployment = (
-                    deployment_manager.get_fallback_deployment(selected_deployment.name)
-                    or selected_deployment
+                    f"Agent produced no text answer for query '{request.query}'. Running synthesis recovery..."
                 )
                 synthesis_prompt = (
                     f"Synthesize the documentation retrieved from tools and directly answer the following user question in full detail: {request.query}"
                 )
-                async for chunk in recovery_deployment.agent.run(
-                    synthesis_prompt, session=session, stream=True, options={"store": False}
+                async for chunk in agent.run(
+                    synthesis_prompt, session=session, stream=True
                 ):
                     for c in chunk.contents:
                         if getattr(c, "type", None) == "text":
@@ -257,76 +266,37 @@ async def ask_agent(request: AgentQueryRequest):
             yield format_sse({"type": "done"})
         except Exception as exc:
             err_str = str(exc).lower()
-            is_rate_limit = (
-                "rate limit" in err_str
-                or "429" in err_str
-                or "demand" in err_str
-                or "quota" in err_str
-            )
             is_corrupted_thread = (
                 "no tool output found" in err_str
                 or "invalid_request_error" in err_str
                 or "previous_response_id" in err_str
             )
             logger.warning(
-                f"Execution failed on '{selected_deployment.name}' (rate_limit={is_rate_limit}, corrupted_thread={is_corrupted_thread}, text_streamed={text_streamed}): {exc}"
+                f"Execution failed (corrupted_thread={is_corrupted_thread}, text_streamed={text_streamed}): {exc}"
             )
 
-            # Scenario 1: Rate limit transparent failover (allowed if no user text has been committed yet)
-            if is_rate_limit and not text_streamed:
-                deployment_manager.mark_rate_limited(selected_deployment.name)
-                fallback = deployment_manager.get_fallback_deployment(selected_deployment.name)
-                if fallback:
-                    logger.info(f"Transparently failing over request to '{fallback.name}'...")
-                    session.service_session_id = None
-                    session.state["deployment_name"] = fallback.name
-                    deployment_manager.record_request(fallback.name)
-                    try:
-                        async for sse_chunk in stream_agent(fallback.agent):
-                            yield sse_chunk
-
-                        if not "".join(full_response).strip():
-                            async for chunk in fallback.agent.run(
-                                f"Synthesize the retrieved documentation and directly answer the following user question: {request.query}",
-                                session=session,
-                                stream=True,
-                                options={"store": False},
-                            ):
-                                for c in chunk.contents:
-                                    if getattr(c, "type", None) == "text":
-                                        t_val = getattr(c, "text", "")
-                                        if t_val:
-                                            text_streamed = True
-                                            full_response.append(t_val)
-                                            if recorded_blocks and recorded_blocks[-1]["type"] == "text":
-                                                recorded_blocks[-1]["content"] += t_val
-                                            else:
-                                                recorded_blocks.append({"type": "text", "content": t_val})
-                                            yield format_sse({"type": "text", "delta": t_val})
-
-                        yield format_sse({"type": "done"})
-                        return
-                    except Exception as fallback_exc:
-                        logger.error(f"Fallback deployment '{fallback.name}' also failed: {fallback_exc}")
-
-            # Scenario 2: Dangling tool call or corrupted thread (retry on clean thread if no text committed)
+            # Retry on clean thread if thread state became invalid and no text was committed yet
             if is_corrupted_thread and not text_streamed:
                 logger.warning(
-                    f"Session {active_session_id} thread state invalid ({exc}). Resetting service_session_id and retrying on '{selected_deployment.name}'..."
+                    f"Session {active_session_id} thread state invalid. Resetting service_session_id and retrying..."
                 )
                 session.service_session_id = None
                 try:
-                    async for sse_chunk in stream_agent(selected_deployment.agent):
+                    async for sse_chunk in stream_agent():
                         yield sse_chunk
                     yield format_sse({"type": "done"})
                     return
                 except Exception as retry_exc:
-                    logger.error(f"Clean-thread retry on '{selected_deployment.name}' failed: {retry_exc}")
+                    logger.error(f"Clean-thread retry failed: {retry_exc}")
 
-            # Terminal Fallback: Guarantee user receives an explanation rather than an empty response
+            # Terminal Fallback
             session.service_session_id = None
             logger.error(f"Error during agent execution: {exc}")
-            err_msg = "\nI encountered a temporary service issue while retrieving documentation. Please try again in a moment, or feel free to contact Aryan directly via [LinkedIn](https://www.linkedin.com/in/aryxenv/) or [email](mailto:aryanshah0514@gmail.com)."
+            err_msg = (
+                "\nI encountered a temporary service issue while retrieving documentation. "
+                "Please try again in a moment, or feel free to contact Aryan directly via "
+                "[LinkedIn](https://www.linkedin.com/in/aryxenv/) or [email](mailto:aryanshah0514@gmail.com)."
+            )
             full_response.append(err_msg)
             if recorded_blocks and recorded_blocks[-1]["type"] == "text":
                 recorded_blocks[-1]["content"] += err_msg
@@ -338,6 +308,8 @@ async def ask_agent(request: AgentQueryRequest):
 
         # Record user and assistant turn in session state for history retrieval
         if full_response or recorded_blocks:
+            for b in recorded_blocks:
+                b.pop("_last_emitted_args", None)
             if "messages" not in session.state:
                 session.state["messages"] = []
             session.state["messages"].append({"role": "user", "content": request.query})
@@ -356,12 +328,6 @@ async def ask_agent(request: AgentQueryRequest):
             "X-Accel-Buffering": "no",
         },
     )
-
-
-@router.get("/agent/deployments")
-async def get_deployments_status():
-    """Diagnostic endpoint returning active RPM metrics for each deployment."""
-    return {"deployments": deployment_manager.get_status()}
 
 
 @router.get("/agent/history")

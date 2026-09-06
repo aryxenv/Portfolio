@@ -29,7 +29,7 @@ export interface ChatMessageData {
 export type StreamEvent =
   | { type: "text"; delta: string }
   | { type: "tool_call"; id?: string; call_id?: string; name: string; args?: Record<string, unknown> | string; status?: "running" | "completed" | "error" }
-  | { type: "tool_result"; call_id?: string; name?: string }
+  | { type: "tool_result"; call_id?: string; name?: string; args?: Record<string, unknown> | string }
   | { type: "error"; message: string }
   | { type: "done" };
 

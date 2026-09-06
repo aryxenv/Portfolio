@@ -13,18 +13,31 @@ export const ChatToolBadge: React.FC<ChatToolBadgeProps> = ({ tool }) => {
   // Format concise, technical description for the badge
   let paramSummary = "";
   let tag: string | null = null;
+  let parsedRecord: Record<string, unknown> | null = null;
 
   if (args && typeof args === "object") {
-    const record = args as Record<string, unknown>;
-    if (record.query) {
-      paramSummary = `"${String(record.query)}"`;
-    } else if (record.field) {
-      paramSummary = `field: "${String(record.field)}"`;
+    parsedRecord = args as Record<string, unknown>;
+  } else if (typeof args === "string" && args.trim().startsWith("{")) {
+    try {
+      const parsed = JSON.parse(args.trim());
+      if (typeof parsed === "object" && parsed !== null) {
+        parsedRecord = parsed as Record<string, unknown>;
+      }
+    } catch {
+      // ignore parse failure
     }
-    if (record.doc_type) {
-      tag = String(record.doc_type);
-    } else if (record.company) {
-      tag = String(record.company);
+  }
+
+  if (parsedRecord) {
+    if (parsedRecord.query) {
+      paramSummary = `"${String(parsedRecord.query)}"`;
+    } else if (parsedRecord.field) {
+      paramSummary = `field: "${String(parsedRecord.field)}"`;
+    }
+    if (parsedRecord.doc_type) {
+      tag = String(parsedRecord.doc_type);
+    } else if (parsedRecord.company) {
+      tag = String(parsedRecord.company);
     }
   } else if (typeof args === "string" && args.trim()) {
     paramSummary = args.trim();
@@ -81,7 +94,13 @@ export const ChatToolBadge: React.FC<ChatToolBadgeProps> = ({ tool }) => {
 
       {isExpanded && hasDetails && (
         <pre className="chat-tool-drawer">
-          <code>{typeof args === "object" ? JSON.stringify(args, null, 2) : args}</code>
+          <code>
+            {parsedRecord
+              ? JSON.stringify(parsedRecord, null, 2)
+              : typeof args === "object"
+                ? JSON.stringify(args, null, 2)
+                : args}
+          </code>
         </pre>
       )}
     </div>

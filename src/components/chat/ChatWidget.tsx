@@ -158,13 +158,31 @@ export const ChatWidget: React.FC = () => {
               prev.map((msg) => {
                 if (msg.id !== assistantMsgId) return msg;
                 const blocks = [...(msg.blocks || [])];
-                blocks.push({
-                  type: "tool_call",
-                  id: event.call_id || event.id || String(Date.now()),
-                  name: event.name,
-                  args: event.args,
-                  status: "running",
-                });
+                const blockId = event.call_id || event.id;
+                const existingIdx = blocks.findIndex(
+                  (b) => b.type === "tool_call" && (b.id === blockId || (blockId && b.id.startsWith("temp-") && b.name === event.name))
+                );
+
+                const hasArgs = event.args && (typeof event.args !== "object" || Object.keys(event.args).length > 0);
+
+                const existing = blocks[existingIdx];
+                if (existing && existing.type === "tool_call") {
+                  blocks[existingIdx] = {
+                    ...existing,
+                    id: blockId || existing.id,
+                    name: event.name || existing.name,
+                    args: hasArgs ? event.args : existing.args,
+                    status: event.status || existing.status,
+                  };
+                } else {
+                  blocks.push({
+                    type: "tool_call",
+                    id: blockId || `temp-${Date.now()}`,
+                    name: event.name,
+                    args: event.args,
+                    status: "running",
+                  });
+                }
                 return { ...msg, blocks };
               })
             );
@@ -172,9 +190,14 @@ export const ChatWidget: React.FC = () => {
             setMessages((prev) =>
               prev.map((msg) => {
                 if (msg.id !== assistantMsgId) return msg;
+                const hasArgs = event.args && (typeof event.args !== "object" || Object.keys(event.args).length > 0);
                 const blocks = (msg.blocks || []).map((b) =>
                   b.type === "tool_call" && (b.id === event.call_id || !event.call_id)
-                    ? { ...b, status: "completed" as const }
+                    ? {
+                        ...b,
+                        status: "completed" as const,
+                        ...(hasArgs ? { args: event.args } : {}),
+                      }
                     : b
                 );
                 return { ...msg, blocks };
