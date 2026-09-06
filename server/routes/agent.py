@@ -20,12 +20,12 @@ logger = logging.getLogger("server.agent")
 
 # Support both absolute and package-relative imports
 try:
-    from utils.tools import inspect_metadata_options, vector_search, vector_search_cosmosdb
+    from utils.tools import inspect_metadata_options, vector_search
     from utils.rate_limiter import agent_rate_limiter
     from utils.session_cache import session_cache
     from utils.deployment_manager import Deployment, DeploymentManager
 except ImportError:
-    from server.utils.tools import inspect_metadata_options, vector_search, vector_search_cosmosdb  # type: ignore[no-redef]
+    from server.utils.tools import inspect_metadata_options, vector_search  # type: ignore[no-redef]
     from server.utils.rate_limiter import agent_rate_limiter  # type: ignore[no-redef]
     from server.utils.session_cache import session_cache  # type: ignore[no-redef]
     from server.utils.deployment_manager import Deployment, DeploymentManager  # type: ignore[no-redef]
@@ -73,7 +73,7 @@ agent_primary = Agent(
     client=client_primary,
     name="PortfolioAgentPrimary",
     instructions=PORTFOLIO_SYSTEM_PROMPT,
-    tools=[vector_search_cosmosdb, inspect_metadata_options],
+    tools=[vector_search, inspect_metadata_options],
 )
 
 client_secondary = FoundryChatClient(
@@ -85,7 +85,7 @@ agent_secondary = Agent(
     client=client_secondary,
     name="PortfolioAgentSecondary",
     instructions=PORTFOLIO_SYSTEM_PROMPT,
-    tools=[vector_search_cosmosdb, inspect_metadata_options],
+    tools=[vector_search, inspect_metadata_options],
 )
 
 deployment_manager = DeploymentManager([

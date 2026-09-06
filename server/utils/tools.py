@@ -81,7 +81,7 @@ def generate_query_embedding(query: str, max_retries: int = 3) -> list[float]:
 
 
 @tool(approval_mode="never_require")
-def vector_search(
+def vector_search_ai_search(
     query: Annotated[
         str,
         Field(description="Semantic search query describing the technical topic or question."),
@@ -202,7 +202,7 @@ def vector_search(
 
 
 @tool(approval_mode="never_require")
-def vector_search_cosmosdb(
+def vector_search(
     query: Annotated[
         str,
         Field(description="Semantic search query describing the technical topic or question."),
