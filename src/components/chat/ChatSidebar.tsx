@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { ChatMessage } from "./ChatMessage";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatMessageData } from "../../lib/chat-api";
+import { ChatMessage } from "./ChatMessage";
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ interface ChatSidebarProps {
 
 const STARTER_PROMPTS = [
   "What was Aryan's focus and role at Microsoft?",
-  "How does this agent work?",
+  "How does this portfolio agent work?",
   "Tell me more about Aryan's GraphRAG Demo Project",
 ];
 
