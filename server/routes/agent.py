@@ -6,7 +6,9 @@ and Azure Cosmos DB hybrid RAG tools with metadata filtering.
 """
 from __future__ import annotations
 
+import logging
 import os
+import uuid
 from agent_framework import Agent, Message
 from agent_framework_foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
@@ -14,7 +16,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-import uuid
+logger = logging.getLogger("server.agent")
 
 # Support both absolute and package-relative imports
 try:
@@ -66,7 +68,7 @@ agent = Agent(
     client=client,
     name="PortfolioAgent",
     instructions=PORTFOLIO_SYSTEM_PROMPT,
-    tools=[vector_search, inspect_metadata_options], # in tools.py change vector_search_cosmosdb to vector_search name if you want to use cosmosdb instead of azure AI search
+    tools=[vector_search_cosmosdb, inspect_metadata_options], # in tools.py change vector_search_cosmosdb to vector_search name if you want to use cosmosdb instead of azure AI search
 )
 
 router = APIRouter()
@@ -91,10 +93,16 @@ async def ask_agent(request: AgentQueryRequest):
 
     async def generate_response():
         full_response: list[str] = []
-        async for chunk in agent.run(request.query, session=session, stream=True):
-            if chunk.text:
-                full_response.append(chunk.text)
-                yield chunk.text
+        try:
+            async for chunk in agent.run(request.query, session=session, stream=True):
+                if chunk.text:
+                    full_response.append(chunk.text)
+                    yield chunk.text
+        except Exception as exc:
+            logger.error(f"Error during agent execution: {exc}")
+            err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
+            full_response.append(err_msg)
+            yield err_msg
 
         # Record user and assistant turn in session state for history retrieval
         if "messages" not in session.state:
