@@ -115,7 +115,7 @@ def save_hash_cache(cache: dict[str, dict[str, str]]) -> None:
 
 
 def detect_changed_files() -> tuple[list[Path], list[Path]]:
-    """Detect added/modified and deleted rag/content/ files via git diff.
+    """Detect added/modified and deleted rag content files via git diff.
 
     Checks GIT_DIFF_BASE env var (e.g. from GitHub Actions github.event.before),
     falling back to HEAD~1. If git is unavailable or diff fails, returns ([], []).
@@ -127,12 +127,13 @@ def detect_changed_files() -> tuple[list[Path], list[Path]]:
     if not diff_base or diff_base.startswith("00000000"):
         diff_base = "HEAD~1"
 
-    print(f"[INFO] Running git diff against base '{diff_base}' for rag/content/...")
+    diff_targets = ["rag/content/", "rag/rag_strategy.md"]
+    print(f"[INFO] Running git diff against base '{diff_base}' for {', '.join(diff_targets)}...")
     try:
         result = subprocess.run(
             [
                 "git", "diff", "--name-status", "--diff-filter=ADMR",
-                diff_base, "HEAD", "--", "rag/content/",
+                diff_base, "HEAD", "--", *diff_targets,
             ],
             capture_output=True,
             text=True,
@@ -148,7 +149,7 @@ def detect_changed_files() -> tuple[list[Path], list[Path]]:
                 result = subprocess.run(
                     [
                         "git", "diff", "--name-status", "--diff-filter=ADMR",
-                        "HEAD~1", "HEAD", "--", "rag/content/",
+                        "HEAD~1", "HEAD", "--", *diff_targets,
                     ],
                     capture_output=True,
                     text=True,
@@ -179,7 +180,7 @@ def detect_changed_files() -> tuple[list[Path], list[Path]]:
             if abs_path.is_file() and abs_path.suffix.lower() == ".md":
                 changed.append(abs_path)
 
-    print(f"[INFO] Git detected {len(changed)} changed and {len(deleted)} deleted file(s) in rag/content/.")
+    print(f"[INFO] Git detected {len(changed)} changed and {len(deleted)} deleted file(s) across rag content.")
     return changed, deleted
 
 
@@ -334,6 +335,23 @@ def parse_args(args: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
+def discover_all_content_files(base_dir: Path) -> list[Path]:
+    """Find all markdown files to index: rag_strategy.md + content/**/*.md."""
+    target_files: list[Path] = []
+    rag_strat = next(
+        (p for p in base_dir.iterdir() if p.is_file() and p.name.lower() == "rag_strategy.md"),
+        None,
+    )
+    if rag_strat and rag_strat.is_file():
+        target_files.append(rag_strat)
+    content_dir = base_dir / "content"
+    if content_dir.is_dir():
+        target_files.extend(
+            sorted(p for p in content_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".md")
+        )
+    return target_files
+
+
 # ---------------------------------------------------------------------------
 # Main Pipeline
 # ---------------------------------------------------------------------------
@@ -354,9 +372,7 @@ def main(cli_args: list[str] | None = None) -> None:
     if opts.full_reindex:
         print("[MODE] Full re-index requested.")
         all_chunks = collect_markdown_documents(BASE_DIR)
-        content_dir = BASE_DIR / "content"
-        if content_dir.is_dir():
-            files_to_index = sorted(p for p in content_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".md")
+        files_to_index = discover_all_content_files(BASE_DIR)
     elif opts.files:
         # Expand any wildcard patterns (essential on Windows where shells don't expand globs)
         expanded_file_inputs: list[str] = []
@@ -434,9 +450,7 @@ def main(cli_args: list[str] | None = None) -> None:
         if not changed_files and not deleted_files:
             print("[INFO] No changes detected via git diff. Falling back to full scan.")
             all_chunks = collect_markdown_documents(BASE_DIR)
-            content_dir = BASE_DIR / "content"
-            if content_dir.is_dir():
-                files_to_index = sorted(p for p in content_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".md")
+            files_to_index = discover_all_content_files(BASE_DIR)
         else:
             files_to_index = changed_files
             all_chunks = None

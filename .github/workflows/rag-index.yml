@@ -19,6 +19,7 @@ on:
     branches: [main]
     paths:
       - "rag/content/**"
+      - "rag/rag_strategy.md"
   workflow_dispatch:
     inputs:
       full_reindex:
