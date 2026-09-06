@@ -165,7 +165,8 @@
   z-index: 999;
   transition:
     opacity 0.3s ease-out,
-    transform 0.3s ease-out;
+    transform 0.3s ease-out,
+    right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .back-to-top.hidden {

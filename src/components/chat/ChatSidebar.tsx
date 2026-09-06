@@ -55,6 +55,53 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
     }
   }, [messages, isOpen, scrollToBottom]);
 
+  // Preserve scroll position (staying at bottom) when switching routes with Astro View Transitions
+  useEffect(() => {
+    if (!isOpen) return;
+
+    let wasAtBottom = true;
+    let savedScrollTop = 0;
+
+    const handleBeforeSwap = () => {
+      const container = messagesContainerRef.current;
+      if (container) {
+        const threshold = 60;
+        const distanceToBottom =
+          container.scrollHeight - container.clientHeight - container.scrollTop;
+        wasAtBottom = distanceToBottom <= threshold;
+        savedScrollTop = container.scrollTop;
+      }
+    };
+
+    const restoreScroll = () => {
+      const container = messagesContainerRef.current;
+      if (!container) return;
+
+      if (wasAtBottom) {
+        container.scrollTop = container.scrollHeight;
+      } else if (savedScrollTop > 0) {
+        container.scrollTop = savedScrollTop;
+      }
+    };
+
+    const handleSwapComplete = () => {
+      restoreScroll();
+      requestAnimationFrame(restoreScroll);
+      setTimeout(restoreScroll, 50);
+      setTimeout(restoreScroll, 150);
+    };
+
+    document.addEventListener("astro:before-swap", handleBeforeSwap);
+    document.addEventListener("astro:after-swap", handleSwapComplete);
+    document.addEventListener("astro:page-load", handleSwapComplete);
+
+    return () => {
+      document.removeEventListener("astro:before-swap", handleBeforeSwap);
+      document.removeEventListener("astro:after-swap", handleSwapComplete);
+      document.removeEventListener("astro:page-load", handleSwapComplete);
+    };
+  }, [isOpen]);
+
   // Isolate scroll gestures inside the sidebar:
   // 1. Prevent scroll chaining from reaching the underlying window/body
   // 2. Redirect wheel events anywhere in the sidebar (header, footer, margins) to the messages container

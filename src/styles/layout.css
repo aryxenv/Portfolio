@@ -53,6 +53,10 @@ body {
   body.chat-sidebar-open .navbar {
     width: calc(100% - var(--chat-sidebar-width, 420px));
   }
+
+  body.chat-sidebar-open .back-to-top {
+    right: calc(var(--chat-sidebar-width, 420px) + 1rem);
+  }
 }
 
 @media (max-width: 1023px) {

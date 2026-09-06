@@ -36,15 +36,37 @@ export const ChatWidget: React.FC = () => {
     }
   }, []);
 
-  // Synchronize body class for desktop screen push effect and mobile scroll lock
+  // Synchronize body class for desktop screen push effect and mobile scroll lock across navigations
   useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add("chat-sidebar-open");
-    } else {
-      document.body.classList.remove("chat-sidebar-open");
-    }
+    const syncBodyClass = () => {
+      if (isOpen) {
+        document.body.classList.add("chat-sidebar-open");
+      } else {
+        document.body.classList.remove("chat-sidebar-open");
+      }
+    };
+
+    syncBodyClass();
+
+    const handleBeforeSwap = (event: Event) => {
+      const e = event as unknown as { newDocument?: Document };
+      if (isOpen && e.newDocument?.body) {
+        e.newDocument.body.classList.add("chat-sidebar-open");
+      }
+    };
+
+    const handlePageLoad = () => {
+      syncBodyClass();
+    };
+
+    document.addEventListener("astro:before-swap", handleBeforeSwap);
+    document.addEventListener("astro:after-swap", handlePageLoad);
+    document.addEventListener("astro:page-load", handlePageLoad);
 
     return () => {
+      document.removeEventListener("astro:before-swap", handleBeforeSwap);
+      document.removeEventListener("astro:after-swap", handlePageLoad);
+      document.removeEventListener("astro:page-load", handlePageLoad);
       document.body.classList.remove("chat-sidebar-open");
     };
   }, [isOpen]);
