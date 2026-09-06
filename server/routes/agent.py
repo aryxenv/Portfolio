@@ -90,9 +90,17 @@ async def ask_agent(request: AgentQueryRequest):
     )
 
     async def generate_response():
+        full_response: list[str] = []
         async for chunk in agent.run(request.query, session=session, stream=True):
             if chunk.text:
+                full_response.append(chunk.text)
                 yield chunk.text
+
+        # Record user and assistant turn in session state for history retrieval
+        if "messages" not in session.state:
+            session.state["messages"] = []
+        session.state["messages"].append({"role": "user", "content": request.query})
+        session.state["messages"].append({"role": "assistant", "content": "".join(full_response)})
 
     return StreamingResponse(
         generate_response(),
@@ -108,17 +116,20 @@ async def get_agent_history(session_id: str):
     if session is None:
         return {"session_id": session_id, "messages": []}
 
-    messages: list[dict[str, str]] = []
+    clean_messages: list[dict[str, str]] = []
     for msg in session.state.get("messages", []):
-        role = getattr(msg, "role", None)
-        if role in ("user", "assistant"):
-            text = " ".join(
-                [c.text for c in getattr(msg, "contents", []) if hasattr(c, "text")]
-            ).strip()
-            if text:
-                messages.append({"role": role, "content": text})
+        if isinstance(msg, dict):
+            clean_messages.append({"role": msg.get("role", "user"), "content": msg.get("content", "")})
+        else:
+            role = getattr(msg, "role", None)
+            if role in ("user", "assistant"):
+                text = " ".join(
+                    [c.text for c in getattr(msg, "contents", []) if hasattr(c, "text")]
+                ).strip()
+                if text:
+                    clean_messages.append({"role": role, "content": text})
 
-    return {"session_id": session_id, "messages": messages}
+    return {"session_id": session_id, "messages": clean_messages}
 
 
 @router.delete("/agent/history")
