@@ -51,7 +51,22 @@ export const getApiBaseUrl = (): string => {
   if (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) {
     return import.meta.env.PUBLIC_API_URL.replace(/\/+$/, "");
   }
-  return "http://localhost:8000";
+
+  // In browser, use localhost for local development
+  if (typeof window !== "undefined" && window.location) {
+    const hostname = window.location.hostname;
+    if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0") {
+      return "http://localhost:8000";
+    }
+  }
+
+  // In SSR / build dev mode, fallback to localhost
+  if (typeof import.meta !== "undefined" && import.meta.env?.DEV) {
+    return "http://localhost:8000";
+  }
+
+  // Production Azure VM endpoint
+  return "http://51.12.243.63:8000";
 };
 
 export const getStoredSessionId = (): string | null => {

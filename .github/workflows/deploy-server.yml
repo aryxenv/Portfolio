@@ -1,0 +1,78 @@
+# -------------------------------------------------------------------
+# Portfolio Server – Automated CI/CD Deployment Pipeline
+# -------------------------------------------------------------------
+# Triggers on push to main (including PR merges) when any file under
+# server/ changes. Authenticates to Azure via OIDC (Workload Identity
+# / Federated Credentials) and invokes Azure Run-Command on vm-portfolio
+# to pull latest changes, sync Python dependencies via uv, and restart
+# the systemd service.
+#
+# GitHub Secrets configured via Azure CLI:
+#   AZURE_CLIENT_ID       – Entra App registration client ID
+#   AZURE_TENANT_ID       – Microsoft Entra ID tenant ID
+#   AZURE_SUBSCRIPTION_ID – Azure subscription ID
+# -------------------------------------------------------------------
+
+name: Deploy Server to Azure VM
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+      - ".github/workflows/deploy-server.yml"
+  workflow_dispatch:
+
+# Prevent concurrent deployment runs on main; queue sequentially
+concurrency:
+  group: deploy-server-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write   # Required for requesting Azure OIDC federated token
+  contents: read     # Required to checkout code
+
+jobs:
+  deploy:
+    name: Deploy to Azure VM
+    runs-on: ubuntu-latest
+
+    steps:
+      # ---- Azure OIDC Login ----
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ---- Invoke Deployment on VM via Azure Run-Command ----
+      - name: Deploy and Restart Service on VM
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            echo "::notice::Deploying latest server changes to vm-portfolio in resource group portfolio..."
+            az vm run-command invoke \
+              --resource-group portfolio \
+              --name vm-portfolio \
+              --command-id RunShellScript \
+              --scripts "
+                set -e
+                echo '=== Pulling latest changes from main ==='
+                sudo -u aryxenv bash -c 'cd /home/aryxenv/portfolio && git fetch origin main && git reset --hard origin/main'
+
+                echo '=== Syncing Python dependencies via uv ==='
+                sudo -u aryxenv bash -c 'cd /home/aryxenv/portfolio/server && /home/aryxenv/.local/bin/uv sync --frozen'
+
+                echo '=== Restarting portfolio-server service ==='
+                systemctl restart portfolio-server
+
+                echo '=== Verifying service status ==='
+                systemctl is-active --quiet portfolio-server
+
+                echo '=== Verifying HTTP health endpoint ==='
+                sleep 2
+                curl -sf http://127.0.0.1:8000/health
+                echo ''
+                echo '=== Deployment completed and verified successfully! ==='
+              "
