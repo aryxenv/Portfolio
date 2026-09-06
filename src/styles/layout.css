@@ -1,10 +1,15 @@
-/* The page shell: the 1280px column every section sits inside. */
+body {
+  transition: padding-right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 .page {
   max-width: 1280px;
   width: 90%;
   margin: calc(var(--navbar-height) + 1.5rem) auto 3rem;
   text-align: center;
+  transition:
+    max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .app {
@@ -36,5 +41,22 @@
 @media (max-width: 1180px) {
   .page {
     overflow-x: hidden;
+  }
+}
+
+/* Chat sidebar push behavior: pushes screen on desktop, full-screen overlay on smaller devices */
+@media (min-width: 1024px) {
+  body.chat-sidebar-open {
+    padding-right: var(--chat-sidebar-width, 420px);
+  }
+
+  body.chat-sidebar-open .navbar {
+    width: calc(100% - var(--chat-sidebar-width, 420px));
+  }
+}
+
+@media (max-width: 1023px) {
+  body.chat-sidebar-open {
+    overflow: hidden;
   }
 }

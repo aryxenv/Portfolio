@@ -6,8 +6,11 @@ and Azure Cosmos DB hybrid RAG tools with metadata filtering.
 """
 from __future__ import annotations
 
+import json
 import logging
 import os
+import time
+from typing import Any
 import uuid
 from agent_framework import Agent, Message
 from agent_framework_foundry import FoundryChatClient
@@ -114,9 +117,14 @@ class AgentQueryRequest(BaseModel):
     )
 
 
+def format_sse(event_data: dict[str, Any]) -> str:
+    """Helper to format JSON payload as Server-Sent Event."""
+    return f"data: {json.dumps(event_data, ensure_ascii=False)}\n\n"
+
+
 @router.post("/agent", dependencies=[Depends(agent_rate_limiter)])
 async def ask_agent(request: AgentQueryRequest):
-    """Conversational endpoint with dual-deployment load balancing and transparent failover."""
+    """Conversational endpoint with dual-deployment load balancing, transparent failover, and event streaming."""
     active_session_id = request.session_id or str(uuid.uuid4())
     session, _ = session_cache.get_or_create(
         active_session_id,
@@ -125,16 +133,88 @@ async def ask_agent(request: AgentQueryRequest):
 
     async def generate_response():
         full_response: list[str] = []
-        selected_deployment = deployment_manager.get_preferred_deployment()
-        deployment_manager.record_request(selected_deployment.name)
+        recorded_blocks: list[dict[str, Any]] = []
         stream_started = False
 
+        # Session Affinity: Keep conversation turns on the same deployment to preserve Azure thread context
+        preferred_name = session.state.get("deployment_name")
+        selected_deployment = None
+        if preferred_name and deployment_manager.is_available(preferred_name):
+            selected_deployment = deployment_manager.get_deployment(preferred_name)
+
+        if not selected_deployment:
+            selected_deployment = deployment_manager.get_preferred_deployment()
+            # If switching deployments across turns, reset service_session_id because Azure
+            # server-side conversation threads cannot cross model deployment boundaries.
+            if preferred_name and preferred_name != selected_deployment.name:
+                logger.info(
+                    f"Session {active_session_id} switching deployment '{preferred_name}' -> '{selected_deployment.name}'. Clearing service_session_id."
+                )
+                session.service_session_id = None
+
+        session.state["deployment_name"] = selected_deployment.name
+        deployment_manager.record_request(selected_deployment.name)
+
+        async def stream_agent(agent_instance):
+            nonlocal stream_started
+            async for chunk in agent_instance.run(request.query, session=session, stream=True):
+                for c in chunk.contents:
+                    c_type = getattr(c, "type", None)
+
+                    if c_type == "text":
+                        text_val = getattr(c, "text", "")
+                        if text_val:
+                            stream_started = True
+                            full_response.append(text_val)
+
+                            # Group contiguous text chunks into one text block
+                            if recorded_blocks and recorded_blocks[-1]["type"] == "text":
+                                recorded_blocks[-1]["content"] += text_val
+                            else:
+                                recorded_blocks.append({"type": "text", "content": text_val})
+
+                            yield format_sse({"type": "text", "delta": text_val})
+
+                    elif c_type == "function_call":
+                        stream_started = True
+                        call_id = getattr(c, "call_id", None) or str(uuid.uuid4())
+                        name = getattr(c, "name", "tool")
+                        raw_args = getattr(c, "arguments", None)
+                        parsed_args = raw_args
+                        if isinstance(raw_args, str):
+                            try:
+                                parsed_args = json.loads(raw_args)
+                            except Exception:
+                                parsed_args = raw_args
+
+                        tool_block = {
+                            "type": "tool_call",
+                            "id": call_id,
+                            "name": name,
+                            "args": parsed_args,
+                            "status": "running",
+                        }
+                        recorded_blocks.append(tool_block)
+                        yield format_sse(tool_block)
+
+                    elif c_type == "function_result":
+                        stream_started = True
+                        call_id = getattr(c, "call_id", None)
+                        for b in recorded_blocks:
+                            if b.get("type") == "tool_call" and b.get("id") == call_id:
+                                b["status"] = "completed"
+                                break
+
+                        yield format_sse({
+                            "type": "tool_result",
+                            "call_id": call_id,
+                            "name": getattr(c, "name", None),
+                        })
+
         try:
-            async for chunk in selected_deployment.agent.run(request.query, session=session, stream=True):
-                if chunk.text:
-                    stream_started = True
-                    full_response.append(chunk.text)
-                    yield chunk.text
+            async for sse_chunk in stream_agent(selected_deployment.agent):
+                yield sse_chunk
+            yield format_sse({"type": "done"})
         except Exception as exc:
             err_str = str(exc).lower()
             is_rate_limit = (
@@ -143,48 +223,83 @@ async def ask_agent(request: AgentQueryRequest):
                 or "demand" in err_str
                 or "quota" in err_str
             )
+            is_corrupted_thread = (
+                "no tool output found" in err_str
+                or "invalid_request_error" in err_str
+                or "previous_response_id" in err_str
+            )
             logger.warning(
-                f"Execution failed on '{selected_deployment.name}' (rate_limit={is_rate_limit}): {exc}"
+                f"Execution failed on '{selected_deployment.name}' (rate_limit={is_rate_limit}, corrupted_thread={is_corrupted_thread}): {exc}"
             )
 
-            # If rate limit occurred and no user-visible chunks were yielded yet, transparently failover
+            # Scenario 1: Rate limit transparent failover (only if stream hasn't started)
             if is_rate_limit and not stream_started:
                 deployment_manager.mark_rate_limited(selected_deployment.name)
                 fallback = deployment_manager.get_fallback_deployment(selected_deployment.name)
                 if fallback:
                     logger.info(f"Transparently failing over request to '{fallback.name}'...")
+                    session.service_session_id = None
+                    session.state["deployment_name"] = fallback.name
                     deployment_manager.record_request(fallback.name)
                     try:
-                        async for chunk in fallback.agent.run(request.query, session=session, stream=True):
-                            if chunk.text:
-                                stream_started = True
-                                full_response.append(chunk.text)
-                                yield chunk.text
+                        async for sse_chunk in stream_agent(fallback.agent):
+                            yield sse_chunk
+                        yield format_sse({"type": "done"})
                     except Exception as fallback_exc:
                         logger.error(f"Fallback deployment '{fallback.name}' also failed: {fallback_exc}")
+                        session.service_session_id = None
                         err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
                         full_response.append(err_msg)
-                        yield err_msg
+                        yield format_sse({"type": "error", "message": err_msg})
                 else:
+                    session.service_session_id = None
                     err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
                     full_response.append(err_msg)
-                    yield err_msg
+                    yield format_sse({"type": "error", "message": err_msg})
+
+            # Scenario 2: Dangling tool call or corrupted thread (400 invalid_request_error)
+            elif is_corrupted_thread and not stream_started:
+                logger.warning(
+                    f"Session {active_session_id} thread state invalid ({exc}). Resetting service_session_id and retrying on '{selected_deployment.name}'..."
+                )
+                session.service_session_id = None
+                try:
+                    async for sse_chunk in stream_agent(selected_deployment.agent):
+                        yield sse_chunk
+                    yield format_sse({"type": "done"})
+                except Exception as retry_exc:
+                    logger.error(f"Clean-thread retry on '{selected_deployment.name}' failed: {retry_exc}")
+                    session.service_session_id = None
+                    err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
+                    full_response.append(err_msg)
+                    yield format_sse({"type": "error", "message": err_msg})
+
             else:
+                session.service_session_id = None
                 logger.error(f"Error during agent execution: {exc}")
                 err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
                 full_response.append(err_msg)
-                yield err_msg
+                yield format_sse({"type": "error", "message": err_msg})
 
         # Record user and assistant turn in session state for history retrieval
-        if "messages" not in session.state:
-            session.state["messages"] = []
-        session.state["messages"].append({"role": "user", "content": request.query})
-        session.state["messages"].append({"role": "assistant", "content": "".join(full_response)})
+        if full_response or recorded_blocks:
+            if "messages" not in session.state:
+                session.state["messages"] = []
+            session.state["messages"].append({"role": "user", "content": request.query})
+            session.state["messages"].append({
+                "role": "assistant",
+                "content": "".join(full_response).strip(),
+                "blocks": recorded_blocks,
+            })
 
     return StreamingResponse(
         generate_response(),
-        media_type="text/plain",
-        headers={"X-Session-ID": active_session_id},
+        media_type="text/event-stream",
+        headers={
+            "X-Session-ID": active_session_id,
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
     )
 
 
@@ -201,10 +316,14 @@ async def get_agent_history(session_id: str):
     if session is None:
         return {"session_id": session_id, "messages": []}
 
-    clean_messages: list[dict[str, str]] = []
+    clean_messages: list[dict[str, Any]] = []
     for msg in session.state.get("messages", []):
         if isinstance(msg, dict):
-            clean_messages.append({"role": msg.get("role", "user"), "content": msg.get("content", "")})
+            clean_messages.append({
+                "role": msg.get("role", "user"),
+                "content": msg.get("content", ""),
+                "blocks": msg.get("blocks", []),
+            })
         else:
             role = getattr(msg, "role", None)
             if role in ("user", "assistant"):
@@ -212,7 +331,7 @@ async def get_agent_history(session_id: str):
                     [c.text for c in getattr(msg, "contents", []) if hasattr(c, "text")]
                 ).strip()
                 if text:
-                    clean_messages.append({"role": role, "content": text})
+                    clean_messages.append({"role": role, "content": text, "blocks": []})
 
     return {"session_id": session_id, "messages": clean_messages}
 

@@ -299,7 +299,7 @@ import Reveal from "../components/ui/Reveal.astro";
 
 <script>
   const STORAGE_KEY = "selectedAnimes";
-  let activeTimers = new Map<string, { nextBroadcastDay: Date; element: HTMLElement }>();
+  const activeTimers = new Map<string, { nextBroadcastDay: Date; element: HTMLElement }>();
   let intervalId: ReturnType<typeof setInterval> | null = null;
   let animeList: { input: string; title: string | null }[] = [];
 
@@ -309,7 +309,7 @@ import Reveal from "../components/ui/Reveal.astro";
     return nextDay;
   }
 
-  function parseBroadcast(broadcast: any) {
+  function parseBroadcast(broadcast: { day?: string; time?: string } | null | undefined) {
     if (!broadcast || !broadcast.day || !broadcast.time) return null;
     const daysMap: Record<string, number> = {
       sundays: 0,
@@ -383,7 +383,17 @@ import Reveal from "../components/ui/Reveal.astro";
     return null;
   }
 
-  function renderAnime(animeData: any, inputName: string, listContainer: HTMLElement) {
+  function renderAnime(
+    animeData: {
+      mal_id: number;
+      title_english?: string;
+      title?: string;
+      status?: string;
+      broadcast?: { day?: string; time?: string };
+    },
+    inputName: string,
+    listContainer: HTMLElement
+  ) {
     const { mal_id, title_english, title, status, broadcast } = animeData;
     const displayTitle = title_english || title;
 
@@ -391,7 +401,7 @@ import Reveal from "../components/ui/Reveal.astro";
     card.className = "anime-item glow-card";
 
     let statusText = status;
-    let timerText = "0d 0h 0m 0s";
+    const timerText = "0d 0h 0m 0s";
     let bCastInfo = null;
 
     if (status === "Currently Airing") {

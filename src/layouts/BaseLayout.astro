@@ -2,6 +2,7 @@
 import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/layout/Navbar.astro";
 import ShaderBackground from "../islands/ShaderBackground";
+import { ChatWidget } from "../components/chat/ChatWidget";
 import "../styles/global.css";
 import "boxicons/css/boxicons.min.css";
 
@@ -97,6 +98,8 @@ const socialImage = new URL(image, Astro.site).href;
         <slot />
       </div>
     </div>
+
+    <ChatWidget client:idle transition:persist />
 
     <script>
       import { initNavbar, syncNavbarToRoute } from "../lib/navbar";

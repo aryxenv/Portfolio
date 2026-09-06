@@ -55,7 +55,7 @@ export function remarkGithubAlerts() {
 
       node.children.unshift({
         type: "paragraph",
-        data: { hProperties: { className: "blog-alert-label" } },
+        data: { hProperties: { className: ["blog-alert-label"] } },
         children: [{ type: "text", value: label } satisfies Text],
       });
     });

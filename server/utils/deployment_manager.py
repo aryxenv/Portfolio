@@ -76,6 +76,23 @@ class DeploymentManager:
             other = [d for d in self.deployments if d.name != failed_deployment_name]
             return other[0] if other else None
 
+    def get_deployment(self, name: str) -> Deployment | None:
+        """Find a deployment by name."""
+        with self.lock:
+            for d in self.deployments:
+                if d.name == name:
+                    return d
+            return None
+
+    def is_available(self, name: str) -> bool:
+        """Check if deployment with given name exists and is clear of rate limiting."""
+        with self.lock:
+            now = time.time()
+            for d in self.deployments:
+                if d.name == name:
+                    return d.is_available(now)
+            return False
+
     def record_request(self, deployment_name: str) -> None:
         """Log request timestamp against the specified deployment."""
         with self.lock:
