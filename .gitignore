@@ -42,6 +42,7 @@ __pycache__/
 .venv
 .pytest_cache/
 .mypy_cache/
+.env
 
 # RAG CI content hash cache
 .content_hashes.json

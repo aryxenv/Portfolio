@@ -14,13 +14,17 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+import uuid
+
 # Support both absolute and package-relative imports
 try:
     from utils.tools import inspect_metadata_options, vector_search, vector_search_cosmosdb
     from utils.rate_limiter import agent_rate_limiter
+    from utils.session_cache import session_cache
 except ImportError:
     from server.utils.tools import inspect_metadata_options, vector_search, vector_search_cosmosdb  # type: ignore[no-redef]
     from server.utils.rate_limiter import agent_rate_limiter  # type: ignore[no-redef]
+    from server.utils.session_cache import session_cache  # type: ignore[no-redef]
 
 # ---------------------------------------------------------------------------
 # System Prompt: Concise, Instructional Agent Behavior & Multi-Turn Guidance
@@ -68,29 +72,57 @@ agent = Agent(
 router = APIRouter()
 
 
-class ChatMessage(BaseModel):
-    role: str = Field(description="Role: 'user' or 'assistant'.")
-    content: str = Field(description="Text content of the message.")
-
-
-class ChatRequest(BaseModel):
-    messages: list[ChatMessage] = Field(
-        description="Chronological conversation message history."
+class AgentQueryRequest(BaseModel):
+    query: str = Field(description="User technical inquiry.")
+    session_id: str | None = Field(
+        default=None,
+        description="Optional session ID for multi-turn conversation. If omitted or expired, a new session is initialized.",
     )
 
 
 @router.post("/agent", dependencies=[Depends(agent_rate_limiter)])
-async def ask_agent_chat(request: ChatRequest):
-    """Multi-turn conversational endpoint preserving message history."""
-    # Bounded to the last 6 turns to keep context fast, relevant and cost-effective
-    formatted_messages = [
-        Message(role=m.role, contents=[m.content])
-        for m in request.messages[-6:]
-    ]
+async def ask_agent(request: AgentQueryRequest):
+    """Conversational endpoint using native Microsoft Agent Framework AgentSession."""
+    active_session_id = request.session_id or str(uuid.uuid4())
+    session, _ = session_cache.get_or_create(
+        active_session_id,
+        lambda sid: agent.create_session(session_id=sid),
+    )
 
     async def generate_response():
-        async for chunk in agent.run(formatted_messages, stream=True):
+        async for chunk in agent.run(request.query, session=session, stream=True):
             if chunk.text:
                 yield chunk.text
 
-    return StreamingResponse(generate_response(), media_type="text/plain")
+    return StreamingResponse(
+        generate_response(),
+        media_type="text/plain",
+        headers={"X-Session-ID": active_session_id},
+    )
+
+
+@router.get("/agent/history")
+async def get_agent_history(session_id: str):
+    """Retrieve clean conversation history for a given session."""
+    session = session_cache.get(session_id)
+    if session is None:
+        return {"session_id": session_id, "messages": []}
+
+    messages: list[dict[str, str]] = []
+    for msg in session.state.get("messages", []):
+        role = getattr(msg, "role", None)
+        if role in ("user", "assistant"):
+            text = " ".join(
+                [c.text for c in getattr(msg, "contents", []) if hasattr(c, "text")]
+            ).strip()
+            if text:
+                messages.append({"role": role, "content": text})
+
+    return {"session_id": session_id, "messages": messages}
+
+
+@router.delete("/agent/history")
+async def clear_agent_history(session_id: str):
+    """Clear session from server cache."""
+    cleared = session_cache.delete(session_id)
+    return {"session_id": session_id, "cleared": cleared}
