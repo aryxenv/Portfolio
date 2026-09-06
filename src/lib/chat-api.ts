@@ -65,8 +65,8 @@ export const getApiBaseUrl = (): string => {
     return "http://localhost:8000";
   }
 
-  // Production Azure VM endpoint
-  return "http://51.12.243.63:8000";
+  // Production Azure VM HTTPS endpoint (Let's Encrypt SSL)
+  return "https://aryxenv-api.swedencentral.cloudapp.azure.com";
 };
 
 export const getStoredSessionId = (): string | null => {
