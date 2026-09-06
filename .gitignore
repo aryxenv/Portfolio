@@ -46,3 +46,6 @@ __pycache__/
 
 # RAG CI content hash cache
 .content_hashes.json
+
+# Azure
+vm-portfolio_key.pem
