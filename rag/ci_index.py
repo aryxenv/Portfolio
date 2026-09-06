@@ -18,6 +18,7 @@ Usage (from the rag/ directory):
 from __future__ import annotations
 
 import argparse
+import glob
 import hashlib
 import json
 import logging
@@ -357,15 +358,75 @@ def main(cli_args: list[str] | None = None) -> None:
         if content_dir.is_dir():
             files_to_index = sorted(p for p in content_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".md")
     elif opts.files:
-        print(f"[MODE] Explicit file list: {len(opts.files)} file(s).")
+        # Expand any wildcard patterns (essential on Windows where shells don't expand globs)
+        expanded_file_inputs: list[str] = []
         for f in opts.files:
+            if any(char in f for char in ("*", "?", "[", "]")):
+                matched = glob.glob(f, root_dir=str(BASE_DIR), recursive=True)
+                if not matched:
+                    matched = glob.glob(f, recursive=True)
+                if matched:
+                    expanded_file_inputs.extend(matched)
+                else:
+                    print(f"[WARN] Wildcard pattern matched no files: {f}")
+            else:
+                expanded_file_inputs.append(f)
+
+        print(f"[MODE] Explicit file list: {len(expanded_file_inputs)} file(s).")
+        for f in expanded_file_inputs:
             p = Path(f)
-            abs_p = (BASE_DIR / p).resolve() if not p.is_absolute() else p.resolve()
+            abs_p = None
+            if p.is_absolute():
+                abs_p = p.resolve()
+            elif (BASE_DIR / p).resolve().exists():
+                abs_p = (BASE_DIR / p).resolve()
+            elif p.resolve().exists():
+                abs_p = p.resolve()
+            elif (REPO_ROOT / p).resolve().exists():
+                abs_p = (REPO_ROOT / p).resolve()
+            else:
+                # Target does not exist on disk (deleted file)
+                # If path starts with "rag" or "rag/", resolve relative to REPO_ROOT
+                clean_parts = p.as_posix().split("/")
+                if clean_parts and clean_parts[0] == "rag":
+                    abs_p = (REPO_ROOT / p).resolve()
+                else:
+                    abs_p = (BASE_DIR / p).resolve()
+
             if abs_p.is_file():
-                files_to_index.append(abs_p)
+                if abs_p.suffix.lower() == ".md":
+                    files_to_index.append(abs_p)
+                else:
+                    print(f"[WARN] Skipping non-markdown file: {abs_p}")
+            elif abs_p.is_dir():
+                discovered = sorted(
+                    child for child in abs_p.rglob("*")
+                    if child.is_file() and child.suffix.lower() == ".md"
+                )
+                if discovered:
+                    files_to_index.extend(discovered)
+                else:
+                    print(f"[WARN] Directory contains no markdown files: {abs_p}")
             else:
                 # Might be a deleted file to clean up
                 deleted_files.append(abs_p)
+
+        # Deduplicate while preserving order
+        seen_files: set[Path] = set()
+        deduped_files: list[Path] = []
+        for fp in files_to_index:
+            if fp not in seen_files:
+                seen_files.add(fp)
+                deduped_files.append(fp)
+        files_to_index = deduped_files
+
+        seen_del: set[Path] = set()
+        deduped_del: list[Path] = []
+        for df in deleted_files:
+            if df not in seen_del:
+                seen_del.add(df)
+                deduped_del.append(df)
+        deleted_files = deduped_del
         all_chunks = None
     else:
         print("[MODE] Auto-detecting changes via git diff...")

@@ -9,8 +9,9 @@ tech_stack:
   - "Azure AI Search"
   - "Azure Cosmos DB"
   - "text-embedding-3-large"
+  - "DeepSeek-V4-Flash"
+  - "Microsoft Agent Framework"
   - "Python"
-  - "Groq"
   - "FastAPI"
   - "Astro"
 tags:
@@ -19,11 +20,13 @@ tags:
   - "azure-ai-search"
   - "azure-cosmos-db"
   - "azure-ai-foundry"
+  - "deepseek"
+  - "agent-framework"
   - "vector-search"
   - "embeddings"
   - "chunking"
   - "metadata"
-summary: "Technical architecture and ingestion specification for Aryan Shah's portfolio RAG system, covering document parsing, header-based chunking, 3072-dimension embeddings via Azure AI Foundry, and hybrid retrieval across Azure AI Search and Azure Cosmos DB NoSQL."
+summary: "Technical architecture and ingestion specification for Aryan Shah's portfolio RAG system, covering document parsing, header-based chunking, 3072-dimension embeddings via Azure AI Foundry, hybrid retrieval across Azure AI Search and Azure Cosmos DB NoSQL, and Microsoft Agent Framework multi-turn orchestration."
 source: "rag/rag_strategy.md"
 ---
 
@@ -31,13 +34,13 @@ source: "rag/rag_strategy.md"
 
 ## 1. Executive Summary & Architectural Overview
 
-The Portfolio Retrieval-Augmented Generation (RAG) system provides interactive, context-grounded conversational search across Aryan Shah's professional career milestones, academic achievements, technical projects, and engineering telemetry.
+The Portfolio Retrieval-Augmented Generation (RAG) system provides interactive, context-grounded conversational search across Aryan Shah's professional career milestones, academic achievements, technical projects and engineering telemetry.
 
 The architecture is built on enterprise-grade cloud AI services:
 - **Embedding Generation**: Azure AI Foundry (`ai-portfolio` project under `ai-portfolio-resource`) executing OpenAI's `text-embedding-3-large` (3072 dimensions) via `AIProjectClient`.
 - **Vector & Keyword Indexing (AI Search)**: Azure AI Search (`ais-portfolio`) utilizing Hierarchical Navigable Small World (HNSW) vector search and full-text keyword indexing with rich OData metadata filtering.
 - **Vector & Document Indexing (Cosmos DB)**: Azure Cosmos DB NoSQL (`cdb-portfolio`) providing document-oriented vector storage with DiskANN indexing, range/composite indexes for metadata filtering, and integrated cross-partition vector search.
-- **LLM Inference**: Ultra-low latency generation powered by Groq (Llama 3 / Mixtral) with streaming Server-Sent Events (SSE).
+- **LLM Inference & Agent Orchestration**: Microsoft Agent Framework coordinating dual-deployment Azure AI Foundry models (`DeepSeek-V4-Flash-0731` and `DeepSeek-V4-Flash`) with in-application load balancing, automatic 429 failover and streaming response generation.
 - **Authentication**: Zero-secret credential flow powered by Microsoft Entra ID via `DefaultAzureCredential`.
 
 ```text
@@ -58,9 +61,16 @@ The architecture is built on enterprise-grade cloud AI services:
 ┌───────────────────────────────────────────────────────────────────▼──────────┐
 │                             Query Pipeline                                   │
 │                                                                              │
-│  User Query ──> Query Embedding ──> Hybrid Retrieval ──> Prompt Assembly ──> │
-│  (Portfolio UI) (Azure AI Foundry)  (AI Search or        + Groq Inference    │
-│                                      Cosmos DB)                              │
+│  User Query ──> FastAPI Route ──> DeploymentManager ──> FoundryChatClient    │
+│  (Portfolio UI) (POST /agent)     (Least-Loaded RPM)    (DeepSeek Models)    │
+│                                                                 │            │
+│                                                        ┌────────┴────────┐   │
+│                                                        │ Tool Calling    │   │
+│                                                        ▼                 ▼   │
+│                                                   Cosmos DB       AI Search  │
+│                                                   (DiskANN RRF)   (HNSW BM25)│
+│                                                        │                 │   │
+│  Client Stream <── StreamingResponse <── Grounded Generation <───────────┘   │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
