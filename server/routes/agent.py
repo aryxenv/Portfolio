@@ -23,10 +23,12 @@ try:
     from utils.tools import inspect_metadata_options, vector_search, vector_search_cosmosdb
     from utils.rate_limiter import agent_rate_limiter
     from utils.session_cache import session_cache
+    from utils.deployment_manager import Deployment, DeploymentManager
 except ImportError:
     from server.utils.tools import inspect_metadata_options, vector_search, vector_search_cosmosdb  # type: ignore[no-redef]
     from server.utils.rate_limiter import agent_rate_limiter  # type: ignore[no-redef]
     from server.utils.session_cache import session_cache  # type: ignore[no-redef]
+    from server.utils.deployment_manager import Deployment, DeploymentManager  # type: ignore[no-redef]
 
 # ---------------------------------------------------------------------------
 # System Prompt: Concise, Instructional Agent Behavior & Multi-Turn Guidance
@@ -58,18 +60,41 @@ PORTFOLIO_SYSTEM_PROMPT = """You are the AI technical representative for Aryan S
    - **No em-dashes or oxford-commas**: Strictly avoid em-dashes and oxford-commas in all responses.
 """
 
-client = FoundryChatClient(
-    project_endpoint=os.getenv("FOUNDRY_PROJECT_ENDPOINT", "https://ai-portfolio-resource.services.ai.azure.com/api/projects/ai-portfolio"),
-    model=os.getenv("FOUNDRY_MODEL", "DeepSeek-V4-Flash-0731"),
-    credential=DefaultAzureCredential(),
+# Dual Deployments: Primary (DeepSeek-V4-Flash-0731) and Secondary (DeepSeek-V4-Flash)
+foundry_endpoint = os.getenv("FOUNDRY_PROJECT_ENDPOINT", "https://ai-portfolio-resource.services.ai.azure.com/api/projects/ai-portfolio")
+credential = DefaultAzureCredential()
+
+client_primary = FoundryChatClient(
+    project_endpoint=foundry_endpoint,
+    model=os.getenv("FOUNDRY_MODEL_PRIMARY", os.getenv("FOUNDRY_MODEL", "DeepSeek-V4-Flash-0731")),
+    credential=credential,
+)
+agent_primary = Agent(
+    client=client_primary,
+    name="PortfolioAgentPrimary",
+    instructions=PORTFOLIO_SYSTEM_PROMPT,
+    tools=[vector_search_cosmosdb, inspect_metadata_options],
 )
 
-agent = Agent(
-    client=client,
-    name="PortfolioAgent",
-    instructions=PORTFOLIO_SYSTEM_PROMPT,
-    tools=[vector_search_cosmosdb, inspect_metadata_options], # in tools.py change vector_search_cosmosdb to vector_search name if you want to use cosmosdb instead of azure AI search
+client_secondary = FoundryChatClient(
+    project_endpoint=foundry_endpoint,
+    model=os.getenv("FOUNDRY_MODEL_SECONDARY", "DeepSeek-V4-Flash"),
+    credential=credential,
 )
+agent_secondary = Agent(
+    client=client_secondary,
+    name="PortfolioAgentSecondary",
+    instructions=PORTFOLIO_SYSTEM_PROMPT,
+    tools=[vector_search_cosmosdb, inspect_metadata_options],
+)
+
+deployment_manager = DeploymentManager([
+    Deployment(name="DeepSeek-V4-Flash-0731", agent=agent_primary, max_rpm=20),
+    Deployment(name="DeepSeek-V4-Flash", agent=agent_secondary, max_rpm=20),
+])
+
+# Backward compatibility alias
+agent = agent_primary
 
 router = APIRouter()
 
@@ -84,25 +109,64 @@ class AgentQueryRequest(BaseModel):
 
 @router.post("/agent", dependencies=[Depends(agent_rate_limiter)])
 async def ask_agent(request: AgentQueryRequest):
-    """Conversational endpoint using native Microsoft Agent Framework AgentSession."""
+    """Conversational endpoint with dual-deployment load balancing and transparent failover."""
     active_session_id = request.session_id or str(uuid.uuid4())
     session, _ = session_cache.get_or_create(
         active_session_id,
-        lambda sid: agent.create_session(session_id=sid),
+        lambda sid: agent_primary.create_session(session_id=sid),
     )
 
     async def generate_response():
         full_response: list[str] = []
+        selected_deployment = deployment_manager.get_preferred_deployment()
+        deployment_manager.record_request(selected_deployment.name)
+        stream_started = False
+
         try:
-            async for chunk in agent.run(request.query, session=session, stream=True):
+            async for chunk in selected_deployment.agent.run(request.query, session=session, stream=True):
                 if chunk.text:
+                    stream_started = True
                     full_response.append(chunk.text)
                     yield chunk.text
         except Exception as exc:
-            logger.error(f"Error during agent execution: {exc}")
-            err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
-            full_response.append(err_msg)
-            yield err_msg
+            err_str = str(exc).lower()
+            is_rate_limit = (
+                "rate limit" in err_str
+                or "429" in err_str
+                or "demand" in err_str
+                or "quota" in err_str
+            )
+            logger.warning(
+                f"Execution failed on '{selected_deployment.name}' (rate_limit={is_rate_limit}): {exc}"
+            )
+
+            # If rate limit occurred and no user-visible chunks were yielded yet, transparently failover
+            if is_rate_limit and not stream_started:
+                deployment_manager.mark_rate_limited(selected_deployment.name)
+                fallback = deployment_manager.get_fallback_deployment(selected_deployment.name)
+                if fallback:
+                    logger.info(f"Transparently failing over request to '{fallback.name}'...")
+                    deployment_manager.record_request(fallback.name)
+                    try:
+                        async for chunk in fallback.agent.run(request.query, session=session, stream=True):
+                            if chunk.text:
+                                stream_started = True
+                                full_response.append(chunk.text)
+                                yield chunk.text
+                    except Exception as fallback_exc:
+                        logger.error(f"Fallback deployment '{fallback.name}' also failed: {fallback_exc}")
+                        err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
+                        full_response.append(err_msg)
+                        yield err_msg
+                else:
+                    err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
+                    full_response.append(err_msg)
+                    yield err_msg
+            else:
+                logger.error(f"Error during agent execution: {exc}")
+                err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
+                full_response.append(err_msg)
+                yield err_msg
 
         # Record user and assistant turn in session state for history retrieval
         if "messages" not in session.state:
@@ -115,6 +179,12 @@ async def ask_agent(request: AgentQueryRequest):
         media_type="text/plain",
         headers={"X-Session-ID": active_session_id},
     )
+
+
+@router.get("/agent/deployments")
+async def get_deployments_status():
+    """Diagnostic endpoint returning active RPM metrics for each deployment."""
+    return {"deployments": deployment_manager.get_status()}
 
 
 @router.get("/agent/history")
