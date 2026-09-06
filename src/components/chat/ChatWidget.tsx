@@ -188,6 +188,27 @@ export const ChatWidget: React.FC = () => {
     [sessionId, isStreaming]
   );
 
+  const handleStopStreaming = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsStreaming(false);
+    setMessages((prev) =>
+      prev
+        .map((msg) => {
+          if (!msg.isStreaming) return msg;
+          const hasContent = msg.content && msg.content.trim().length > 0;
+          const hasBlocks = msg.blocks && msg.blocks.length > 0;
+          if (!hasContent && !hasBlocks) {
+            return null;
+          }
+          return { ...msg, isStreaming: false };
+        })
+        .filter(Boolean) as ChatMessageData[]
+    );
+  }, []);
+
   const handleClearChat = useCallback(async () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -207,6 +228,7 @@ export const ChatWidget: React.FC = () => {
         isStreaming={isStreaming}
         onOpen={() => setIsOpen(true)}
         onSendMessage={handleSendMessage}
+        onStopStreaming={handleStopStreaming}
       />
       <ChatSidebar
         isOpen={isOpen}
@@ -215,6 +237,7 @@ export const ChatWidget: React.FC = () => {
         onClose={() => setIsOpen(false)}
         onClear={handleClearChat}
         onSendMessage={handleSendMessage}
+        onStopStreaming={handleStopStreaming}
       />
     </>
   );

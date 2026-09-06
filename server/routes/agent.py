@@ -12,7 +12,7 @@ import os
 import time
 from typing import Any
 import uuid
-from agent_framework import Agent, Message
+from agent_framework import Agent, InMemoryHistoryProvider, Message
 from agent_framework_foundry import FoundryChatClient
 from azure.identity import DefaultAzureCredential
 from fastapi import APIRouter, Depends
@@ -85,6 +85,8 @@ agent_primary = Agent(
     name="PortfolioAgentPrimary",
     instructions=PORTFOLIO_SYSTEM_PROMPT,
     tools=[vector_search, inspect_metadata_options],
+    context_providers=[InMemoryHistoryProvider()],
+    default_options={"store": False},
 )
 
 client_secondary = FoundryChatClient(
@@ -97,6 +99,8 @@ agent_secondary = Agent(
     name="PortfolioAgentSecondary",
     instructions=PORTFOLIO_SYSTEM_PROMPT,
     tools=[vector_search, inspect_metadata_options],
+    context_providers=[InMemoryHistoryProvider()],
+    default_options={"store": False},
 )
 
 deployment_manager = DeploymentManager([
@@ -158,7 +162,9 @@ async def ask_agent(request: AgentQueryRequest):
 
         async def stream_agent(agent_instance):
             nonlocal stream_started
-            async for chunk in agent_instance.run(request.query, session=session, stream=True):
+            async for chunk in agent_instance.run(
+                request.query, session=session, stream=True, options={"store": False}
+            ):
                 for c in chunk.contents:
                     c_type = getattr(c, "type", None)
 
@@ -318,7 +324,11 @@ async def get_agent_history(session_id: str):
         return {"session_id": session_id, "messages": []}
 
     clean_messages: list[dict[str, Any]] = []
-    for msg in session.state.get("messages", []):
+    messages = session.state.get("messages", [])
+    if not messages and "in_memory" in session.state:
+        messages = session.state["in_memory"].get("messages", [])
+
+    for msg in messages:
         if isinstance(msg, dict):
             clean_messages.append({
                 "role": msg.get("role", "user"),
@@ -329,7 +339,7 @@ async def get_agent_history(session_id: str):
             role = getattr(msg, "role", None)
             if role in ("user", "assistant"):
                 text = " ".join(
-                    [c.text for c in getattr(msg, "contents", []) if hasattr(c, "text")]
+                    [c.text for c in getattr(msg, "contents", []) if hasattr(c, "text") and c.text]
                 ).strip()
                 if text:
                     clean_messages.append({"role": role, "content": text, "blocks": []})

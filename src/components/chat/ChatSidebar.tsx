@@ -9,6 +9,7 @@ interface ChatSidebarProps {
   onClose: () => void;
   onClear: () => void;
   onSendMessage: (text: string) => void;
+  onStopStreaming?: () => void;
 }
 
 const STARTER_PROMPTS = [
@@ -24,6 +25,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   onClose,
   onClear,
   onSendMessage,
+  onStopStreaming,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -240,13 +242,13 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
           />
           <button
             type="button"
-            className="chat-overlay-send-btn"
-            onClick={handleSend}
-            disabled={!inputValue.trim() || isStreaming}
-            aria-label="Send message"
-            title="Send message"
+            className={`chat-overlay-send-btn ${isStreaming ? "is-stop" : ""}`}
+            onClick={isStreaming ? onStopStreaming : handleSend}
+            disabled={isStreaming ? false : !inputValue.trim()}
+            aria-label={isStreaming ? "Stop generating" : "Send message"}
+            title={isStreaming ? "Stop generating" : "Send message"}
           >
-            <i className="bx bx-send" />
+            <i className={isStreaming ? "bx bx-stop-circle" : "bx bx-send"} />
           </button>
         </div>
       </footer>

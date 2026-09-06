@@ -129,6 +129,18 @@
   font-size: 1.25rem;
 }
 
+.chat-overlay-send-btn.is-stop {
+  opacity: 0.85;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.chat-overlay-send-btn.is-stop:hover {
+  opacity: 1;
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
 /* Adjacent sidebar toggle button */
 .chat-overlay-toggle-btn {
   background: rgba(0, 0, 0, 0.82);

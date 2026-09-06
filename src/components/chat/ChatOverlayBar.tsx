@@ -5,6 +5,7 @@ interface ChatOverlayBarProps {
   isStreaming: boolean;
   onOpen: () => void;
   onSendMessage: (text: string) => void;
+  onStopStreaming?: () => void;
 }
 
 export const ChatOverlayBar: React.FC<ChatOverlayBarProps> = ({
@@ -12,6 +13,7 @@ export const ChatOverlayBar: React.FC<ChatOverlayBarProps> = ({
   isStreaming,
   onOpen,
   onSendMessage,
+  onStopStreaming,
 }) => {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -62,13 +64,13 @@ export const ChatOverlayBar: React.FC<ChatOverlayBarProps> = ({
         />
         <button
           type="button"
-          className="chat-overlay-send-btn"
-          onClick={handleSend}
-          disabled={!value.trim() || isStreaming || isOpen}
-          aria-label="Send message"
-          title="Send message"
+          className={`chat-overlay-send-btn ${isStreaming ? "is-stop" : ""}`}
+          onClick={isStreaming ? onStopStreaming : handleSend}
+          disabled={isOpen || (isStreaming ? false : !value.trim())}
+          aria-label={isStreaming ? "Stop generating" : "Send message"}
+          title={isStreaming ? "Stop generating" : "Send message"}
         >
-          <i className="bx bx-send" />
+          <i className={isStreaming ? "bx bx-stop-circle" : "bx bx-send"} />
         </button>
       </div>
 
