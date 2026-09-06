@@ -24,6 +24,7 @@ const markdownComponents = {
 export const ChatMessage: React.FC<ChatMessageProps> = React.memo(({ message }) => {
   const isUser = message.role === "user";
   const hasBlocks = message.blocks && message.blocks.length > 0;
+  const hasTextBlock = hasBlocks && message.blocks!.some((b) => b.type === "text");
 
   return (
     <div
@@ -41,23 +42,37 @@ export const ChatMessage: React.FC<ChatMessageProps> = React.memo(({ message }) 
         ) : (
           <div className="chat-markdown">
             {hasBlocks ? (
-              message.blocks!.map((block, idx) => {
-                if (block.type === "tool_call") {
-                  return <ChatToolBadge key={block.id || `tool-${idx}`} tool={block} />;
-                }
+              <>
+                {message.blocks!.map((block, idx) => {
+                  if (block.type === "tool_call") {
+                    return <ChatToolBadge key={block.id || `tool-${idx}`} tool={block} />;
+                  }
 
-                const isLastBlock = idx === message.blocks!.length - 1;
-                return (
-                  <div key={`text-${idx}`} className="chat-step-block">
+                  const isLastBlock = idx === message.blocks!.length - 1;
+                  return (
+                    <div key={`text-${idx}`} className="chat-step-block">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                        {block.content}
+                      </ReactMarkdown>
+                      {message.isStreaming && isLastBlock && (
+                        <span className="chat-streaming-cursor" aria-hidden="true" />
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* If blocks only had tool calls and lacked text, or if an error occurred, guarantee message.content is visible */}
+                {(!hasTextBlock || message.isError) && message.content && (
+                  <div className={`chat-step-block ${message.isError ? "chat-error-text" : ""}`}>
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                      {block.content}
+                      {message.content}
                     </ReactMarkdown>
-                    {message.isStreaming && isLastBlock && (
+                    {message.isStreaming && (
                       <span className="chat-streaming-cursor" aria-hidden="true" />
                     )}
                   </div>
-                );
-              })
+                )}
+              </>
             ) : (
               <>
                 <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>

@@ -49,7 +49,6 @@ PORTFOLIO_SYSTEM_PROMPT = """You are the AI technical representative for Aryan S
 1. **Autonomous Query Formulation**:
    - Extract dense technical keywords from user inquiries. Strip conversational filler before passing the query to search tools.
    - For follow-up questions, resolve pronouns ("it", "that system", "the internship") using conversation history to formulate an explicit search query.
-   - Example: For "Can you tell me how Aryan handled AKS agent governance?", execute search with `query="AKS agent governance architecture sidecar"`.
 2. **Search Strategy & Metadata Filtering**:
    - Execute a hybrid search immediately using `vector_search` when the topic, company or context is evident.
    - Use `inspect_metadata_options` selectively: call it only when a query involves broad categories, when you need to verify exact tag casing or when an initial search returns zero or irrelevant results.
@@ -57,12 +56,16 @@ PORTFOLIO_SYSTEM_PROMPT = """You are the AI technical representative for Aryan S
 3. **Iterative Multi-Hop Retrieval (Max Depth: 3)**:
    - Evaluate returned chunks. If details are incomplete, cross-reference by formulating a more specific query or adjusting filters.
    - You may call tools up to a maximum of 3 times per user turn.
-   - Stop searching as soon as you have gathered sufficient technical facts to answer thoroughly.
-4. **Truthfulness & Unknowns**:
+   - Stop tool invocations as soon as you have gathered sufficient technical facts, and immediately proceed to synthesize and write the answer.
+4. **Mandatory Final Synthesized Answer (CRITICAL)**:
+   - Every user turn MUST end with a comprehensive, well-structured, direct text answer.
+   - A tool call is solely an intermediate retrieval step and is NEVER a final response. You must NEVER end your turn or produce an empty response after executing a tool.
+   - Always synthesize the retrieved facts into a clear, direct, and factual response answering what the user asked.
+5. **Truthfulness & Unknowns**:
    - Ground all answers strictly in retrieved documentation. Never invent metrics, roles or architectural decisions.
    - If after reaching the 3-step limit (or if searches yield no results) the required information is absent, state plainly:
      "I could not find records on that in Aryan's portfolio documentation. Feel free to contact him directly via [LinkedIn](https://www.linkedin.com/in/aryxenv/) or [email](mailto:aryanshah0514@gmail.com)."
-5. **Tone & Style Guidelines**:
+6. **Tone & Style Guidelines**:
    - **Precise, technical and understated**: Confident, direct and factual.
    - **No filler or hype**: Avoid buzzwords ("passionate developer", "rockstar", "game-changer", "deep dive"). State the architecture, technical decisions and measurable outcomes.
    - **Recruiter & Engineer Legible**: Lead with a concise high-signal summary followed by concrete architectural details and relevant markdown links from retrieved chunks.
@@ -140,6 +143,7 @@ async def ask_agent(request: AgentQueryRequest):
         full_response: list[str] = []
         recorded_blocks: list[dict[str, Any]] = []
         stream_started = False
+        text_streamed = False
 
         # Session Affinity: Keep conversation turns on the same deployment to preserve Azure thread context
         preferred_name = session.state.get("deployment_name")
@@ -161,7 +165,7 @@ async def ask_agent(request: AgentQueryRequest):
         deployment_manager.record_request(selected_deployment.name)
 
         async def stream_agent(agent_instance):
-            nonlocal stream_started
+            nonlocal stream_started, text_streamed
             async for chunk in agent_instance.run(
                 request.query, session=session, stream=True, options={"store": False}
             ):
@@ -172,6 +176,7 @@ async def ask_agent(request: AgentQueryRequest):
                         text_val = getattr(c, "text", "")
                         if text_val:
                             stream_started = True
+                            text_streamed = True
                             full_response.append(text_val)
 
                             # Group contiguous text chunks into one text block
@@ -221,6 +226,34 @@ async def ask_agent(request: AgentQueryRequest):
         try:
             async for sse_chunk in stream_agent(selected_deployment.agent):
                 yield sse_chunk
+
+            # Safeguard: If agent executed tools or completed run without emitting any text response
+            if not "".join(full_response).strip():
+                logger.warning(
+                    f"Agent on '{selected_deployment.name}' produced no text answer for query '{request.query}'. Running synthesis recovery..."
+                )
+                recovery_deployment = (
+                    deployment_manager.get_fallback_deployment(selected_deployment.name)
+                    or selected_deployment
+                )
+                synthesis_prompt = (
+                    f"Synthesize the documentation retrieved from tools and directly answer the following user question in full detail: {request.query}"
+                )
+                async for chunk in recovery_deployment.agent.run(
+                    synthesis_prompt, session=session, stream=True, options={"store": False}
+                ):
+                    for c in chunk.contents:
+                        if getattr(c, "type", None) == "text":
+                            t_val = getattr(c, "text", "")
+                            if t_val:
+                                text_streamed = True
+                                full_response.append(t_val)
+                                if recorded_blocks and recorded_blocks[-1]["type"] == "text":
+                                    recorded_blocks[-1]["content"] += t_val
+                                else:
+                                    recorded_blocks.append({"type": "text", "content": t_val})
+                                yield format_sse({"type": "text", "delta": t_val})
+
             yield format_sse({"type": "done"})
         except Exception as exc:
             err_str = str(exc).lower()
@@ -236,11 +269,11 @@ async def ask_agent(request: AgentQueryRequest):
                 or "previous_response_id" in err_str
             )
             logger.warning(
-                f"Execution failed on '{selected_deployment.name}' (rate_limit={is_rate_limit}, corrupted_thread={is_corrupted_thread}): {exc}"
+                f"Execution failed on '{selected_deployment.name}' (rate_limit={is_rate_limit}, corrupted_thread={is_corrupted_thread}, text_streamed={text_streamed}): {exc}"
             )
 
-            # Scenario 1: Rate limit transparent failover (only if stream hasn't started)
-            if is_rate_limit and not stream_started:
+            # Scenario 1: Rate limit transparent failover (allowed if no user text has been committed yet)
+            if is_rate_limit and not text_streamed:
                 deployment_manager.mark_rate_limited(selected_deployment.name)
                 fallback = deployment_manager.get_fallback_deployment(selected_deployment.name)
                 if fallback:
@@ -251,21 +284,33 @@ async def ask_agent(request: AgentQueryRequest):
                     try:
                         async for sse_chunk in stream_agent(fallback.agent):
                             yield sse_chunk
+
+                        if not "".join(full_response).strip():
+                            async for chunk in fallback.agent.run(
+                                f"Synthesize the retrieved documentation and directly answer the following user question: {request.query}",
+                                session=session,
+                                stream=True,
+                                options={"store": False},
+                            ):
+                                for c in chunk.contents:
+                                    if getattr(c, "type", None) == "text":
+                                        t_val = getattr(c, "text", "")
+                                        if t_val:
+                                            text_streamed = True
+                                            full_response.append(t_val)
+                                            if recorded_blocks and recorded_blocks[-1]["type"] == "text":
+                                                recorded_blocks[-1]["content"] += t_val
+                                            else:
+                                                recorded_blocks.append({"type": "text", "content": t_val})
+                                            yield format_sse({"type": "text", "delta": t_val})
+
                         yield format_sse({"type": "done"})
+                        return
                     except Exception as fallback_exc:
                         logger.error(f"Fallback deployment '{fallback.name}' also failed: {fallback_exc}")
-                        session.service_session_id = None
-                        err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
-                        full_response.append(err_msg)
-                        yield format_sse({"type": "error", "message": err_msg})
-                else:
-                    session.service_session_id = None
-                    err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
-                    full_response.append(err_msg)
-                    yield format_sse({"type": "error", "message": err_msg})
 
-            # Scenario 2: Dangling tool call or corrupted thread (400 invalid_request_error)
-            elif is_corrupted_thread and not stream_started:
+            # Scenario 2: Dangling tool call or corrupted thread (retry on clean thread if no text committed)
+            if is_corrupted_thread and not text_streamed:
                 logger.warning(
                     f"Session {active_session_id} thread state invalid ({exc}). Resetting service_session_id and retrying on '{selected_deployment.name}'..."
                 )
@@ -274,19 +319,22 @@ async def ask_agent(request: AgentQueryRequest):
                     async for sse_chunk in stream_agent(selected_deployment.agent):
                         yield sse_chunk
                     yield format_sse({"type": "done"})
+                    return
                 except Exception as retry_exc:
                     logger.error(f"Clean-thread retry on '{selected_deployment.name}' failed: {retry_exc}")
-                    session.service_session_id = None
-                    err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
-                    full_response.append(err_msg)
-                    yield format_sse({"type": "error", "message": err_msg})
 
+            # Terminal Fallback: Guarantee user receives an explanation rather than an empty response
+            session.service_session_id = None
+            logger.error(f"Error during agent execution: {exc}")
+            err_msg = "\nI encountered a temporary service issue while retrieving documentation. Please try again in a moment, or feel free to contact Aryan directly via [LinkedIn](https://www.linkedin.com/in/aryxenv/) or [email](mailto:aryanshah0514@gmail.com)."
+            full_response.append(err_msg)
+            if recorded_blocks and recorded_blocks[-1]["type"] == "text":
+                recorded_blocks[-1]["content"] += err_msg
             else:
-                session.service_session_id = None
-                logger.error(f"Error during agent execution: {exc}")
-                err_msg = "\nI encountered a temporary service issue while processing that request. Please try again in a moment."
-                full_response.append(err_msg)
-                yield format_sse({"type": "error", "message": err_msg})
+                recorded_blocks.append({"type": "text", "content": err_msg})
+            yield format_sse({"type": "text", "delta": err_msg})
+            yield format_sse({"type": "error", "message": err_msg})
+            yield format_sse({"type": "done"})
 
         # Record user and assistant turn in session state for history retrieval
         if full_response or recorded_blocks:

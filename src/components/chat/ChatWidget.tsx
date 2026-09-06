@@ -171,16 +171,25 @@ export const ChatWidget: React.FC = () => {
         onError: (cleanError) => {
           setIsStreaming(false);
           setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === assistantMsgId
-                ? {
-                    ...msg,
-                    content: cleanError,
-                    isStreaming: false,
-                    isError: true,
-                  }
-                : msg
-            )
+            prev.map((msg) => {
+              if (msg.id !== assistantMsgId) return msg;
+              const blocks = (msg.blocks || []).map((b) =>
+                b.type === "tool_call" && b.status === "running"
+                  ? { ...b, status: "error" as const }
+                  : b
+              );
+              const hasTextBlock = blocks.some((b) => b.type === "text");
+              if (!hasTextBlock) {
+                blocks.push({ type: "text", content: cleanError });
+              }
+              return {
+                ...msg,
+                content: cleanError,
+                blocks,
+                isStreaming: false,
+                isError: true,
+              };
+            })
           );
         },
       });
