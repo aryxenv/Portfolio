@@ -20,12 +20,18 @@ logger = logging.getLogger("server.agent")
 
 # Support both absolute and package-relative imports
 try:
-    from utils.tools import inspect_metadata_options, vector_search
+    from utils.tools import (
+        inspect_metadata_options,
+        vector_search,
+    )
     from utils.rate_limiter import agent_rate_limiter
     from utils.session_cache import session_cache
     from utils.deployment_manager import Deployment, DeploymentManager
 except ImportError:
-    from server.utils.tools import inspect_metadata_options, vector_search  # type: ignore[no-redef]
+    from server.utils.tools import (  # type: ignore[no-redef]
+        inspect_metadata_options,
+        vector_search,
+    )
     from server.utils.rate_limiter import agent_rate_limiter  # type: ignore[no-redef]
     from server.utils.session_cache import session_cache  # type: ignore[no-redef]
     from server.utils.deployment_manager import Deployment, DeploymentManager  # type: ignore[no-redef]
@@ -69,6 +75,7 @@ client_primary = FoundryChatClient(
     model=os.getenv("FOUNDRY_MODEL_PRIMARY", os.getenv("FOUNDRY_MODEL", "DeepSeek-V4-Flash-0731")),
     credential=credential,
 )
+
 agent_primary = Agent(
     client=client_primary,
     name="PortfolioAgentPrimary",

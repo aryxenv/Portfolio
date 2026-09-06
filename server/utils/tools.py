@@ -1,5 +1,7 @@
 """Portfolio RAG Search Tools for Azure AI Search & Azure Cosmos DB NoSQL.
 
+Currently active: CosmosDB
+
 Provides hybrid retrieval (dense vector + keyword) over Aryan Shah's portfolio
 knowledge base with structured metadata filtering optimized for LLM agent function calling.
 """
@@ -304,17 +306,22 @@ def vector_search(
 
         return output
     except Exception as err:
-        logger.error(f"Error in vector_search_cosmosdb: {err}")
+        logger.error(f"Error in vector_search (Cosmos DB): {err}")
         return [{"error": f"Cosmos DB search failed: {err}"}]
 
 
+# Aliases for explicit backend binding
+vector_search_cosmosdb = vector_search
+vector_search_ai = vector_search_ai_search
+
+
 # ---------------------------------------------------------------------------
-# Tool 3: Metadata Facet Inspector
+# Tool 3: AI Search Metadata Facet Inspector
 # ---------------------------------------------------------------------------
 
 
 @tool(approval_mode="never_require")
-def inspect_metadata_options(
+def inspect_metadata_options_ai_search(
     field: Annotated[
         Literal[
             "all",
@@ -390,3 +397,94 @@ def inspect_metadata_options(
     except Exception as err:
         logger.error(f"Error in inspect_metadata_options: {err}")
         return {"error": f"Failed to inspect metadata: {err}"}
+
+
+# ---------------------------------------------------------------------------
+# Tool 4: Azure Cosmos DB Metadata Facet Inspector
+# ---------------------------------------------------------------------------
+
+_cosmos_facet_cache: dict[str, tuple[float, list[Any]]] = {}
+_COSMOS_FACET_CACHE_TTL = 600.0  # 10 minutes cache to conserve RUs
+
+
+@tool(approval_mode="never_require")
+def inspect_metadata_options(
+    field: Annotated[
+        Literal[
+            "all",
+            "type",
+            "company",
+            "category",
+            "tech_stack",
+            "tags",
+            "doc_id",
+            "week_number",
+        ]
+        | None,
+        Field(
+            description=(
+                "Metadata dimension to inspect: "
+                "'all', 'type', 'company', 'category', 'tech_stack', 'tags', 'doc_id' or 'week_number'."
+            )
+        ),
+    ] = "all",
+) -> dict[str, Any]:
+    """Inspect live metadata values and facets in Aryan Shah's portfolio Cosmos DB container.
+
+    Call this tool to discover exact categories, companies, technologies or document IDs
+    before setting filters in Cosmos DB search tools.
+    """
+    import time
+    try:
+        now = time.time()
+        requested_field = field or "all"
+        target_fields = (
+            ["type", "company", "category", "tech_stack", "week_number"]
+            if requested_field == "all"
+            else [requested_field]
+        )
+
+        output: dict[str, Any] = {}
+        for target in target_fields:
+            # Check in-memory TTL cache first
+            cached = _cosmos_facet_cache.get(target)
+            if cached and (now - cached[0]) < _COSMOS_FACET_CACHE_TTL:
+                output[target] = cached[1]
+                continue
+
+            if target == "tech_stack":
+                sql = "SELECT DISTINCT VALUE t FROM c JOIN t IN c.tech_stack"
+            elif target == "tags":
+                sql = "SELECT DISTINCT VALUE t FROM c JOIN t IN c.tags"
+            else:
+                sql = f"SELECT DISTINCT VALUE c.{target} FROM c WHERE IS_DEFINED(c.{target})"
+
+            items = list(
+                cosmos_container.query_items(
+                    query=sql,
+                    enable_cross_partition_query=True,
+                )
+            )
+
+            if target == "week_number":
+                int_vals: list[int] = [
+                    int(x)
+                    for x in items
+                    if isinstance(x, (int, float)) or (isinstance(x, str) and x.isdigit())
+                ]
+                final_vals: list[Any] = sorted(int_vals)
+            else:
+                str_vals: list[str] = [
+                    str(x)
+                    for x in items
+                    if x is not None and str(x).strip() != ""
+                ]
+                final_vals = sorted(str_vals)
+
+            _cosmos_facet_cache[target] = (now, final_vals)
+            output[target] = final_vals
+
+        return output
+    except Exception as err:
+        logger.error(f"Error in inspect_metadata_options_cosmosdb: {err}")
+        return {"error": f"Failed to inspect Cosmos DB metadata: {err}"}
