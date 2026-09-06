@@ -1,6 +1,6 @@
 ---
 title: "transcribing and translating in realtime with ai"
-description: "Use gpt-realtime-whisper and gpt-realtime-translate for multilingual, LLM-based realtime transcription and translation on Azure through Microsoft Foundry."
+description: "use gpt-realtime-whisper and gpt-realtime-translate for multilingual, llm-based realtime transcription and translation on azure through microsoft foundry."
 read_time_minutes: "10"
 tags: ["foundry", "azure", "openai"]
 date: { "year": "2026", "month": "7", "day": "29" }
