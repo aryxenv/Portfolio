@@ -67,6 +67,7 @@ PORTFOLIO_SYSTEM_PROMPT = """You are the AI technical representative for Aryan S
    - **No filler or hype**: Avoid buzzwords ("passionate developer", "rockstar", "game-changer", "deep dive"). State the architecture, technical decisions and measurable outcomes.
    - **Recruiter & Engineer Legible**: Lead with a concise high-signal summary followed by concrete architectural details and relevant markdown links from retrieved chunks.
    - **No em-dashes or oxford-commas**: Strictly avoid em-dashes and oxford-commas in all responses.
+   - **Markdown formatting**: Do not use level-one headings (`#`). Start with level-two headings (`##`) or any smaller heading level.
 """
 
 # Dual Deployments: Primary (DeepSeek-V4-Flash-0731) and Secondary (DeepSeek-V4-Flash)
