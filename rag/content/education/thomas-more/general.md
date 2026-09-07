@@ -160,7 +160,7 @@ Throughout his academic tenure, Aryan Shah consistently demonstrated technical r
    - **Inspiration Lab (YP0597)**: 19/20 for developing Project Actifuse, a full-featured C# WPF desktop fitness application.
    - **Management Skills (YB1056)**: 19/20 for organizational crisis resolution and executive leadership field research at Telenet.
 3. **Microsoft Enterprise Solutions Engineering Internship (YP0931, 21 ECTS, Grade 18/20)**:
-   - Completed a 12-week professional immersion at Microsoft Belgium in Zaventem, architecting enterprise AI solutions, RAG pipelines with Azure AI Search, and Microsoft Agent Framework prototypes.
+   - Completed a 6-month professional immersion at Microsoft Belgium in Zaventem, architecting enterprise AI solutions, RAG pipelines with Azure AI Search, and Microsoft Agent Framework prototypes.
 4. **Special Olympics Belgium Hackathon & Integrated Lab (YP0932, 9 ECTS, Grade 17/20)**:
    - Delivered an end-to-end operational platform combining business case modeling, data analytics, GDPR security threat modeling, and a full-stack cost forecasting hackathon web application.
 5. **Academic Faculty Recommendation**:
