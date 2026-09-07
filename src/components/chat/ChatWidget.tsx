@@ -219,15 +219,13 @@ export const ChatWidget: React.FC = () => {
           setMessages((prev) =>
             prev.map((msg) => {
               if (msg.id !== assistantMsgId) return msg;
-              const blocks = (msg.blocks || []).map((b) =>
-                b.type === "tool_call" && b.status === "running"
-                  ? { ...b, status: "error" as const }
-                  : b
-              );
-              const hasTextBlock = blocks.some((b) => b.type === "text");
-              if (!hasTextBlock) {
-                blocks.push({ type: "text", content: cleanError });
-              }
+              const blocks = (msg.blocks || [])
+                .filter((b) => !(b.type === "text" && b.content.trim() === cleanError.trim()))
+                .map((b) =>
+                  b.type === "tool_call" && b.status === "running"
+                    ? { ...b, status: "error" as const }
+                    : b
+                );
               return {
                 ...msg,
                 content: cleanError,

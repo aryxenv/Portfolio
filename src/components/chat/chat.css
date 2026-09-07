@@ -445,6 +445,10 @@
   font-size: 0.9rem;
 }
 
+.chat-error-text:first-child {
+  margin-top: 0;
+}
+
 /* Markdown Rendering inside Assistant Bubble */
 .chat-markdown {
   font-size: 0.95rem;

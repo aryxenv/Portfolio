@@ -25,6 +25,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = React.memo(({ message }) 
   const isUser = message.role === "user";
   const hasBlocks = message.blocks && message.blocks.length > 0;
   const hasTextBlock = hasBlocks && message.blocks!.some((b) => b.type === "text");
+  const isContentInBlocks =
+    hasBlocks &&
+    message.blocks!.some(
+      (b) => b.type === "text" && b.content.trim() === (message.content || "").trim()
+    );
 
   return (
     <div
@@ -61,8 +66,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = React.memo(({ message }) 
                   );
                 })}
 
-                {/* If blocks only had tool calls and lacked text, or if an error occurred, guarantee message.content is visible */}
-                {(!hasTextBlock || message.isError) && message.content && (
+                {/* If blocks only had tool calls and lacked text, or if an error occurred, guarantee message.content is visible once */}
+                {((!hasTextBlock || message.isError) &&
+                  message.content &&
+                  !isContentInBlocks) && (
                   <div className={`chat-step-block ${message.isError ? "chat-error-text" : ""}`}>
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                       {message.content}
@@ -74,14 +81,14 @@ export const ChatMessage: React.FC<ChatMessageProps> = React.memo(({ message }) 
                 )}
               </>
             ) : (
-              <>
+              <div className={message.isError ? "chat-error-text" : ""}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                   {message.content}
                 </ReactMarkdown>
                 {message.isStreaming && (
                   <span className="chat-streaming-cursor" aria-hidden="true" />
                 )}
-              </>
+              </div>
             )}
           </div>
         )}
