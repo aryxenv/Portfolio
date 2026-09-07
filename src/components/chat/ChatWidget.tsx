@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { ChatOverlayBar } from "./ChatOverlayBar";
 import { ChatSidebar } from "./ChatSidebar";
+import { ChatSelectionBadge } from "./ChatSelectionBadge";
 import {
   type ChatMessageData,
   getStoredSessionId,
@@ -292,6 +293,10 @@ export const ChatWidget: React.FC = () => {
         onClear={handleClearChat}
         onSendMessage={handleSendMessage}
         onStopStreaming={handleStopStreaming}
+      />
+      <ChatSelectionBadge
+        onSendMessage={handleSendMessage}
+        isStreaming={isStreaming}
       />
     </>
   );
