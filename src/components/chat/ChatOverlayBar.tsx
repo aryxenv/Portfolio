@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 
 interface ChatOverlayBarProps {
   isOpen: boolean;
@@ -16,7 +16,18 @@ export const ChatOverlayBar: React.FC<ChatOverlayBarProps> = ({
   onStopStreaming,
 }) => {
   const [value, setValue] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+
+    updateIsMobile();
+    mediaQuery.addEventListener("change", updateIsMobile);
+
+    return () => mediaQuery.removeEventListener("change", updateIsMobile);
+  }, []);
 
   const handleSend = useCallback(() => {
     const trimmed = value.trim();
@@ -55,7 +66,11 @@ export const ChatOverlayBar: React.FC<ChatOverlayBarProps> = ({
           ref={textareaRef}
           className="chat-overlay-textarea"
           rows={1}
-          placeholder="Ask anything about Aryan's work or background..."
+          placeholder={
+            isMobile
+              ? "Ask anything about Aryan..."
+              : "Ask anything about Aryan's work or background..."
+          }
           value={value}
           onChange={handleInput}
           onKeyDown={handleKeyDown}
