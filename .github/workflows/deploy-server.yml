@@ -2,24 +2,33 @@
 # Portfolio Server – Automated CI/CD Deployment Pipeline
 # -------------------------------------------------------------------
 # Triggers on push to main (including PR merges) when any file under
-# server/ changes. Authenticates to Azure via OIDC (Workload Identity
-# / Federated Credentials) and invokes Azure Run-Command on vm-portfolio
-# to pull latest changes, sync Python dependencies via uv, and restart
-# the systemd service.
+# server/ or Docker configuration changes. Authenticates to Azure via
+# OIDC (Workload Identity / Federated Credentials), builds the container
+# image, pushes to GitHub Container Registry (ghcr.io), and deploys
+# to Azure Container Apps (Express Mode) with User-Assigned Managed Identity.
+#
+# Zero-Cost Guardrails:
+#   - Min replicas: 0 (scale-to-zero)
+#   - Max replicas: 1 (free grant cap)
+#   - Registry: GitHub Container Registry (ghcr.io)
+#   - Co-located in Sweden Central
 #
 # GitHub Secrets configured via Azure CLI:
 #   AZURE_CLIENT_ID       – Entra App registration client ID
 #   AZURE_TENANT_ID       – Microsoft Entra ID tenant ID
 #   AZURE_SUBSCRIPTION_ID – Azure subscription ID
+#   GHCR_PAT (Optional)   – Personal Access Token if package is private
 # -------------------------------------------------------------------
 
-name: Deploy Server to Azure VM
+name: Deploy Server to Azure Container Apps
 
 on:
   push:
     branches: [main]
     paths:
       - "server/**"
+      - "Dockerfile"
+      - ".dockerignore"
       - ".github/workflows/deploy-server.yml"
   workflow_dispatch:
 
@@ -30,14 +39,47 @@ concurrency:
 
 permissions:
   id-token: write   # Required for requesting Azure OIDC federated token
-  contents: read     # Required to checkout code
+  contents: read    # Required to checkout code
+  packages: write   # Required to push container image to ghcr.io
 
 jobs:
   deploy:
-    name: Deploy to Azure VM
+    name: Build & Deploy to ACA Express
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image tag variables
+        id: vars
+        run: |
+          IMAGE_NAME="ghcr.io/${{ github.repository_owner }}/portfolio-backend"
+          echo "image=${IMAGE_NAME,,}:latest" >> "$GITHUB_OUTPUT"
+          echo "image_sha=${IMAGE_NAME,,}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push container image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ steps.vars.outputs.image }}
+            ${{ steps.vars.outputs.image_sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       # ---- Azure OIDC Login ----
       - name: Azure Login (OIDC)
         uses: azure/login@v2
@@ -46,33 +88,67 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # ---- Invoke Deployment on VM via Azure Run-Command ----
-      - name: Deploy and Restart Service on VM
+      # ---- Deploy to Azure Container Apps Express ----
+      - name: Deploy to Azure Container Apps
         uses: azure/cli@v2
         with:
           inlineScript: |
-            echo "::notice::Deploying latest server changes to vm-portfolio in resource group portfolio..."
-            az vm run-command invoke \
-              --resource-group portfolio \
-              --name vm-portfolio \
-              --command-id RunShellScript \
-              --scripts "
-                set -e
-                echo '=== Pulling latest changes from main ==='
-                sudo -u aryxenv bash -c 'cd /home/aryxenv/portfolio && git fetch origin main && git reset --hard origin/main'
+            set -e
+            echo "::notice::Deploying latest server changes to portfolio-backend in resource group portfolio..."
 
-                echo '=== Syncing Python dependencies via uv ==='
-                sudo -u aryxenv bash -c 'cd /home/aryxenv/portfolio/server && /home/aryxenv/.local/bin/uv sync --frozen'
+            RESOURCE_GROUP="portfolio"
+            APP_NAME="portfolio-backend"
+            ENV_NAME="env-portfolio-express"
+            IDENTITY_NAME="id-portfolio-backend"
+            IMAGE="${{ steps.vars.outputs.image }}"
 
-                echo '=== Restarting portfolio-server service ==='
-                systemctl restart portfolio-server
+            IDENTITY_ID=$(az identity show -g "$RESOURCE_GROUP" -n "$IDENTITY_NAME" --query id -o tsv)
+            CLIENT_ID=$(az identity show -g "$RESOURCE_GROUP" -n "$IDENTITY_NAME" --query clientId -o tsv)
 
-                echo '=== Verifying service status ==='
-                systemctl is-active --quiet portfolio-server
+            REGISTRY_PASS="${{ secrets.GHCR_PAT }}"
+            if [ -z "$REGISTRY_PASS" ]; then
+              REGISTRY_PASS="${{ secrets.GITHUB_TOKEN }}"
+            fi
 
-                echo '=== Verifying HTTP health endpoint ==='
-                sleep 2
-                curl -sf http://127.0.0.1:8000/health
-                echo ''
-                echo '=== Deployment completed and verified successfully! ==='
-              "
+            if az containerapp show -g "$RESOURCE_GROUP" -n "$APP_NAME" > /dev/null 2>&1; then
+              echo "=== Updating existing Container App: $APP_NAME ==="
+              az containerapp update \
+                --name "$APP_NAME" \
+                --resource-group "$RESOURCE_GROUP" \
+                --image "$IMAGE"
+            else
+              echo "=== Creating Container App: $APP_NAME ==="
+              az containerapp create \
+                --name "$APP_NAME" \
+                --resource-group "$RESOURCE_GROUP" \
+                --environment "$ENV_NAME" \
+                --image "$IMAGE" \
+                --target-port 8000 \
+                --ingress external \
+                --min-replicas 0 \
+                --max-replicas 1 \
+                --user-assigned "$IDENTITY_ID" \
+                --env-vars AZURE_CLIENT_ID="$CLIENT_ID" \
+                --registry-server ghcr.io \
+                --registry-username "${{ github.actor }}" \
+                --registry-password "$REGISTRY_PASS"
+            fi
+
+            echo "=== Deployment Succeeded ==="
+            FQDN=$(az containerapp show -g "$RESOURCE_GROUP" -n "$APP_NAME" --query properties.configuration.ingress.fqdn -o tsv)
+            echo "::notice::ACA Express endpoint: https://$FQDN"
+
+            echo "=== Verifying Health Endpoint ==="
+            for i in $(seq 1 12); do
+              if curl -sf "https://$FQDN/health" > /dev/null 2>&1; then
+                echo "Health check passed!"
+                curl -s "https://$FQDN/health"
+                echo ""
+                exit 0
+              fi
+              echo "Waiting for container startup (attempt $i/12)..."
+              sleep 5
+            done
+
+            echo "Health check timed out!"
+            exit 1
