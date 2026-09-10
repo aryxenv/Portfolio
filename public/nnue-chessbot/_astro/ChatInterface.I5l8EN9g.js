@@ -9049,7 +9049,7 @@ const Qr = { src: "/nnue-chessbot/_astro/black-queen.CuK5xtL8.png" },
         mutationFn: async (h) => {
           const w = [...e].reverse().find((x) => x.fen)?.fen;
           return (
-            await fetch("https://nnue-chessbot-api.aryxenv.dev/decide", {
+            await fetch("https://chessbot-backend.gentleflower-0c30b6e1.switzerlandnorth.azurecontainerapps.io/decide", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ prompt: h, currentFen: w }),
@@ -9092,7 +9092,7 @@ const Qr = { src: "/nnue-chessbot/_astro/black-queen.CuK5xtL8.png" },
       u = mn({
         mutationFn: async (h) =>
           (
-            await fetch("https://nnue-chessbot-api.aryxenv.dev/move", {
+            await fetch("https://chessbot-backend.gentleflower-0c30b6e1.switzerlandnorth.azurecontainerapps.io/move", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ fen: h }),
