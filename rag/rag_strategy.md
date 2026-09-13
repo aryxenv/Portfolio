@@ -8,25 +8,34 @@ tech_stack:
   - "Azure AI Foundry"
   - "Azure AI Search"
   - "Azure Cosmos DB"
+  - "Azure Container Apps (ACA Express)"
   - "text-embedding-3-large"
   - "gpt-5.6-luna"
   - "Microsoft Agent Framework"
   - "Python"
   - "FastAPI"
+  - "Docker"
+  - "GitHub Container Registry (GHCR)"
+  - "User-Assigned Managed Identity"
   - "Astro"
 tags:
   - "rag"
   - "architecture"
+  - "azure-container-apps"
+  - "aca-express"
   - "azure-ai-search"
   - "azure-cosmos-db"
   - "azure-ai-foundry"
+  - "docker"
+  - "ghcr"
+  - "managed-identity"
   - "openai"
   - "agent-framework"
   - "vector-search"
   - "embeddings"
   - "chunking"
   - "metadata"
-summary: "Technical architecture and ingestion specification for Aryan Shah's portfolio RAG system, covering document parsing, header-based chunking, 3072-dimension embeddings via Azure AI Foundry, hybrid retrieval across Azure AI Search and Azure Cosmos DB NoSQL, and Microsoft Agent Framework multi-turn orchestration."
+summary: "Technical architecture and ingestion specification for Aryan Shah's portfolio RAG system, covering document parsing, header-based chunking, 3072-dimension embeddings via Azure AI Foundry, hybrid retrieval across Azure AI Search and Azure Cosmos DB NoSQL, Microsoft Agent Framework multi-turn orchestration, and zero-cost serverless hosting on Azure Container Apps (Express Mode) with User-Assigned Managed Identity."
 source: "rag/rag_strategy.md"
 ---
 
@@ -36,12 +45,13 @@ source: "rag/rag_strategy.md"
 
 The Portfolio Retrieval-Augmented Generation (RAG) system provides interactive, context-grounded conversational search across Aryan Shah's professional career milestones, academic achievements, technical projects and engineering telemetry.
 
-The architecture is built on enterprise-grade cloud AI services:
+The architecture is built on enterprise-grade cloud AI services and a zero-cost serverless hosting tier:
 - **Embedding Generation**: Azure AI Foundry (`ai-portfolio` project under `ai-portfolio-resource`) executing OpenAI's `text-embedding-3-large` (3072 dimensions) via `AIProjectClient`.
 - **Vector & Keyword Indexing (AI Search)**: Azure AI Search (`ais-portfolio`) utilizing Hierarchical Navigable Small World (HNSW) vector search and full-text keyword indexing with rich OData metadata filtering.
 - **Vector & Document Indexing (Cosmos DB)**: Azure Cosmos DB NoSQL (`cdb-portfolio`) providing document-oriented vector storage with DiskANN indexing, range/composite indexes for metadata filtering, and integrated cross-partition vector search.
 - **LLM Inference & Agent Orchestration**: Microsoft Agent Framework orchestrating an Azure AI Foundry deployment running OpenAI's `gpt-5.6-luna` with native server-side conversation threads (`service_session_id`), autonomous tool calling and streaming response generation.
-- **Authentication**: Zero-secret credential flow powered by Microsoft Entra ID via `DefaultAzureCredential`.
+- **Backend Hosting & Server Runtime**: Containerized FastAPI backend running on **Azure Container Apps (Express Mode)** (`env-portfolio-express` in Sweden Central), scaling to zero (`minReplicas = 0`, `maxReplicas = 1`) with near-zero cold starts (<2s) and $0.00 idle compute/storage costs.
+- **Identity & Security Architecture**: Keyless, zero-secret Entra ID authentication powered by `DefaultAzureCredential`. In production ACA, runtime requests utilize a User-Assigned Managed Identity (`id-portfolio-backend`, client ID: `e0d8e12d-be78-4b06-a259-58377ff0429a`) assigned granular RBAC roles for Azure AI Foundry, Cognitive Services OpenAI, Search Index Data Contributor, and Cosmos DB SQL Data-Plane RBAC.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -61,16 +71,16 @@ The architecture is built on enterprise-grade cloud AI services:
 ┌───────────────────────────────────────────────────────────────────▼──────────┐
 │                             Query Pipeline                                   │
 │                                                                              │
-│  User Query ──> FastAPI Route ──> Agent Orchestrator ──> FoundryChatClient   │
-│  (Portfolio UI) (POST /agent)     (Server Session)       (gpt-5.6-luna)      │
-│                                                                 │            │
-│                                                        ┌────────┴────────┐   │
-│                                                        │ Tool Calling    │   │
-│                                                        ▼                 ▼   │
-│                                                   Cosmos DB       AI Search  │
-│                                                   (DiskANN RRF)   (HNSW BM25)│
-│                                                        │                 │   │
-│  Client Stream <── StreamingResponse <── Grounded Generation <───────────┘   │
+│  User Query ──> ACA Express (Port 8000) ──> Agent Orchestrator ──> Foundry    │
+│  (Portfolio UI) (min=0, max=1, UAMI)        (Server Session)    (gpt-5.6-luna)│
+│                                                                        │     │
+│                                                        ┌───────────────┴───┐ │
+│                                                        │ Tool Calling      │ │
+│                                                        ▼                   ▼ │
+│                                                   Cosmos DB          AI Search│
+│                                                   (DiskANN RRF)    (HNSW BM25)│
+│                                                        │                   │ │
+│  Client Stream <── StreamingResponse <── Grounded Generation <─────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -124,7 +134,7 @@ Embeddings are generated using OpenAI's high-capacity `text-embedding-3-large` m
 - **Dimensionality**: 3072 floating-point dimensions.
 - **Client Architecture**: Instantiated using the modern `AIProjectClient` from the `azure-ai-projects` package, avoiding deprecated legacy clients.
 - **Foundry Endpoint**: Points directly to the project workspace `ai-portfolio` under resource `ai-portfolio-resource` in resource group `portfolio`.
-- **Identity & Security**: Authenticated exclusively via Azure Entra ID bearer tokens using `DefaultAzureCredential`.
+- **Identity & Security**: Authenticated exclusively via Azure Entra ID bearer tokens using `DefaultAzureCredential`. During ingestion and verification, Entra CLI/environment credentials provide the token; during production ACA Express runtime, the container's User-Assigned Managed Identity (`id-portfolio-backend`) is automatically discovered via `AZURE_CLIENT_ID`.
 - **Batch Processing**: Requests are batched with exponential backoff to maximize throughput and tolerate rate limits.
 
 ## 5. Azure AI Search Indexing & Retrieval Schema
@@ -189,19 +199,60 @@ Each chunk is stored as a JSON document with:
 - **Algorithm**: DiskANN (disk-based approximate nearest neighbor).
 - **Metric**: Cosine distance.
 - **Search Mode**: Supports vector similarity queries via the `VectorDistance` SQL function, combined with standard SQL WHERE clauses for metadata filtering.
+- **Access Control**: Keyless data-plane RBAC enforced using the Azure Cosmos DB Built-in Data Contributor SQL role (`00000000-0000-0000-0000-000000000002`) assigned to `id-portfolio-backend`.
 
 ## 7. Runtime Query & Generation Pipeline
 
 When an end-user poses an inquiry on Aryan's portfolio:
-1. **Query Ingestion**: The user query and session identifier are received by the FastAPI `/agent` endpoint. An in-memory session cache maintains the Azure OpenAI server-side conversation thread (`service_session_id`), enabling multi-turn dialog without client-side message replay.
-2. **Autonomous Tool Selection**: The Microsoft Agent Framework agent (powered by `gpt-5.6-luna` via `FoundryChatClient`) interprets the prompt, reformulates search terms and autonomously invokes tools:
-   - `vector_search`: Dispatches hybrid vector and keyword search to Azure AI Search (`ais-portfolio`) or Azure Cosmos DB (`cdb-portfolio`) with optional metadata filtering.
+1. **Query Ingestion**: The client island in the Astro frontend dispatches an HTTP request to the backend at `https://portfolio-backend.ashyglacier-b0d70426.swedencentral.azurecontainerapps.io/agent`. If the container is idle, Azure Container Apps Express mode initiates an immediate cold start (<2 seconds) to service the request.
+2. **Session Persistence**: An in-memory session cache maintains the Azure OpenAI server-side conversation thread (`service_session_id`), enabling multi-turn dialog without client-side message replay.
+3. **Autonomous Tool Selection**: The Microsoft Agent Framework agent (powered by `gpt-5.6-luna` via `FoundryChatClient`) interprets the prompt, reformulates search terms and autonomously invokes tools:
+   - `vector_search`: Dispatches hybrid vector and keyword search to Azure Cosmos DB (`cdb-portfolio`, currently active) or Azure AI Search (`ais-portfolio`) with optional metadata filtering.
    - `inspect_metadata_options`: Explores available filter facets (companies, doc types, technologies) when queries require taxonomy verification.
-3. **Hybrid Search Execution**: During tool execution, queries are converted into 3072-dimension vectors via `text-embedding-3-large` and retrieved using HNSW (AI Search) or DiskANN (Cosmos DB).
-4. **Context Synthesis & Grounding**: The agent evaluates returned chunks, executes multi-hop retrieval if needed (up to 3 retrieval steps) and synthesizes a factual answer strictly grounded in retrieved documentation.
-5. **Streaming Generation**: The server streams Server-Sent Events (SSE) back to the portfolio frontend in real time, delivering progressive token deltas, tool invocation notifications and final completion status.
+4. **Hybrid Search Execution**: During tool execution, queries are converted into 3072-dimension vectors via `text-embedding-3-large` and retrieved using DiskANN (Cosmos DB) or HNSW (AI Search).
+5. **Context Synthesis & Grounding**: The agent evaluates returned chunks, executes multi-hop retrieval if needed (up to 3 retrieval steps) and synthesizes a factual answer strictly grounded in retrieved documentation.
+6. **Streaming Generation**: The server streams Server-Sent Events (SSE) back to the portfolio frontend in real time, delivering progressive token deltas, tool invocation notifications and final completion status.
 
-## 8. Ingestion Script Execution & Synchronization
+## 8. Backend Hosting & Infrastructure Architecture (VM to ACA Express Migration)
+
+The portfolio assistant backend was originally hosted on an Ubuntu Linux Azure Virtual Machine (`B1s`) with Nginx and a systemd daemon. To achieve a 100% zero-cost steady state with zero maintenance overhead, the backend was migrated to **Azure Container Apps (Express Mode)**.
+
+### A. Architectural Rationale & Zero-Cost Guardrails
+- **Eliminating Fixed Costs**: Running a 24/7 B1s VM incurred ongoing monthly charges for the Standard SSD OS disk (~$1.50/month) and reserved public IPv4 address (~$3.65/month). Decommissioning the VM, OS disk, public IP, NIC, and NSG reduced ongoing infrastructure spend to **$0.00**.
+- **Serverless Scale-to-Zero**: ACA Express mode allows `minReplicas = 0`. The container completely shuts down when idle, consuming 0 vCPU and 0 GiB of memory. When a visitor opens the chat widget, Express mode spins up the container in under 2 seconds.
+- **Usage Capping**: `maxReplicas = 1` guarantees that traffic surges remain strictly bounded well within the Azure Container Apps free monthly grant (180,000 vCPU-seconds, 360,000 GiB-seconds, and 2 million requests).
+- **Log Analytics Zero-Cost**: The environment (`env-portfolio-express`) was provisioned with `--logs-destination none`, preventing the automatic creation of a billable Azure Log Analytics workspace.
+- **Zero-Egress Sweden Central Co-location**: Co-locating the Container App, Cosmos DB (`cdb-portfolio`), AI Search (`ais-portfolio`), and AI Foundry (`ai-portfolio-resource`) within `swedencentral` eliminates intra-region network data egress charges.
+
+### B. User-Assigned Managed Identity Architecture
+Because Azure Container Apps Express mode does not support system-assigned managed identities, a dedicated User-Assigned Managed Identity (`id-portfolio-backend`) was established:
+- **Identity Name**: `id-portfolio-backend`
+- **Location**: `swedencentral`
+- **Client ID**: `e0d8e12d-be78-4b06-a259-58377ff0429a`
+- **Principal ID**: `b0943c5c-2961-4a60-8519-6119178e1516`
+
+#### RBAC Permissions Matrix:
+| Target Scope | Role Definition | Purpose |
+| :--- | :--- | :--- |
+| Resource Group (`portfolio`) | `Foundry User` | AI Foundry workspace project access |
+| Resource Group (`portfolio`) | `Azure AI Developer` | AI Project client API operations |
+| Resource Group (`portfolio`) | `Cognitive Services OpenAI User` | Chat inference (`gpt-5.6-luna`) & embeddings (`text-embedding-3-large`) |
+| Resource Group (`portfolio`) | `Search Index Data Contributor` | Azure AI Search vector & document index queries |
+| Resource Group (`portfolio`) | `DocumentDB Account Contributor` | Cosmos DB control-plane metadata resolution |
+| Cosmos DB (`cdb-portfolio`) | Built-in Data Contributor (`00000000-...-0002`) | SQL data-plane reads, writes, and vector queries |
+
+At container startup, passing `AZURE_CLIENT_ID=e0d8e12d-be78-4b06-a259-58377ff0429a` informs `DefaultAzureCredential` to select this user-assigned identity, enabling seamless authentication without storing secrets, API keys, or connection strings.
+
+### C. Containerization & CI/CD Pipeline
+- **Docker Packaging**: Configured via a consolidated [`server/Dockerfile`](file:///c:/Users/aryan/OneDrive/Portfolio/nodeDev/PortfolioDev/server/Dockerfile) using `ghcr.io/astral-sh/uv:python3.13-bookworm-slim`. Dependencies are installed from `uv.lock` with bytecode compilation (`UV_COMPILE_BYTECODE=1`) and `--frozen --no-dev` flags for minimum image size and fastest startup.
+- **Registry**: Publicly distributed on **GitHub Container Registry** (`ghcr.io/aryxenv/portfolio-backend:latest`), completely eliminating the need to provision an Azure Container Registry (ACR).
+- **Continuous Deployment**: [`.github/workflows/deploy-server.yml`](file:///c:/Users/aryan/OneDrive/Portfolio/nodeDev/PortfolioDev/.github/workflows/deploy-server.yml) triggers on pushes modifying `server/**` or the workflow itself:
+  1. Builds and pushes multi-tag container images to GHCR using Buildx and GitHub Actions cache.
+  2. Authenticates to Azure using OpenID Connect (OIDC / Federated Credentials) with zero long-lived secrets.
+  3. Deploys or updates `portfolio-backend` in `env-portfolio-express`.
+  4. Automatically polls and verifies the HTTPS `/health` endpoint before concluding the run.
+
+## 9. Ingestion Script Execution & Synchronization
 
 The RAG pipeline is organized into two backend-specific pipelines sharing common logic:
 
@@ -233,4 +284,3 @@ Both pipelines support:
 - Normalizes all relative and explicit paths to POSIX forward-slash format for seamless cross-platform execution on Windows, Linux, and macOS.
 - Sanitizes embedding inputs against empty strings and token length limits (8192 tokens) to guarantee zero `BadRequestError` exceptions during embedding generation.
 - Accompanied by `verify.py` scripts for standalone verification and non-zero exit code reporting on failure.
-
