@@ -8,6 +8,23 @@ import Reveal from "../components/ui/Reveal.astro";
   description="Track countdowns for your favorite airing anime. Snappy, lightweight, and responsive."
 >
   <section class="anime-waiting-room" id="anime-waiting-room">
+    <!-- Pre-paint check for empty state to prevent FOUC / layout shifts -->
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem("selectedAnimes");
+          var parsed = saved ? JSON.parse(saved) : [];
+          if (!parsed || !Array.isArray(parsed) || parsed.length === 0) {
+            document.documentElement.classList.add("anime-empty-preset");
+          } else {
+            document.documentElement.classList.remove("anime-empty-preset");
+          }
+        } catch (e) {
+          document.documentElement.classList.add("anime-empty-preset");
+        }
+      })();
+    </script>
+
     <div class="anime-container">
       <Reveal class="anime-header">
         <h1>Anime Waiting Room</h1>
@@ -15,17 +32,53 @@ import Reveal from "../components/ui/Reveal.astro";
       </Reveal>
 
       <Reveal class="anime-search-wrapper" index={1}>
-        <form id="anime-form" class="glow-card">
-          <input type="text" id="anime-search" placeholder="Search anime to add..." required autocomplete="off" />
-          <button type="submit" id="add-anime-btn" aria-label="Add Anime">
-            <i class="bx bx-plus"></i>
-          </button>
-        </form>
+        <div class="search-box-wrapper">
+          <form id="anime-form" class="glow-card">
+            <input type="text" id="anime-search" placeholder="Search anime to add..." required autocomplete="off" />
+            <button type="submit" id="add-anime-btn" aria-label="Add Anime">
+              <i class="bx bx-plus"></i>
+            </button>
+          </form>
+          <div id="search-feedback" class="search-feedback" aria-live="polite"></div>
+        </div>
       </Reveal>
 
       <Reveal class="anime-list-wrapper" index={2} data-lenis-prevent="true">
-        <div id="anime-list" class="anime-list">
-          <p class="status-msg">Loading your anime...</p>
+        <div id="anime-list" class="anime-list" aria-busy="true" aria-live="polite">
+          <span class="visually-hidden">Loading anime countdowns...</span>
+          <div class="anime-item glow-card skeleton-card" style="--card-index: 0;" aria-hidden="true">
+            <div class="main-info">
+              <div class="skeleton-line skeleton-title" style="width: 58%;"></div>
+              <div class="status-row">
+                <div class="skeleton-line skeleton-status"></div>
+                <div class="skeleton-line skeleton-link"></div>
+              </div>
+            </div>
+            <div class="skeleton-line skeleton-timer"></div>
+            <div class="skeleton-line skeleton-btn"></div>
+          </div>
+          <div class="anime-item glow-card skeleton-card" style="--card-index: 1;" aria-hidden="true">
+            <div class="main-info">
+              <div class="skeleton-line skeleton-title" style="width: 72%;"></div>
+              <div class="status-row">
+                <div class="skeleton-line skeleton-status"></div>
+                <div class="skeleton-line skeleton-link"></div>
+              </div>
+            </div>
+            <div class="skeleton-line skeleton-timer"></div>
+            <div class="skeleton-line skeleton-btn"></div>
+          </div>
+          <div class="anime-item glow-card skeleton-card" style="--card-index: 2;" aria-hidden="true">
+            <div class="main-info">
+              <div class="skeleton-line skeleton-title" style="width: 46%;"></div>
+              <div class="status-row">
+                <div class="skeleton-line skeleton-status"></div>
+                <div class="skeleton-line skeleton-link"></div>
+              </div>
+            </div>
+            <div class="skeleton-line skeleton-timer"></div>
+            <div class="skeleton-line skeleton-btn"></div>
+          </div>
         </div>
       </Reveal>
     </div>
@@ -59,6 +112,19 @@ import Reveal from "../components/ui/Reveal.astro";
     display: none;
   }
 
+  :global(html.anime-empty-preset) .anime-container {
+    justify-content: center !important;
+  }
+
+  :global(html.anime-empty-preset) .anime-list-wrapper {
+    display: none !important;
+  }
+
+  :global(html.anime-empty-preset) .search-box-wrapper,
+  :global(html.anime-empty-preset) #anime-form {
+    max-width: 720px !important;
+  }
+
   .anime-header {
     text-align: center;
     flex-shrink: 0;
@@ -84,6 +150,35 @@ import Reveal from "../components/ui/Reveal.astro";
     flex-shrink: 0;
   }
 
+  .search-box-wrapper {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: max-width 0.5s var(--ease);
+  }
+
+  :global(.search-box-wrapper.expanded) {
+    max-width: 720px !important;
+  }
+
+  .search-feedback {
+    font-size: 0.875rem;
+    color: var(--accent-red);
+    text-align: center;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.25s var(--ease), opacity 0.25s var(--ease), margin-top 0.25s var(--ease);
+  }
+
+  .search-feedback.visible {
+    max-height: 2.5rem;
+    margin-top: 0.5rem;
+    opacity: 1;
+  }
+
   .anime-waiting-room {
     width: 100%;
   }
@@ -91,17 +186,11 @@ import Reveal from "../components/ui/Reveal.astro";
   #anime-form {
     display: flex;
     width: 100%;
-    max-width: 600px;
     background: transparent;
     border: var(--border-px) solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 5px;
     position: relative;
-    transition: max-width 0.5s var(--ease);
     /* transition is handled by glow-card hover effect */
-  }
-
-  :global(#anime-form.expanded) {
-    max-width: 720px !important;
   }
 
   #anime-form input {
@@ -161,23 +250,80 @@ import Reveal from "../components/ui/Reveal.astro";
   /* Skeleton Loading Styles */
   :global(.skeleton-card) {
     pointer-events: none;
+    user-select: none;
+    border-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.2);
   }
   
   :global(.skeleton-line) {
-    background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
-    border-radius: 4px;
-    animation: pulse 1.5s infinite var(--ease);
+    position: relative;
+    overflow: hidden;
+    background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.07);
+    border-radius: 5px;
   }
   
-  :global(.title-skeleton) { height: 1.25rem; width: 50%; margin-bottom: 0.5rem; }
-  :global(.status-skeleton) { height: 0.9rem; width: 30%; }
-  :global(.timer-skeleton) { height: 2.5rem; width: 160px; border-radius: 8px; }
-  :global(.btn-skeleton) { height: 40px; width: 40px; border-radius: 8px; flex-shrink: 0; }
-  
-  @keyframes pulse {
-    0% { opacity: 0.4; }
-    50% { opacity: 0.8; }
-    100% { opacity: 0.4; }
+  :global(.skeleton-line::after) {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.12) 50%,
+      transparent 100%
+    );
+    animation: skeleton-sweep 1.8s ease-in-out infinite;
+    animation-delay: calc(var(--card-index, 0) * 0.16s);
+  }
+
+  @keyframes skeleton-sweep {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  :global(.skeleton-title) {
+    height: 1.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.skeleton-status) {
+    height: 0.855rem;
+    width: 130px;
+  }
+
+  :global(.skeleton-link) {
+    height: 0.855rem;
+    width: 90px;
+    opacity: 0.6;
+  }
+
+  :global(.skeleton-timer) {
+    height: 42px;
+    width: 160px;
+    min-width: 160px;
+    border-radius: 5px;
+    border: var(--border-px) solid rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
+    flex-shrink: 0;
+  }
+
+  :global(.skeleton-btn) {
+    height: 40px;
+    width: 40px;
+    border-radius: 5px;
+    border: var(--border-px) solid rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
+    flex-shrink: 0;
+  }
+
+  :global(html[data-perf="low"]) :global(.skeleton-line::after),
+  @media (prefers-reduced-motion: reduce) {
+    :global(.skeleton-line::after) {
+      animation: none !important;
+      display: none !important;
+    }
   }
 
   /* Global styles for dynamic items */
@@ -187,10 +333,15 @@ import Reveal from "../components/ui/Reveal.astro";
     justify-content: space-between;
     background: transparent;
     border: var(--border-px) solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 5px;
     padding: 1.25rem;
     gap: 1rem;
     position: relative;
+    transition: border-color var(--state-duration) var(--ease);
+  }
+
+  :global(.anime-item.glow-card:not(.skeleton-card):hover) {
+    border-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.8);
   }
 
   :global(.anime-item .main-info) {
@@ -242,19 +393,20 @@ import Reveal from "../components/ui/Reveal.astro";
     color: var(--primary-color);
     background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.05);
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: 5px;
     min-width: 160px;
     text-align: center;
     border: var(--border-px) solid rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
   }
 
-  :global(.anime-item .remove-btn) {
+  :global(.anime-item .remove-btn),
+  :global(.anime-item .retry-btn) {
     background: transparent;
     border: var(--border-px) solid rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.3);
     color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.8);
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -269,11 +421,53 @@ import Reveal from "../components/ui/Reveal.astro";
     color: var(--accent-red);
     background: rgba(255, 123, 114, 0.1);
   }
+
+  :global(.anime-item .retry-btn:hover) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.1);
+  }
   
   :global(.anime-item.fade-out) {
     opacity: 0;
     transform: scale(0.98);
     transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+
+  :global(.anime-item.anime-error-item) {
+    border-color: rgba(255, 123, 114, 0.35);
+    background: rgba(255, 123, 114, 0.03);
+  }
+
+  :global(.anime-error-item .error-msg) {
+    color: var(--accent-red) !important;
+    opacity: 0.9;
+  }
+
+  :global(.error-actions) {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  :global(.anime-item.highlight-pulse) {
+    animation: highlight-pulse-anim 1.2s var(--ease);
+  }
+
+  @keyframes highlight-pulse-anim {
+    0% {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 15px rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.4);
+    }
+    50% {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 25px rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.6);
+    }
+    100% {
+      border-color: var(--border-color);
+      box-shadow: none;
+    }
   }
 
   @media (max-width: 650px) {
@@ -287,21 +481,204 @@ import Reveal from "../components/ui/Reveal.astro";
       width: 100%;
     }
 
-    :global(.anime-item .remove-btn) {
+    :global(.anime-item .remove-btn),
+    :global(.anime-item .retry-btn) {
       position: absolute;
       top: 0.5rem;
       right: 0.5rem;
       border: none;
       background: transparent;
     }
+
+    :global(.error-actions) {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    :global(.error-actions .remove-btn),
+    :global(.error-actions .retry-btn) {
+      position: static;
+    }
+
+    :global(.skeleton-card .skeleton-title) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    :global(.skeleton-card .status-row) {
+      justify-content: center;
+    }
+
+    :global(.skeleton-card .skeleton-timer) {
+      width: 100%;
+    }
+
+    :global(.skeleton-card .skeleton-btn) {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      border: none;
+    }
   }
 </style>
 
 <script>
+  interface AnimeData {
+    mal_id: number;
+    title_english?: string;
+    title?: string;
+    status?: string;
+    broadcast?: { day?: string; time?: string };
+    images?: {
+      jpg?: { image_url?: string };
+      webp?: { image_url?: string };
+    };
+  }
+
+  interface SavedAnime {
+    input: string;
+    title: string | null;
+    cachedData?: AnimeData | null;
+    cachedAt?: number;
+  }
+
   const STORAGE_KEY = "selectedAnimes";
+  const CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours cache TTL
   const activeTimers = new Map<string, { nextBroadcastDay: Date; element: HTMLElement }>();
+  const renderedMalIds = new Set<number>();
   let intervalId: ReturnType<typeof setInterval> | null = null;
-  let animeList: { input: string; title: string | null }[] = [];
+  let animeList: SavedAnime[] = [];
+
+  class AnimeRequestQueue {
+    private delayMs: number;
+    private queue: Array<{
+      id: string;
+      taskFactory: (signal: AbortSignal) => Promise<Response>;
+      priority: boolean;
+      resolve: (data: any) => void;
+      reject: (err: any) => void;
+    }> = [];
+    private isProcessing = false;
+    private lastRequestTime = 0;
+    private isAborted = false;
+    private currentAbortController: AbortController | null = null;
+
+    constructor(delayMs = 350) {
+      this.delayMs = delayMs;
+    }
+
+    enqueue<T>(
+      id: string,
+      taskFactory: (signal: AbortSignal) => Promise<Response>,
+      priority = false
+    ): Promise<T> {
+      if (this.isAborted) return Promise.reject(new Error("Queue aborted"));
+      return new Promise<T>((resolve, reject) => {
+        // Deduplicate in queue: replace existing pending task with same id
+        this.queue = this.queue.filter((item) => item.id !== id);
+        const item = { id, taskFactory, priority, resolve, reject };
+        if (priority) {
+          this.queue.unshift(item);
+        } else {
+          this.queue.push(item);
+        }
+        this.processNext();
+      });
+    }
+
+    cancel(id: string) {
+      this.queue = this.queue.filter((item) => item.id !== id);
+    }
+
+    abort() {
+      this.isAborted = true;
+      if (this.currentAbortController) {
+        this.currentAbortController.abort();
+        this.currentAbortController = null;
+      }
+      this.queue.forEach((item) => item.reject(new Error("Queue aborted")));
+      this.queue = [];
+      this.isProcessing = false;
+    }
+
+    private async processNext() {
+      if (this.isProcessing || this.isAborted || this.queue.length === 0) return;
+      this.isProcessing = true;
+
+      while (this.queue.length > 0 && !this.isAborted) {
+        const now = Date.now();
+        const elapsed = now - this.lastRequestTime;
+        if (elapsed < this.delayMs) {
+          await new Promise((r) => setTimeout(r, this.delayMs - elapsed));
+        }
+        if (this.isAborted) break;
+
+        const item = this.queue.shift();
+        if (!item) break;
+
+        try {
+          const result = await this.executeWithRetry(item.taskFactory);
+          this.lastRequestTime = Date.now();
+          item.resolve(result);
+        } catch (err) {
+          this.lastRequestTime = Date.now();
+          item.reject(err);
+        }
+      }
+
+      this.isProcessing = false;
+    }
+
+    private async executeWithRetry(
+      taskFactory: (signal: AbortSignal) => Promise<Response>,
+      maxRetries = 3
+    ): Promise<any> {
+      let attempt = 0;
+      while (!this.isAborted) {
+        attempt++;
+        this.currentAbortController = new AbortController();
+        const signal = this.currentAbortController.signal;
+
+        try {
+          const response = await taskFactory(signal);
+          this.currentAbortController = null;
+
+          // Empirical rate limit handling (HTTP 429)
+          if (response.status === 429) {
+            if (attempt > maxRetries) {
+              throw new Error(`Rate limit exceeded after ${maxRetries} retries`);
+            }
+            const retryHeader = response.headers.get("retry-after");
+            const retrySec = retryHeader ? Math.max(parseFloat(retryHeader), 1) : 1;
+            const waitTime = Math.round(retrySec * 1000 + 250 + attempt * 200);
+            console.warn(
+              `[Tenrai API] Rate limited (429). Pausing queue for ${waitTime}ms (Attempt ${attempt}/${maxRetries})...`
+            );
+            await new Promise((r) => setTimeout(r, waitTime));
+            continue;
+          }
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          return data;
+        } catch (err: any) {
+          this.currentAbortController = null;
+          if (this.isAborted || err.name === "AbortError") throw err;
+          if (attempt >= maxRetries) throw err;
+          const waitTime = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+          console.warn(`[Tenrai API] Fetch error: ${err.message}. Retrying in ${waitTime}ms...`);
+          await new Promise((r) => setTimeout(r, waitTime));
+        }
+      }
+      throw new Error("Aborted");
+    }
+  }
+
+  let requestQueue: AnimeRequestQueue | null = null;
 
   function getNextDayOfWeek(date: Date, dayOfWeek: number) {
     const nextDay = new Date(date);
@@ -312,24 +689,34 @@ import Reveal from "../components/ui/Reveal.astro";
   function parseBroadcast(broadcast: { day?: string; time?: string } | null | undefined) {
     if (!broadcast || !broadcast.day || !broadcast.time) return null;
     const daysMap: Record<string, number> = {
+      sunday: 0,
       sundays: 0,
+      monday: 1,
       mondays: 1,
+      tuesday: 2,
       tuesdays: 2,
+      wednesday: 3,
       wednesdays: 3,
+      thursday: 4,
       thursdays: 4,
+      friday: 5,
       fridays: 5,
+      saturday: 6,
       saturdays: 6,
     };
-    const dayOfWeek = daysMap[broadcast.day.toLowerCase()];
+    const dayOfWeek = daysMap[broadcast.day.toLowerCase().trim()];
     if (dayOfWeek === undefined) return null;
 
     const nowDate = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
     const nextBroadcastDay = getNextDayOfWeek(nowDate, dayOfWeek);
 
     const [broadcastHour, broadcastMinute] = broadcast.time.split(":");
-    nextBroadcastDay.setHours(parseInt(broadcastHour, 10));
-    nextBroadcastDay.setMinutes(parseInt(broadcastMinute, 10));
-    nextBroadcastDay.setSeconds(0);
+    nextBroadcastDay.setHours(parseInt(broadcastHour, 10), parseInt(broadcastMinute, 10), 0, 0);
+
+    // If scheduled broadcast has already passed earlier today in Tokyo, advance to next week
+    if (nextBroadcastDay.getTime() <= nowDate.getTime()) {
+      nextBroadcastDay.setDate(nextBroadcastDay.getDate() + 7);
+    }
 
     const [thours, tminutes] = broadcast.time.split(":").map(Number);
     const date = new Date();
@@ -368,40 +755,101 @@ import Reveal from "../components/ui/Reveal.astro";
     });
   }
 
-  async function fetchAnimeInfo(animeName: string) {
+  async function fetchAnimeInfo(animeName: string, priority = false): Promise<AnimeData | null> {
+    if (!requestQueue) return null;
     const url = `https://api.tenrai.org/v1/anime?q=${encodeURIComponent(animeName)}&limit=1&order_by=end_date&sort=desc&type=tv`;
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Network response was not ok");
-      const data = await response.json();
-      if (data && data.data && data.data.length > 0) {
-        return { input: animeName, data: data.data[0] };
-      }
-    } catch (e) {
-      console.error("Error fetching data for", animeName, e);
+    const data = await requestQueue.enqueue<any>(
+      animeName.toLowerCase(),
+      (signal) => fetch(url, { signal }),
+      priority
+    );
+    if (data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data[0] as AnimeData;
     }
     return null;
   }
 
-  function renderAnime(
-    animeData: {
-      mal_id: number;
-      title_english?: string;
-      title?: string;
-      status?: string;
-      broadcast?: { day?: string; time?: string };
-    },
-    inputName: string,
-    listContainer: HTMLElement
-  ) {
+  function escapeHTML(str: string): string {
+    return str.replace(/[&<>'"]/g, (tag) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "'": "&#39;",
+      '"': "&quot;",
+    }[tag] || tag));
+  }
+
+  function getSavedAnimes(): SavedAnime[] {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      if (!Array.isArray(parsed)) return [];
+      return parsed
+        .map((item: any): SavedAnime | null => {
+          if (typeof item === "string") {
+            const trimmed = item.trim();
+            return trimmed ? { input: trimmed, title: trimmed, cachedData: null, cachedAt: 0 } : null;
+          }
+          if (item && typeof item === "object") {
+            const input = typeof item.input === "string" ? item.input.trim() : (typeof item.title === "string" ? item.title.trim() : "");
+            if (!input) return null;
+            return {
+              input,
+              title: typeof item.title === "string" ? item.title : null,
+              cachedData: item.cachedData || null,
+              cachedAt: typeof item.cachedAt === "number" ? item.cachedAt : 0,
+            };
+          }
+          return null;
+        })
+        .filter((item): item is SavedAnime => item !== null);
+    } catch {
+      return [];
+    }
+  }
+
+  function persistAnimeList() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(animeList));
+  }
+
+  function showSearchFeedback(msg: string) {
+    const feedback = document.getElementById("search-feedback");
+    if (!feedback) return;
+    feedback.textContent = msg;
+    feedback.classList.add("visible");
+    setTimeout(() => {
+      feedback.classList.remove("visible");
+    }, 3500);
+  }
+
+  function getSkeletonInnerCardHTML(index: number = 0) {
+    const titleWidths = ["58%", "72%", "46%", "64%"];
+    const width = titleWidths[index % titleWidths.length];
+    return `
+      <div class="main-info">
+        <div class="skeleton-line skeleton-title" style="width: ${width};"></div>
+        <div class="status-row">
+          <div class="skeleton-line skeleton-status"></div>
+          <div class="skeleton-line skeleton-link"></div>
+        </div>
+      </div>
+      <div class="skeleton-line skeleton-timer"></div>
+      <div class="skeleton-line skeleton-btn"></div>
+    `;
+  }
+
+  function renderAnimeCard(card: HTMLElement, animeData: AnimeData, inputName: string) {
     const { mal_id, title_english, title, status, broadcast } = animeData;
-    const displayTitle = title_english || title;
+    const displayTitle = title_english || title || inputName;
 
-    const card = document.createElement("div");
     card.className = "anime-item glow-card";
+    card.removeAttribute("aria-hidden");
+    card.id = `anime-card-${mal_id}`;
+    card.dataset.input = inputName;
+    card.dataset.malId = mal_id.toString();
 
-    let statusText = status;
-    const timerText = "0d 0h 0m 0s";
+    let statusText = status || "Unknown";
     let bCastInfo = null;
 
     if (status === "Currently Airing") {
@@ -415,19 +863,17 @@ import Reveal from "../components/ui/Reveal.astro";
 
     card.innerHTML = `
       <div class="main-info">
-        <div class="name">${displayTitle}</div>
+        <div class="name">${escapeHTML(displayTitle)}</div>
         <div class="status-row">
-          <span class="status">${statusText}</span>
+          <span class="status">${escapeHTML(statusText)}</span>
           <a href="https://myanimelist.net/anime/${mal_id}" target="_blank" rel="noopener noreferrer" class="mal-link">See Details (MAL)</a>
         </div>
       </div>
-      <div class="timer" id="timer-${mal_id}">${timerText}</div>
-      <button class="remove-btn" aria-label="Remove" data-input="${inputName}">
+      <div class="timer" id="timer-${mal_id}">0d 0h 0m 0s</div>
+      <button class="remove-btn" aria-label="Remove ${escapeHTML(displayTitle)}" data-input="${escapeHTML(inputName)}">
         <i class="bx bx-x"></i>
       </button>
     `;
-
-    listContainer.appendChild(card);
 
     if (status === "Currently Airing" && bCastInfo) {
       activeTimers.set(mal_id.toString(), {
@@ -435,81 +881,193 @@ import Reveal from "../components/ui/Reveal.astro";
         element: card.querySelector(`#timer-${mal_id}`) as HTMLElement,
       });
       updateTimers();
+    } else {
+      activeTimers.delete(mal_id.toString());
     }
 
-    // Attach remove event listener
     const removeBtn = card.querySelector(".remove-btn");
-    removeBtn?.addEventListener("click", () => {
-      card.classList.add("fade-out");
-      setTimeout(() => {
-        card.remove();
-      }, 300);
-      
-      activeTimers.delete(mal_id.toString());
-      animeList = animeList.filter((a) => a.input.toLowerCase() !== inputName.toLowerCase());
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(animeList));
+    removeBtn?.addEventListener("click", () => handleRemove(inputName, mal_id.toString(), card));
+  }
 
-      if (animeList.length === 0) {
-        document.querySelector(".anime-container")?.classList.add("empty-state");
-        document.getElementById("anime-form")?.classList.add("expanded");
-      }
+  function renderErrorCard(card: HTMLElement, inputName: string, errorType: "not_found" | "network_error") {
+    card.className = "anime-item anime-error-item glow-card";
+    card.removeAttribute("aria-hidden");
+    card.dataset.input = inputName;
+
+    const isNotFound = errorType === "not_found";
+    const message = isNotFound
+      ? "Anime not found on MyAnimeList."
+      : "Unable to load schedule (network / rate limit).";
+
+    card.innerHTML = `
+      <div class="main-info">
+        <div class="name">${escapeHTML(inputName)}</div>
+        <div class="status-row">
+          <span class="status error-msg">${escapeHTML(message)}</span>
+        </div>
+      </div>
+      <div class="error-actions">
+        ${
+          !isNotFound
+            ? `<button class="retry-btn" aria-label="Retry loading ${escapeHTML(inputName)}" data-input="${escapeHTML(inputName)}">
+                <i class="bx bx-refresh"></i>
+              </button>`
+            : ""
+        }
+        <button class="remove-btn" aria-label="Remove ${escapeHTML(inputName)}" data-input="${escapeHTML(inputName)}">
+          <i class="bx bx-x"></i>
+        </button>
+      </div>
+    `;
+
+    const retryBtn = card.querySelector(".retry-btn");
+    retryBtn?.addEventListener("click", () => {
+      card.className = "anime-item glow-card skeleton-card";
+      card.setAttribute("aria-hidden", "true");
+      card.innerHTML = getSkeletonInnerCardHTML(0);
+      fetchAndBindCard(card, inputName, true);
     });
+
+    const removeBtn = card.querySelector(".remove-btn");
+    removeBtn?.addEventListener("click", () => handleRemove(inputName, null, card));
+  }
+
+  function handleRemove(inputName: string, malIdStr: string | null, card: HTMLElement) {
+    card.classList.add("fade-out");
+    setTimeout(() => {
+      card.remove();
+    }, 300);
+
+    if (malIdStr) {
+      activeTimers.delete(malIdStr);
+      renderedMalIds.delete(parseInt(malIdStr, 10));
+    }
+    if (requestQueue) {
+      requestQueue.cancel(inputName.toLowerCase());
+    }
+
+    animeList = animeList.filter((a) => a.input.toLowerCase() !== inputName.toLowerCase());
+    persistAnimeList();
+
+    if (animeList.length === 0) {
+      const container = document.querySelector(".anime-container");
+      const form = document.getElementById("anime-form");
+      const searchBoxWrapper = document.querySelector(".search-box-wrapper");
+      container?.classList.add("empty-state");
+      form?.classList.add("expanded");
+      searchBoxWrapper?.classList.add("expanded");
+    }
+  }
+
+  async function fetchAndBindCard(card: HTMLElement, inputName: string, priority = false) {
+    try {
+      const data = await fetchAnimeInfo(inputName, priority);
+      if (!data) {
+        renderErrorCard(card, inputName, "not_found");
+        return;
+      }
+
+      // Check if duplicate
+      if (renderedMalIds.has(data.mal_id)) {
+        card.remove();
+        animeList = animeList.filter((a) => a.input.toLowerCase() !== inputName.toLowerCase());
+        persistAnimeList();
+        return;
+      }
+
+      renderedMalIds.add(data.mal_id);
+      renderAnimeCard(card, data, inputName);
+
+      // Cache the result
+      const found = animeList.find((a) => a.input.toLowerCase() === inputName.toLowerCase());
+      if (found) {
+        found.cachedData = data;
+        found.cachedAt = Date.now();
+        found.title = data.title_english || data.title || found.title;
+        persistAnimeList();
+      }
+    } catch (err: any) {
+      if (err.message === "Queue aborted" || err.name === "AbortError") return;
+      renderErrorCard(card, inputName, "network_error");
+    }
   }
 
   async function initAnimeRoom() {
+    document.documentElement.classList.remove("anime-empty-preset");
     const listContainer = document.getElementById("anime-list");
     const form = document.getElementById("anime-form");
+    const searchBoxWrapper = document.querySelector(".search-box-wrapper");
     const input = document.getElementById("anime-search") as HTMLInputElement;
     const container = document.querySelector(".anime-container");
 
     if (!listContainer || !form || !input || !container) return;
 
-    // Reset state on initialization (useful for client-side navigation)
+    // Reset runtime state
     activeTimers.clear();
+    renderedMalIds.clear();
     if (intervalId) clearInterval(intervalId);
+    if (requestQueue) requestQueue.abort();
+    requestQueue = new AnimeRequestQueue(350);
 
-    const savedAnimes = localStorage.getItem(STORAGE_KEY);
-    animeList = savedAnimes ? JSON.parse(savedAnimes) : [];
+    animeList = getSavedAnimes();
 
     if (animeList.length === 0) {
       listContainer.innerHTML = "";
+      listContainer.removeAttribute("aria-busy");
       container.classList.add("empty-state");
       form.classList.add("expanded");
+      searchBoxWrapper?.classList.add("expanded");
     } else {
       container.classList.remove("empty-state");
       form.classList.remove("expanded");
-      
-      // Render skeleton cards matching the number of cached items
-      listContainer.innerHTML = animeList.map(() => `
-        <div class="anime-item glow-card skeleton-card">
-          <div class="main-info">
-            <div class="skeleton-line title-skeleton"></div>
-            <div class="skeleton-line status-skeleton"></div>
-          </div>
-          <div class="skeleton-line timer-skeleton"></div>
-          <div class="skeleton-line btn-skeleton"></div>
-        </div>
-      `).join('');
-      
-      // Parallel fetch
-      const results = await Promise.allSettled(
-        animeList.map((anime) => fetchAnimeInfo(anime.input))
-      );
-
+      searchBoxWrapper?.classList.remove("expanded");
       listContainer.innerHTML = "";
+      listContainer.setAttribute("aria-busy", "true");
 
-      // Track mal_ids rendered to prevent duplicates
-      const renderedMalIds = new Set();
-      
-      results.forEach((res) => {
-        if (res.status === "fulfilled" && res.value) {
-          const malId = res.value.data.mal_id;
-          if (!renderedMalIds.has(malId)) {
-            renderedMalIds.add(malId);
-            renderAnime(res.value.data, res.value.input, listContainer);
+      const now = Date.now();
+
+      animeList.forEach((item, index) => {
+        const card = document.createElement("div");
+
+        // If cached and valid data exists, render immediately in 0ms!
+        if (item.cachedData) {
+          renderedMalIds.add(item.cachedData.mal_id);
+          renderAnimeCard(card, item.cachedData, item.input);
+          listContainer.appendChild(card);
+
+          // Stale-While-Revalidate if cache is older than 12 hours
+          if (now - (item.cachedAt || 0) > CACHE_TTL_MS) {
+            fetchAnimeInfo(item.input, false)
+              .then((freshData) => {
+                if (
+                  freshData &&
+                  (!item.cachedData ||
+                    freshData.status !== item.cachedData.status ||
+                    freshData.broadcast?.time !== item.cachedData.broadcast?.time)
+                ) {
+                  item.cachedData = freshData;
+                  item.cachedAt = Date.now();
+                  persistAnimeList();
+                  renderAnimeCard(card, freshData, item.input);
+                }
+              })
+              .catch(() => {
+                // Stale cache remains in place on error
+              });
           }
+        } else {
+          // Uncached item: render progressive skeleton card in slot
+          card.className = "anime-item glow-card skeleton-card";
+          card.setAttribute("aria-hidden", "true");
+          card.style.setProperty("--card-index", index.toString());
+          card.innerHTML = getSkeletonInnerCardHTML(index);
+          listContainer.appendChild(card);
+
+          fetchAndBindCard(card, item.input, false);
         }
       });
+
+      listContainer.removeAttribute("aria-busy");
     }
 
     intervalId = setInterval(updateTimers, 1000);
@@ -520,49 +1078,94 @@ import Reveal from "../components/ui/Reveal.astro";
       const query = input.value.trim();
       if (!query) return;
 
-      if (animeList.some((a) => a.input.toLowerCase() === query.toLowerCase())) {
+      const existing = animeList.find((a) => a.input.toLowerCase() === query.toLowerCase());
+      if (existing) {
+        showSearchFeedback(`"${query}" is already in your waiting room!`);
         input.value = "";
+        // Highlight existing card
+        const existingCard = listContainer.querySelector(`[data-input="${CSS.escape(existing.input)}"]`);
+        if (existingCard) {
+          existingCard.classList.remove("highlight-pulse");
+          void (existingCard as HTMLElement).offsetWidth;
+          existingCard.classList.add("highlight-pulse");
+          existingCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
         return;
       }
 
       container.classList.remove("empty-state");
       form.classList.remove("expanded");
+      searchBoxWrapper?.classList.remove("expanded");
 
-      // Show temporary loading card
+      // Insert progressive loading skeleton card at top
       const tempCard = document.createElement("div");
       tempCard.className = "anime-item glow-card skeleton-card";
-      tempCard.innerHTML = `
-        <div class="main-info">
-          <div class="skeleton-line title-skeleton"></div>
-          <div class="skeleton-line status-skeleton"></div>
-        </div>
-        <div class="skeleton-line timer-skeleton"></div>
-        <div class="skeleton-line btn-skeleton"></div>
-      `;
+      tempCard.setAttribute("aria-hidden", "true");
+      tempCard.innerHTML = getSkeletonInnerCardHTML(0);
       listContainer.insertBefore(tempCard, listContainer.firstChild);
 
-      const result = await fetchAnimeInfo(query);
-      tempCard.remove();
-
-      if (result) {
-        // Unshift to place at the start in cache
-        animeList.unshift({
-          input: query,
-          title: result.data.title_english || result.data.title,
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(animeList));
-
-        // Render at top
-        const dummyWrapper = document.createElement("div");
-        renderAnime(result.data, query, dummyWrapper);
-        const newCard = dummyWrapper.firstElementChild;
-        if (newCard) listContainer.insertBefore(newCard, listContainer.firstChild);
-      }
-
+      // Register temporary entry in animeList
+      animeList.unshift({
+        input: query,
+        title: query,
+        cachedData: null,
+        cachedAt: 0,
+      });
+      persistAnimeList();
       input.value = "";
+
+      // Fetch with priority!
+      try {
+        const data = await fetchAnimeInfo(query, true);
+        if (!data) {
+          tempCard.remove();
+          animeList = animeList.filter((a) => a.input.toLowerCase() !== query.toLowerCase());
+          persistAnimeList();
+          showSearchFeedback(`No anime found matching "${query}". Check title spelling.`);
+          if (animeList.length === 0) {
+            container.classList.add("empty-state");
+            form.classList.add("expanded");
+            searchBoxWrapper?.classList.add("expanded");
+          }
+          return;
+        }
+
+        // Check if duplicate mal_id
+        if (renderedMalIds.has(data.mal_id)) {
+          tempCard.remove();
+          animeList = animeList.filter((a) => a.input.toLowerCase() !== query.toLowerCase());
+          persistAnimeList();
+          showSearchFeedback(`This anime is already in your waiting room!`);
+          return;
+        }
+
+        renderedMalIds.add(data.mal_id);
+        renderAnimeCard(tempCard, data, query);
+
+        const found = animeList.find((a) => a.input.toLowerCase() === query.toLowerCase());
+        if (found) {
+          found.cachedData = data;
+          found.cachedAt = Date.now();
+          found.title = data.title_english || data.title || found.title;
+          persistAnimeList();
+        }
+      } catch (err: any) {
+        if (err.message === "Queue aborted" || err.name === "AbortError") return;
+        renderErrorCard(tempCard, query, "network_error");
+      }
     });
   }
 
   // Handle Astro's view transitions correctly
   document.addEventListener("astro:page-load", initAnimeRoom);
+  document.addEventListener("astro:before-swap", () => {
+    if (intervalId) clearInterval(intervalId);
+    intervalId = null;
+    activeTimers.clear();
+    renderedMalIds.clear();
+    if (requestQueue) {
+      requestQueue.abort();
+      requestQueue = null;
+    }
+  });
 </script>
