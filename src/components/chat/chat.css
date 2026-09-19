@@ -574,18 +574,19 @@
 }
 
 .chat-tool-wrapper {
-  margin: 0.55rem 0;
+  margin: 0.45rem 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   width: 100%;
 }
 
 .chat-tool-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.22rem 0.55rem;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.32rem 0.65rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
@@ -594,7 +595,6 @@
   font-size: 0.76rem;
   line-height: 1.3;
   cursor: pointer;
-  max-width: 100%;
   box-sizing: border-box;
   text-align: left;
   transition:
@@ -610,9 +610,18 @@
   color: #ffffff;
 }
 
+.chat-tool-badge.is-expanded {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .chat-tool-badge.is-running {
   border-color: rgba(0, 14, 206, 0.5);
   background: rgba(0, 14, 206, 0.08);
+}
+
+.chat-tool-badge.is-error {
+  border-color: rgba(255, 123, 114, 0.4);
 }
 
 .chat-tool-icon {
@@ -621,6 +630,7 @@
   justify-content: center;
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
 }
 
 .chat-tool-badge.is-running .chat-tool-icon {
@@ -633,16 +643,42 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  flex-shrink: 0;
+  word-break: normal;
 }
 
 .chat-tool-param {
   font-family: monospace, sans-serif;
   font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.55);
-  max-width: 180px;
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.chat-tool-trailing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.chat-tool-filter-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  transition: color 0.18s ease-out;
+}
+
+.chat-tool-badge:hover .chat-tool-filter-icon {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .chat-tool-tag {
@@ -654,13 +690,15 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .chat-tool-status {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: 0.15rem;
+  flex-shrink: 0;
 }
 
 .chat-tool-pulse {
@@ -692,10 +730,16 @@
   color: var(--status-live, #008000);
 }
 
+.chat-tool-error-icon {
+  font-size: 0.85rem;
+  color: #ff7b72;
+}
+
 .chat-tool-chevron {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.4);
   transition: transform 0.2s ease-out;
+  flex-shrink: 0;
 }
 
 .chat-tool-chevron.is-expanded {
@@ -712,6 +756,7 @@
   font-size: 0.72rem;
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.75);
+  width: 100%;
   max-width: 100%;
   overflow-x: auto;
   overscroll-behavior: contain;
