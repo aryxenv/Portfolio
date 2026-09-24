@@ -10,7 +10,7 @@ tech_stack:
   - "Azure Cosmos DB"
   - "Azure Container Apps (ACA Express)"
   - "text-embedding-3-large"
-  - "gpt-5.6-luna"
+  - "gpt-6-luna"
   - "Microsoft Agent Framework"
   - "Python"
   - "FastAPI"
@@ -49,7 +49,7 @@ The architecture is built on enterprise-grade cloud AI services and a zero-cost 
 - **Embedding Generation**: Azure AI Foundry (`ai-portfolio` project under `ai-portfolio-resource`) executing OpenAI's `text-embedding-3-large` (3072 dimensions) via `AIProjectClient`.
 - **Vector & Keyword Indexing (AI Search)**: Azure AI Search (`ais-portfolio`) utilizing Hierarchical Navigable Small World (HNSW) vector search and full-text keyword indexing with rich OData metadata filtering.
 - **Vector & Document Indexing (Cosmos DB)**: Azure Cosmos DB NoSQL (`cdb-portfolio`) providing document-oriented vector storage with DiskANN indexing, range/composite indexes for metadata filtering, and integrated cross-partition vector search.
-- **LLM Inference & Agent Orchestration**: Microsoft Agent Framework orchestrating an Azure AI Foundry deployment running OpenAI's `gpt-5.6-luna` with native server-side conversation threads (`service_session_id`), autonomous tool calling and streaming response generation.
+- **LLM Inference & Agent Orchestration**: Microsoft Agent Framework orchestrating an Azure AI Foundry deployment running OpenAI's `gpt-6-luna` with native server-side conversation threads (`service_session_id`), autonomous tool calling and streaming response generation.
 - **Backend Hosting & Server Runtime**: Containerized FastAPI backend running on **Azure Container Apps (Express Mode)** (`env-portfolio-express` in Sweden Central), scaling to zero (`minReplicas = 0`, `maxReplicas = 1`) with near-zero cold starts (<2s) and $0.00 idle compute/storage costs.
 - **Identity & Security Architecture**: Keyless, zero-secret Entra ID authentication powered by `DefaultAzureCredential`. In production ACA, runtime requests utilize a User-Assigned Managed Identity (`id-portfolio-backend`, client ID: `e0d8e12d-be78-4b06-a259-58377ff0429a`) assigned granular RBAC roles for Azure AI Foundry, Cognitive Services OpenAI, Search Index Data Contributor, and Cosmos DB SQL Data-Plane RBAC.
 
@@ -72,7 +72,7 @@ The architecture is built on enterprise-grade cloud AI services and a zero-cost 
 │                             Query Pipeline                                   │
 │                                                                              │
 │  User Query ──> ACA Express (Port 8000) ──> Agent Orchestrator ──> Foundry    │
-│  (Portfolio UI) (min=0, max=1, UAMI)        (Server Session)    (gpt-5.6-luna)│
+│  (Portfolio UI) (min=0, max=1, UAMI)        (Server Session)    (gpt-6-luna)│
 │                                                                        │     │
 │                                                        ┌───────────────┴───┐ │
 │                                                        │ Tool Calling      │ │
@@ -206,7 +206,7 @@ Each chunk is stored as a JSON document with:
 When an end-user poses an inquiry on Aryan's portfolio:
 1. **Query Ingestion**: The client island in the Astro frontend dispatches an HTTP request to the backend at `https://portfolio-backend.ashyglacier-b0d70426.swedencentral.azurecontainerapps.io/agent`. If the container is idle, Azure Container Apps Express mode initiates an immediate cold start (<2 seconds) to service the request.
 2. **Session Persistence**: An in-memory session cache maintains the Azure OpenAI server-side conversation thread (`service_session_id`), enabling multi-turn dialog without client-side message replay.
-3. **Autonomous Tool Selection**: The Microsoft Agent Framework agent (powered by `gpt-5.6-luna` via `FoundryChatClient`) interprets the prompt, reformulates search terms and autonomously invokes tools:
+3. **Autonomous Tool Selection**: The Microsoft Agent Framework agent (powered by `gpt-6-luna` via `FoundryChatClient`) interprets the prompt, reformulates search terms and autonomously invokes tools:
    - `vector_search`: Dispatches hybrid vector and keyword search to Azure Cosmos DB (`cdb-portfolio`, currently active) or Azure AI Search (`ais-portfolio`) with optional metadata filtering.
    - `inspect_metadata_options`: Explores available filter facets (companies, doc types, technologies) when queries require taxonomy verification.
 4. **Hybrid Search Execution**: During tool execution, queries are converted into 3072-dimension vectors via `text-embedding-3-large` and retrieved using DiskANN (Cosmos DB) or HNSW (AI Search).
@@ -236,7 +236,7 @@ Because Azure Container Apps Express mode does not support system-assigned manag
 | :--- | :--- | :--- |
 | Resource Group (`portfolio`) | `Foundry User` | AI Foundry workspace project access |
 | Resource Group (`portfolio`) | `Azure AI Developer` | AI Project client API operations |
-| Resource Group (`portfolio`) | `Cognitive Services OpenAI User` | Chat inference (`gpt-5.6-luna`) & embeddings (`text-embedding-3-large`) |
+| Resource Group (`portfolio`) | `Cognitive Services OpenAI User` | Chat inference (`gpt-6-luna`) & embeddings (`text-embedding-3-large`) |
 | Resource Group (`portfolio`) | `Search Index Data Contributor` | Azure AI Search vector & document index queries |
 | Resource Group (`portfolio`) | `DocumentDB Account Contributor` | Cosmos DB control-plane metadata resolution |
 | Cosmos DB (`cdb-portfolio`) | Built-in Data Contributor (`00000000-...-0002`) | SQL data-plane reads, writes, and vector queries |

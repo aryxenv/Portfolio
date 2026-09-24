@@ -1,6 +1,6 @@
 ---
 title: "how i deployed an ai agent on my portfolio without going broke"
-description: "a frontend, a backend, and a vector database. all for (nearly) free on azure student subscription. powered by microsoft agent framework and gpt-5.6-luna."
+description: "a frontend, a backend, and a vector database. all for (nearly) free on azure student subscription. powered by microsoft agent framework and gpt-6-luna."
 read_time_minutes: "5"
 tags:
   [
@@ -61,7 +61,7 @@ but the point is, you will never have to worry about storage with cosmosdb for y
 
 ## the agent
 
-this is the most fun part, but also the part i have the most to "complain" about. i'm using microsoft agent framework, which is an open-source agent orchestration framework. it's also tightly integrated with microsoft foundry which im using for the model which is gpt-5.6-luna.
+this is the most fun part, but also the part i have the most to "complain" about. i'm using microsoft agent framework, which is an open-source agent orchestration framework. it's also tightly integrated with microsoft foundry which im using for the model which is gpt-6-luna.
 
 initially i wanted to go with [Groq API](https://groq.com/), because this is free on certain models and incredibly fast. unfortunately they limited the free model selection to only `groq/compound` and `groq/compound-mini`, both of which work with microsoft agent framework, but don't allow custom tool usage.
 
@@ -69,9 +69,9 @@ the next best option was to use the 100$ azure credit to use a **model on micros
 
 imagine this: im a user that asks a question about one of the projects listed on the portfolio, the agent goes ahead and uses tool calls to find the relevant context through rag with multiple tool calls to get the complete info. let's say **5 tool calls were made to fulfill this user question**. since the limit is 20 RPM, 3 more users can ask questions in that same minute. but if theres 5 users? well now you have a problem because the **5th user will be rate limited and get a 429 error**. this is a huge bottleneck for agents since agents are built to call tools often, hence make requests often as well.
 
-how did i get past this bottleneck? simply switch to `gpt-5.6-luna`, which is a model that is not rate limited on requests, same speed and performance of `deepseek-v4-flash` (if not better), and has a token per minute limit of a million, it's safe to say the limit will not be hit (ever, for a portfolio site). a trade-off had to be made though, the model is more than **twice as expensive on output token cost**, but since it has no rate limit, it can handle multiple users at once without any issues, and relatively the cost is acceptable compared to other options.
+how did i get past this bottleneck? simply switch to `gpt-6-luna`, which is a model that is not rate limited on requests, same speed and performance of `deepseek-v4-flash` (if not better), and has a token per minute limit of a million, it's safe to say the limit will not be hit (ever, for a portfolio site). a trade-off had to be made though, the model is more than **twice as expensive on output token cost**, but since it has no rate limit, it can handle multiple users at once without any issues, and relatively the cost is acceptable compared to other options.
 
-in the end switching to `gpt-5.6-luna` was an incredibly good choice, because it's so fast and efficiently makes tool calls. my portfolio agent is able to **answer questions in less than 2 seconds on average** which is quite impressive for a near-free setup.
+in the end switching to `gpt-6-luna` was an incredibly good choice, because it's so fast and efficiently makes tool calls. my portfolio agent is able to **answer questions in less than 2 seconds on average** which is quite impressive for a near-free setup.
 
 ## github actions
 

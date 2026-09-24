@@ -209,7 +209,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
               className="chat-badge-logo"
               aria-hidden="true"
             />
-            <span className="chat-badge-text">GPT-5.6-Luna</span>
+            <span className="chat-badge-text">GPT-6-Luna</span>
           </span>
         </div>
 
@@ -249,11 +249,14 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         {messages.length === 0 ? (
           <div className="chat-empty-state">
             <p className="chat-empty-intro">
-              Powered by Microsoft Agent Framework and GPT-5.6-Luna, this agent
-              executes hybrid retrieval across Azure AI Search and Cosmos DB, offering
-              deeper technical insights beyond what&apos;s shown on this portfolio.
+              Powered by Microsoft Agent Framework and GPT-6-Luna, this agent
+              executes hybrid retrieval across Azure AI Search and Cosmos DB,
+              offering deeper technical insights beyond what&apos;s shown on
+              this portfolio.
             </p>
-            <span className="chat-empty-prompts-title">Suggested Inquiries</span>
+            <span className="chat-empty-prompts-title">
+              Suggested Inquiries
+            </span>
             <div className="chat-prompts-list">
               {STARTER_PROMPTS.map((prompt) => (
                 <button

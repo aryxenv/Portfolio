@@ -1,7 +1,7 @@
 """Portfolio Agent Route and Initialization.
 
 Configures the portfolio assistant agent using Microsoft Agent Framework,
-powered by GPT-5.6-Luna on Azure AI Foundry and wired to Azure AI Search
+powered by GPT-6-Luna on Azure AI Foundry and wired to Azure AI Search
 and Azure Cosmos DB hybrid RAG tools with metadata filtering.
 """
 from __future__ import annotations
@@ -76,7 +76,7 @@ credential = DefaultAzureCredential()
 
 client = FoundryChatClient(
     project_endpoint=foundry_endpoint,
-    model=os.getenv("FOUNDRY_MODEL_PRIMARY", os.getenv("FOUNDRY_MODEL", "gpt-5.6-luna")),
+    model=os.getenv("FOUNDRY_MODEL_PRIMARY", os.getenv("FOUNDRY_MODEL", "gpt-6-luna")),
     credential=credential,
 )
 
