@@ -276,6 +276,7 @@ def audit_experience() -> dict[str, Any]:
     rag_exp_dir = RAG_CONTENT_DIR / "experience"
 
     companies = [
+        {"id": "pwc", "name": "PwC", "expected_weeks": 0},
         {"id": "microsoft", "name": "Microsoft", "expected_weeks": 26},
         {"id": "pickit-3d", "name": "Pickit 3D", "expected_weeks": 11},
     ]
@@ -301,17 +302,18 @@ def audit_experience() -> dict[str, Any]:
             item["issues"].extend(validate_rag_file(overview_file))
 
         # Check weekly trackers
-        if c_dir.is_dir():
-            week_files = sorted(c_dir.glob("week-*.md")) or sorted(c_dir.glob("tracker-week-*.md"))
-            item["weeks_found"] = len(week_files)
-            if item["weeks_found"] < comp["expected_weeks"]:
-                item["issues"].append(
-                    f"INCOMPLETE: Found {item['weeks_found']} weekly logs, expected {comp['expected_weeks']}."
-                )
-                results["discrepancy_count"] += 1
-        else:
-            item["issues"].append(f"MISSING: Directory rag/content/experience/{c_id}/ does not exist.")
-            results["missing_count"] += 1
+        if comp["expected_weeks"] > 0:
+            if c_dir.is_dir():
+                week_files = sorted(c_dir.glob("week-*.md")) or sorted(c_dir.glob("tracker-week-*.md"))
+                item["weeks_found"] = len(week_files)
+                if item["weeks_found"] < comp["expected_weeks"]:
+                    item["issues"].append(
+                        f"INCOMPLETE: Found {item['weeks_found']} weekly logs, expected {comp['expected_weeks']}."
+                    )
+                    results["discrepancy_count"] += 1
+            else:
+                item["issues"].append(f"MISSING: Directory rag/content/experience/{c_id}/ does not exist.")
+                results["missing_count"] += 1
 
         results["items"].append(item)
 

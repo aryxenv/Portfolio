@@ -11,6 +11,8 @@ personal_interests:
   - "Autonomous agentic AI architectures"
 tags:
   - "bio"
+  - "pwc"
+  - "microsoft-consultant"
   - "biography"
   - "aryan-shah"
   - "data-science"
@@ -26,7 +28,7 @@ source: "src/components/sections/About.astro"
 
 ## Executive Summary
 
-Aryan Shah is an Antwerp-based Solutions Engineer and Data Science graduate specializing in enterprise Artificial Intelligence, multi-agent systems, and full-stack web applications. With practical experience at Microsoft as a Solutions Engineer Intern (AI Apps / Data) and at Pickit 3D Robotics as a Frontend & AI Developer, Aryan bridges deep technical implementation with enterprise business value. He turns complex customer challenges into validated Azure AI application prototypes, technical validations, and robust cloud architectures.
+Aryan Shah is an Antwerp-based Microsoft Consultant at PwC Belgium and Data Science graduate specializing in enterprise Artificial Intelligence, multi-agent systems, and full-stack web applications. Previously having interned at Microsoft as a Solutions Engineer (AI Apps / Data) and at Pickit 3D Robotics as a Frontend & AI Developer, Aryan bridges deep technical implementation with enterprise business value. He turns complex customer challenges into validated Azure AI application prototypes, technical validations, and robust cloud architectures.
 
 ## Personal Identity & Demographics
 

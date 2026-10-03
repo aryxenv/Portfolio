@@ -5,8 +5,8 @@ type: "experience"
 company: "Microsoft"
 role: "Solutions Engineer Intern (AI Apps / Data)"
 week_number: 0
-log_date: "Feb 2026 - Aug 2026"
-date_range: "Feb 2026 - Aug 2026"
+log_date: "Feb 2026 - July 2026"
+date_range: "Feb 2026 - July 2026"
 location: "Zaventem, Belgium"
 nda_redacted: true
 tech_stack:
@@ -51,7 +51,7 @@ source: "Microsoft Internship Logs & Experience Telemetry"
 
 ## Executive Summary
 
-From February 2026 through August 2026, Aryan Shah served as a **Solutions Engineer Intern (AI Apps / Data)** at Microsoft Belux, based out of the headquarters in Zaventem, Belgium. Working within the Solution Technical Unit (STU) for Cloud & AI, Aryan operated at the intersection of applied generative AI, enterprise data architecture, and commercial solutions engineering.
+From February 2026 through July 2026, Aryan Shah served as a **Solutions Engineer Intern (AI Apps / Data)** at Microsoft Belux, based out of the headquarters in Zaventem, Belgium. Working within the Solution Technical Unit (STU) for Cloud & AI, Aryan operated at the intersection of applied generative AI, enterprise data architecture, and commercial solutions engineering.
 
 Rather than remaining confined to observational shadowing, Aryan demonstrated an exceptional level of technical ownership, bridging the gap between cutting-edge Microsoft AI research and mission-critical enterprise customer deployments. Over the course of the 26-week tenure, his contributions spanned:
 
