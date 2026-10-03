@@ -19,7 +19,7 @@ const [first, second] = projects;
         </div>
 
         <div class="introduction-role">
-          <h2>Solutions Engineer Intern (Applications + AI/ML)</h2>
+          <h2>Microsoft Consultant</h2>
         </div>
       </div>
 
@@ -31,35 +31,37 @@ const [first, second] = projects;
             >Antwerp, Belgium</strong
           >. I'm a <strong class="highlight">Data Science</strong> graduate from Thomas
           More University of Applied Sciences, currently working as a <strong
-            class="highlight"
-            >Solutions Engineer Intern (Applications + AI/ML)</strong
-          > at <strong class="highlight">Microsoft</strong>.
+            class="highlight">Microsoft Consultant</strong
+          > at <strong class="highlight">PwC Belgium</strong>. Previously having
+          interned at <strong class="highlight">Microsoft</strong> as a <strong
+            class="highlight">Solutions Engineer (AI Apps)</strong
+          >.
         </p>
+
+        <div class="introduction-stack-container">
+          <div class="introduction-stacks">
+            <Marquee items={MARQUEE_TOP} direction="left" />
+            <Marquee items={MARQUEE_BOTTOM} direction="right" />
+          </div>
+
+          <VerticalRail href="#contact" label="Contact me!" variant="smaller" />
+        </div>
       </div>
 
-      <div class="introduction-stack-container">
-        <div class="introduction-stacks">
-          <Marquee items={MARQUEE_TOP} direction="left" />
-          <Marquee items={MARQUEE_BOTTOM} direction="right" />
-        </div>
+      <div class="recents">
+        <Reveal class="recentAndProject1" index={1}>
+          <div class="recent">
+            <h3>Recents</h3>
+          </div>
 
-        <VerticalRail href="#contact" label="Contact me!" variant="smaller" />
+          <ProjectCard project={first!} />
+        </Reveal>
+
+        <Reveal class="project2AndViewProjects" index={2}>
+          <ProjectCard project={second!} />
+          <VerticalRail href="#projects" label="View more projects" />
+        </Reveal>
       </div>
     </Reveal>
-
-    <div class="recents">
-      <Reveal class="recentAndProject1" index={1}>
-        <div class="recent">
-          <h3>Recents</h3>
-        </div>
-
-        <ProjectCard project={first!} />
-      </Reveal>
-
-      <Reveal class="project2AndViewProjects" index={2}>
-        <ProjectCard project={second!} />
-        <VerticalRail href="#projects" label="View more projects" />
-      </Reveal>
-    </div>
   </div>
 </section>

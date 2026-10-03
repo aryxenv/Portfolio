@@ -21,18 +21,35 @@ export interface Company {
 
 export const experience: Company[] = [
   {
+    id: "pwc-belgium",
+    company: "PwC",
+    industry: "Consulting & Professional Services",
+    dateRange: "Oct 2026 - Present",
+    location: "Brussels, Belgium · Hybrid",
+    website: "https://www.pwc.be/",
+    status: "green",
+    roles: [
+      {
+        id: "pwc-junior-microsoft-consultant",
+        position: "Junior Microsoft Consultant",
+        date: "Oct 2026 - Present",
+        location: "Brussels, Belgium · Hybrid",
+        description: [],
+      },
+    ],
+  },
+  {
     id: "microsoft",
     company: "Microsoft",
     industry: "Technology & Software",
-    dateRange: "Feb 2026 - Present",
+    dateRange: "Feb 2026 - July 2026",
     location: "Zaventem, Belgium · On-site",
     website: "https://www.microsoft.com/",
-    status: "green",
     roles: [
       {
         id: "microsoft-solutions-engineer",
         position: "Solutions Engineer Intern (AI Apps / Data)",
-        date: "Feb 2026 - Present",
+        date: "Feb 2026 - July 2026",
         location: "Zaventem, Belgium · On-site",
         description: [
           "Engage with customers with coaching from the **Data / AI Apps** team, build product expertise by helping prepare small **technical demos** and **solution overviews** for real customer scenarios.",
