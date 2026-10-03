@@ -53,7 +53,7 @@ in just **4.3 days (~103.5 hours)**, it accumulated **€0.81** in fixed running
 | **data transfer / egress**                | ~30 mb (free tier allowance) | €0.00     | 0.0%     |
 | **total (4.3 days)**                      |                              | **€0.81** | **100%** |
 
-at ~€0.19/day, this "free" vm would cost **~€5.64/month**, which is quite close to my estimation in [how i deployed an ai agent on my portfolio without going broke](https://aryxenv.dev/blog/how-i-deployed-an-ai-agent-on-my-portfolio-without-going-broke/), where i estimated it would cost ~€5/month.
+at \~€0.19/day, this "free" vm would cost **\~€5.64/month**, which is quite close to my estimation in [how i deployed an ai agent on my portfolio without going broke](https://aryxenv.dev/blog/how-i-deployed-an-ai-agent-on-my-portfolio-without-going-broke/), where i estimated it would cost ~€5/month.
 
 - **€0.00 for compute** (the 750 free hours benefit works as advertised).
 - **€3.13/month for the static public ip** (a mandatory requirement to reach the vm from the public internet).
