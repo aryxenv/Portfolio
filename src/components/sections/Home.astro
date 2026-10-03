@@ -37,31 +37,31 @@ const [first, second] = projects;
             class="highlight">Solutions Engineer (AI Apps / Data)</strong
           >.
         </p>
-
-        <div class="introduction-stack-container">
-          <div class="introduction-stacks">
-            <Marquee items={MARQUEE_TOP} direction="left" />
-            <Marquee items={MARQUEE_BOTTOM} direction="right" />
-          </div>
-
-          <VerticalRail href="#contact" label="Contact me!" variant="smaller" />
-        </div>
       </div>
 
-      <div class="recents">
-        <Reveal class="recentAndProject1" index={1}>
-          <div class="recent">
-            <h3>Recents</h3>
-          </div>
+      <div class="introduction-stack-container">
+        <div class="introduction-stacks">
+          <Marquee items={MARQUEE_TOP} direction="left" />
+          <Marquee items={MARQUEE_BOTTOM} direction="right" />
+        </div>
 
-          <ProjectCard project={first!} />
-        </Reveal>
-
-        <Reveal class="project2AndViewProjects" index={2}>
-          <ProjectCard project={second!} />
-          <VerticalRail href="#projects" label="View more projects" />
-        </Reveal>
+        <VerticalRail href="#contact" label="Contact me!" variant="smaller" />
       </div>
     </Reveal>
+
+    <div class="recents">
+      <Reveal class="recentAndProject1" index={1}>
+        <div class="recent">
+          <h3>Recents</h3>
+        </div>
+
+        <ProjectCard project={first!} />
+      </Reveal>
+
+      <Reveal class="project2AndViewProjects" index={2}>
+        <ProjectCard project={second!} />
+        <VerticalRail href="#projects" label="View more projects" />
+      </Reveal>
+    </div>
   </div>
 </section>
